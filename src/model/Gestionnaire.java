@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Gestionnaire {
@@ -74,5 +76,67 @@ public class Gestionnaire {
 				.filter(livre -> livre.getTitre().equals(titre))
 				.findFirst()
 				.orElse(null);
+	}
+
+	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
+		List<Movie> filteredMovies = new ArrayList<>();
+
+		for (Movie movie : movies) {
+			boolean matches = true;
+
+			if (rea != null && !movie.getRealistateur().equalsIgnoreCase(rea)) {
+				matches = false;
+			}
+			if (genres != null && genres.length > 0) {
+				boolean genreMatch = false;
+				for (Genre genre : genres) {
+					for (Genre movieGenre : movie.getGenre()) {
+						if (movieGenre.equals(genre)) {
+							genreMatch = true;
+							break;
+						}
+					}
+					if (genreMatch) break;
+				}
+				if (!genreMatch) {
+					matches = false;
+				}
+			}
+			if (duree != 0 && movie.getDuree() != duree) {
+				matches = false;
+			}
+			if (dateSortie != null && !movie.getDateSortie().equals(dateSortie)) {
+				matches = false;
+			}
+			if (plateformes != null && plateformes.length > 0) {
+				boolean plateformeMatch = false;
+				for (Plateforme plateforme : plateformes) {
+					for (Plateforme moviePlateforme : movie.getPlateforme()) {
+						if (moviePlateforme.equals(plateforme)) {
+							plateformeMatch = true;
+							break;
+						}
+					}
+					if (plateformeMatch) break;
+				}
+				if (!plateformeMatch) {
+					matches = false;
+				}
+			}
+			if (addBy != null && !movie.getAddBy().equals(addBy)) {
+				matches = false;
+			}
+
+			if (matches) {
+				filteredMovies.add(movie);
+			}
+		}
+
+		if (filteredMovies.isEmpty()) {
+			return null;
+		}
+
+		Random rand = new Random();
+		return filteredMovies.get(rand.nextInt(filteredMovies.size()));
 	}
 }

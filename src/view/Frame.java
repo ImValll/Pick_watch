@@ -39,8 +39,8 @@ public class Frame extends JFrame {
 
 	private void chooseMovie() {
 		// Initialisation du Panel utilisateur
-		PanelMovies panelMovies = new PanelMovies(new Gestionnaire(), this);
-		setContentPane(panelMovies);
+		PanelRamdomMovie panelRamdomMovie = new PanelRamdomMovie(new Gestionnaire(), this);
+		setContentPane(panelRamdomMovie);
 		validate();
 	}
 
