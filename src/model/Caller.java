@@ -11,7 +11,7 @@ public class Caller extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 	}
 
-	public void addBall(JCheckBox jCBox) {
+	public void addItem(JCheckBox jCBox) {
 		this.add(jCBox);
 	}
 }

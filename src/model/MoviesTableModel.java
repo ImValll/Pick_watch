@@ -14,6 +14,11 @@ public class MoviesTableModel extends AbstractTableModel {
 		this.movies = movies;
 	}
 
+	public void setMovies(List<Movie> movies) {
+		this.movies = movies;
+		fireTableDataChanged(); // Notifier que les données du tableau ont changé
+	}
+
 	@Override
 	public int getRowCount() {
 		return movies.size();
@@ -47,21 +52,61 @@ public class MoviesTableModel extends AbstractTableModel {
 		Movie movie = movies.get(rowIndex);
 		switch (columnIndex) {
 			case 0:
-				return movie.getTitre();
+				if (movie.getTitre() != null) {
+					return movie.getTitre();
+				}
+				else {
+					return "";
+				}
 			case 1:
-				return movie.getRealistateur();
+				if (movie.getRealistateur() != null) {
+					return movie.getRealistateur();
+				}
+				else {
+					return "";
+				}
 			case 2:
-				return movie.getDescription();
+				if (movie.getDescription() != null) {
+					return movie.getDescription();
+				}
+				else {
+					return "";
+				}
 			case 3:
-				return Arrays.toString(movie.getGenre());
+				if (movie.getGenre() != null) {
+					return Arrays.toString(movie.getGenre());
+				}
+				else {
+					return "";
+				}
 			case 4:
-				return movie.getDuree();
+				if (movie.getDuree() != 0) {
+					return movie.getDuree();
+				}
+				else {
+					return "";
+				}
 			case 5:
-				return new SimpleDateFormat("dd/MM/yyyy").format(movie.getDateSortie());
+				if (movie.getDateSortie() != null) {
+					return new SimpleDateFormat("dd/MM/yyyy").format(movie.getDateSortie());
+				}
+				else {
+					return "";
+				}
 			case 6:
-				return Arrays.toString(movie.getPlateforme());
+				if (movie.getPlateforme() != null) {
+					return Arrays.toString(movie.getPlateforme());
+				}
+				else {
+					return "";
+				}
 			case 7:
-				return movie.getAddBy();
+				if (movie.getAddBy() != null) {
+					return movie.getAddBy();
+				}
+				else {
+					return "";
+				}
 			case 8:
 				return "Modifier";
 			case 9:
@@ -69,5 +114,10 @@ public class MoviesTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
+	}
+
+	public void addMovie(Movie movie) {
+		movies.add(movie);
+		fireTableRowsInserted(movies.size() - 1, movies.size() - 1);
 	}
 }

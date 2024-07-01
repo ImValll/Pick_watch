@@ -57,4 +57,36 @@ public class Movie implements Serializable {
 	public Utilisateur getAddBy() {
 		return addBy;
 	}
+
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
+
+	public void setRealistateur(String realistateur) {
+		this.realistateur = realistateur;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setGenre(Genre[] genre) {
+		this.genre = genre;
+	}
+
+	public void setDuree(int duree) {
+		this.duree = duree;
+	}
+
+	public void setDateSortie(Date dateSortie) {
+		this.dateSortie = dateSortie;
+	}
+
+	public void setPlateforme(Plateforme[] plateforme) {
+		this.plateforme = plateforme;
+	}
+
+	public void setAddBy(Utilisateur addBy) {
+		this.addBy = addBy;
+	}
 }

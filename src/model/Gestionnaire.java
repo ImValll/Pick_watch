@@ -34,28 +34,23 @@ public class Gestionnaire {
 		}
 	}
 
-//	public void editMovie(String titre, String auteur, Livre nouveauLivre) {
-//		Livre livre = trouverLivreParTitreEtAuteur(titre, auteur);
-//		if (livre != null) {
-//			livre.setTitre(nouveauLivre.getTitre());
-//			livre.setAuteur(nouveauLivre.getAuteur());
-//			livre.setEdition(nouveauLivre.getEdition());
-//			livre.setAnneeParution(nouveauLivre.getAnneeParution());
-//			livre.setGenre(nouveauLivre.getGenre());
-//			livre.setEmplacement(nouveauLivre.getEmplacement());
-//			DataManager.sauvegarderLivres(livres);
-//			System.out.println("Livre modifié: " + livre.getTitre());
-//		} else {
-//			System.out.println("Livre non trouvé.");
-//		}
-//	}
-
-//	public Livre trouverLivreParTitreEtAuteur(String titre, String auteur) {
-//		return livres.stream()
-//				.filter(livre -> livre.getTitre().equals(titre) && livre.getAuteur().equals(auteur))
-//				.findFirst()
-//				.orElse(null);
-//	}
+	public void editMovie(String titre, Movie newMovie) {
+		Movie movie = findMovieByTitle(titre);
+		if (movie != null) {
+			movie.setTitre(newMovie.getTitre());
+			movie.setRealistateur(newMovie.getRealistateur());
+			movie.setDescription(newMovie.getDescription());
+			movie.setGenre(newMovie.getGenre());
+			movie.setDuree(newMovie.getDuree());
+			movie.setDateSortie(newMovie.getDateSortie());
+			movie.setPlateforme(newMovie.getPlateforme());
+			movie.setAddBy(newMovie.getAddBy());
+			DataManager.saveMovie(movies);
+			System.out.println("Film modifié: " + movie.getTitre());
+		} else {
+			System.out.println("Film non trouvé.");
+		}
+	}
 
 	public List<Movie> getMovies() {
 		return movies;
@@ -66,14 +61,20 @@ public class Gestionnaire {
 //		DataManager.sauvegarderUtilisateurs(utilisateurs);
 //	}
 
-//	public void supprimerLivre(String titre, String auteur) {
-//		Livre livre = trouverLivreParTitreEtAuteur(titre, auteur);
-//		if (livre != null) {
-//			livres.remove(livre);
-//			DataManager.sauvegarderLivres(livres); // Mettre à jour la liste des livres
-//			System.out.println("Livre supprimé: " + livre.getTitre());
-//		} else {
-//			System.out.println("Livre non trouvé.");
-//		}
-//	}
+	public void deleteMovie(Movie movie) {
+		if (movie != null) {
+			movies.remove(movie);
+			DataManager.saveMovie(movies); // Mettre à jour la liste des films
+			System.out.println("Film supprimé: " + movie.getTitre());
+		} else {
+			System.out.println("Film non trouvé.");
+		}
+	}
+
+	public Movie findMovieByTitle(String titre) {
+		return movies.stream()
+				.filter(livre -> livre.getTitre().equals(titre))
+				.findFirst()
+				.orElse(null);
+	}
 }
