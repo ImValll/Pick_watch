@@ -93,24 +93,13 @@ public class PanelMovies extends JPanel {
 	}
 
 	private void searchMovies(ActionEvent e) {
-//		String titre = searchTitleField.getText();
-//		String auteur = searchAuthorField.getText();
-//		List<Livre> resultats = gestionnaire.rechercherLivres(titre, auteur);
-//		StringBuilder sb = new StringBuilder();
-//		if (resultats.isEmpty()) {
-//			sb.append("Aucun livre trouvé pour les critères donnés.");
-//		} else {
-//			for (Livre livre : resultats) {
-//				sb.append(livre.getTitre()).append(" - ").append(livre.getAuteur());
-//				if (livre.isReserve()) {
-//					sb.append(" (Réservé jusqu'à ").append(livre.getDateFinReservation().toString()).append(")");
-//				} else {
-//					sb.append(" (Disponible)");
-//				}
-//				sb.append("\n");
-//			}
-//		}
-//		textArea.setText(sb.toString());
+		String titre = searchTitleField.getText();
+		List<Movie> result = gestionnaire.searchMovie(titre);
+		if (result.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Erreur: Aucun film trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+		} else {
+			tableModel.setMovies(result); // Mettre à jour le modèle du tableau
+		}
 	}
 
 	private void addMovie() {

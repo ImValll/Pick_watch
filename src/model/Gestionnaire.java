@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +20,11 @@ public class Gestionnaire {
 		System.out.println("Film ajouté: " + movie.getTitre());
 	}
 
-//	public List<Movie> searchMovie(String titreCritere, String auteurCritere) {
-//		return livres.stream()
-//				.filter(livre -> livre.getTitre().toLowerCase().contains(titreCritere.toLowerCase()) &&
-//						livre.getAuteur().toLowerCase().contains(auteurCritere.toLowerCase()))
-//				.collect(Collectors.toList());
-//	}
+	public List<Movie> searchMovie(String title) {
+		return movies.stream()
+				.filter(movie -> movie.getTitre().toLowerCase().contains(title.toLowerCase()))
+				.collect(Collectors.toList());
+	}
 
 	public void showMovie() {
 		for (Movie movie : movies) {
