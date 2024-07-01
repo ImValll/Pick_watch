@@ -11,7 +11,7 @@ public class Frame extends JFrame {
 
 		super("MOVIE SELECTOR");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(700, 400); // Taille augmentée
+		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
