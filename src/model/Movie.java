@@ -1,0 +1,60 @@
+package model;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
+
+public class Movie implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String titre;
+	private String realistateur;
+	private String description;
+	private Genre[] genre;
+	private int duree;
+	private Date dateSortie;
+	private Plateforme[] plateforme;
+	private Utilisateur addBy;
+
+	public Movie(String titre, String realistateur, String description, Genre[] genre, int duree, Date dateSortie, Plateforme[] plateforme, Utilisateur addBy) {
+		this.titre = titre;
+		this.realistateur = realistateur;
+		this.description = description;
+		this.genre = genre;
+		this.duree = duree;
+		this.dateSortie = dateSortie;
+		this.plateforme = plateforme;
+		this.addBy = addBy;
+	}
+
+	public String getTitre() {
+		return titre;
+	}
+
+	public String getRealistateur() {
+		return realistateur;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Genre[] getGenre() {
+		return genre;
+	}
+
+	public int getDuree() {
+		return duree;
+	}
+
+	public Date getDateSortie() {
+		return dateSortie;
+	}
+
+	public Plateforme[] getPlateforme() {
+		return plateforme;
+	}
+
+	public Utilisateur getAddBy() {
+		return addBy;
+	}
+}
