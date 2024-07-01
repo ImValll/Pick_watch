@@ -52,6 +52,10 @@ public class Gestionnaire {
 		}
 	}
 
+	public void updateMovieAddBy(Movie movie, Utilisateur newAddBy) {
+		movie.setAddBy(newAddBy);
+	}
+
 	public List<Movie> getMovies() {
 		return movies;
 	}

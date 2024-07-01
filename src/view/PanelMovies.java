@@ -250,14 +250,34 @@ public class PanelMovies extends JPanel {
 
 				Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
 
-				Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
-				gestionnaire.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
+				boolean canBeAdd = true;
+
+				List<Movie> listMovies = gestionnaire.getMovies();
+				for(int i = 0; i < listMovies.size(); i++) {
+					Movie movie = listMovies.get(i);
+					if(movie.getTitre().equalsIgnoreCase(titre)) {
+						canBeAdd = false;
+						if(movie.getAddBy() == Utilisateur.Nous2 || movie.getAddBy() == addBy) {
+							JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							gestionnaire.updateMovieAddBy(movie, Utilisateur.Nous2);
+							JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Nous2.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+						}
+						break;
+					}
+				}
+
+				if(canBeAdd) {
+					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
+					gestionnaire.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
+					JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
+				}
 
 				// Mettre à jour le modèle de tableau après l'ajout du film
 				List<Movie> updatedMovies = gestionnaire.getMovies(); // Récupérer la liste mise à jour des films
 				tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
 
-				JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
 			}
