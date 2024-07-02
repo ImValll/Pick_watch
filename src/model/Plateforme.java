@@ -10,5 +10,6 @@ public enum Plateforme {
 	OCS,
 	Paramount,
 	AucuneIdee,
+	HorsLigne,
 	Illegale;
 }
