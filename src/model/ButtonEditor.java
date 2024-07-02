@@ -1,6 +1,6 @@
 package model;
 
-import view.PanelMovies;
+import view.movie.PanelMovies;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

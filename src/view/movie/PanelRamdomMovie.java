@@ -1,4 +1,4 @@
-package view;
+package view.movie;
 
 import model.*;
 
@@ -11,7 +11,7 @@ import java.util.Date;
 public class PanelRamdomMovie extends JPanel {
 
 	private Gestionnaire gestionnaire;
-	private Frame frame;
+	private MovieFrame movieFrame;
 
 	private String rea;
 	private Genre[] genres;
@@ -24,23 +24,23 @@ public class PanelRamdomMovie extends JPanel {
 	private JPanel moviePanel;
 	private JLabel movieLabel;
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, Frame frame) {
+	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame) {
 		this.gestionnaire = gestionnaire;
-		this.frame = frame;
+		this.movieFrame = movieFrame;
 		initializeUI();
 	}
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, Frame frame, Utilisateur addBy) {
+	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, Utilisateur addBy) {
 		this.gestionnaire = gestionnaire;
-		this.frame = frame;
+		this.movieFrame = movieFrame;
 		this.addBy = addBy;
 
 		initializeUI();
 	}
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, Frame frame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
+	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
 		this.gestionnaire = gestionnaire;
-		this.frame = frame;
+		this.movieFrame = movieFrame;
 		this.rea = rea;
 		this.genres = genres;
 		this.duree = duree;
@@ -115,8 +115,8 @@ public class PanelRamdomMovie extends JPanel {
 	}
 
 	public void backMenu() {
-		frame.dispose();
-		new Frame();
+		movieFrame.dispose();
+		new MovieFrame();
 	}
 
 	public void generateAgain() {

@@ -1,13 +1,5 @@
-import model.DataManager;
-import model.Genre;
-import model.Movie;
-import model.Utilisateur;
-import model.Plateforme;
 import view.Frame;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import view.movie.MovieFrame;
 
 public class Main {
 	public static void main(String[] args) {

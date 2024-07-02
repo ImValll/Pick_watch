@@ -1,4 +1,4 @@
-package view;
+package view.movie;
 
 import model.*;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -8,16 +8,14 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 public class PanelMovies extends JPanel {
 
-	Frame frame;
+	MovieFrame movieFrame;
 
 	private CardLayout cardLayout = new CardLayout();
 	private JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
@@ -27,9 +25,9 @@ public class PanelMovies extends JPanel {
 	private JTextField searchTitleField;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-	public PanelMovies(Gestionnaire gestionnaire, Frame frame) {
+	public PanelMovies(Gestionnaire gestionnaire, MovieFrame movieFrame) {
 		this.gestionnaire = gestionnaire;
-		this.frame = frame;
+		this.movieFrame = movieFrame;
 		initializeUI();
 	}
 
@@ -179,7 +177,7 @@ public class PanelMovies extends JPanel {
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
 
 		final JComponent[] inputs = new JComponent[] {
-			new JLabel("Titre"),
+			new JLabel("Titre*"),
 			titleField,
 			new JLabel("Réalisateur"),
 			reaField,
@@ -203,81 +201,86 @@ public class PanelMovies extends JPanel {
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
-				String rea = reaField.getText();
-				String desc = descriptionField.getText();
 
-				// Gather selected genres
-				java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
-				if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
-				if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
-				if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
-				if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
-				if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
-				if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
-				if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
-				if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
-				if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
-				if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
-				if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
-				if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
-				if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
-				if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
-
-				Genre[] genresArray = new Genre[selectedGenres.size()];
-				selectedGenres.toArray(genresArray);
-
-				int duree = 0; // Valeur par défaut
-				if (!dureeField.getText().isEmpty()) {
-					duree = Integer.parseInt(dureeField.getText());
+				if(titre.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
+				else {
+					String rea = reaField.getText();
+					String desc = descriptionField.getText();
 
-				Date dateSortie = null; // Valeur par défaut
-				Object value = datePicker.getModel().getValue();
-				if (value instanceof Date) {
-					dateSortie = (Date) value;
-				}
+					// Gather selected genres
+					java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
+					if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
+					if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
+					if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
+					if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
+					if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
+					if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
+					if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
+					if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
+					if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
+					if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
+					if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
+					if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
+					if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
+					if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
 
-				// Gather selected platforms
-				java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
-				if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
-				if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
-				if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
-				if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
-				if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
-				if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
-				if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
-				if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
-				if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
-				if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
-				if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
+					Genre[] genresArray = new Genre[selectedGenres.size()];
+					selectedGenres.toArray(genresArray);
 
-				Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
-				selectedPlateformes.toArray(plateformesArray);
-
-				Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
-
-				boolean canBeAdd = true;
-
-				List<Movie> listMovies = gestionnaire.getMovies();
-				for(int i = 0; i < listMovies.size(); i++) {
-					Movie movie = listMovies.get(i);
-					if(movie.getTitre().equalsIgnoreCase(titre)) {
-						canBeAdd = false;
-						if(movie.getAddBy() == Utilisateur.Nous2 || movie.getAddBy() == addBy) {
-							JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
-						}
-						else {
-							gestionnaire.updateMovieAddBy(movie, Utilisateur.Nous2);
-							JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Nous2.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
-						}
-						break;
+					int duree = 0; // Valeur par défaut
+					if (!dureeField.getText().isEmpty()) {
+						duree = Integer.parseInt(dureeField.getText());
 					}
-				}
 
-				if(canBeAdd) {
-					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
-					gestionnaire.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
-					JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
+					Date dateSortie = null; // Valeur par défaut
+					Object value = datePicker.getModel().getValue();
+					if (value instanceof Date) {
+						dateSortie = (Date) value;
+					}
+
+					// Gather selected platforms
+					java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
+					if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
+					if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
+					if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
+					if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
+					if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
+					if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
+					if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
+					if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
+					if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
+					if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
+					if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
+
+					Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
+					selectedPlateformes.toArray(plateformesArray);
+
+					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+
+					boolean canBeAdd = true;
+
+					List<Movie> listMovies = gestionnaire.getMovies();
+					for (int i = 0; i < listMovies.size(); i++) {
+						Movie movie = listMovies.get(i);
+						if (movie.getTitre().equalsIgnoreCase(titre)) {
+							canBeAdd = false;
+							if (movie.getAddBy() == Utilisateur.Nous2 || movie.getAddBy() == addBy) {
+								JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+							} else {
+								gestionnaire.updateMovieAddBy(movie, Utilisateur.Nous2);
+								JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Nous2.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+							}
+							break;
+						}
+					}
+
+					if (canBeAdd) {
+						Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
+						gestionnaire.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
+						JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 
 				// Mettre à jour le modèle de tableau après l'ajout du film
@@ -291,8 +294,8 @@ public class PanelMovies extends JPanel {
 	}
 
 	public void backMenu() {
-		frame.dispose();
-		new Frame();
+		movieFrame.dispose();
+		new MovieFrame();
 	}
 
 	public void deleteMovie(Movie movie) {
@@ -307,6 +310,7 @@ public class PanelMovies extends JPanel {
 		String oldTitle = movie.getTitre();
 
 		JTextField titleField = new JTextField(movie.getTitre());
+		titleField.setEnabled(false);
 		JTextField reaField = new JTextField(movie.getRealistateur());
 		JTextField descriptionField = new JTextField(movie.getDescription());
 
@@ -465,7 +469,7 @@ public class PanelMovies extends JPanel {
 		addByComboBox.setSelectedItem(movie.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre"),
+				new JLabel("Titre*"),
 				titleField,
 				new JLabel("Réalisateur"),
 				reaField,
@@ -489,61 +493,67 @@ public class PanelMovies extends JPanel {
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
-				String rea = reaField.getText();
-				String desc = descriptionField.getText();
 
-				// Gather selected genres
-				java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
-				if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
-				if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
-				if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
-				if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
-				if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
-				if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
-				if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
-				if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
-				if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
-				if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
-				if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
-				if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
-				if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
-				if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
-
-				Genre[] genresArray = new Genre[selectedGenres.size()];
-				selectedGenres.toArray(genresArray);
-
-				int duree = 0; // Valeur par défaut
-				if (!dureeField.getText().isEmpty()) {
-					duree = Integer.parseInt(dureeField.getText());
+				if(titre.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
+				else {
+					String rea = reaField.getText();
+					String desc = descriptionField.getText();
 
-				Date dateSortie = null; // Valeur par défaut
-				Object value = datePicker.getModel().getValue();
-				if (value instanceof Date) {
-					dateSortie = (Date) value;
+					// Gather selected genres
+					java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
+					if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
+					if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
+					if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
+					if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
+					if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
+					if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
+					if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
+					if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
+					if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
+					if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
+					if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
+					if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
+					if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
+					if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
+
+					Genre[] genresArray = new Genre[selectedGenres.size()];
+					selectedGenres.toArray(genresArray);
+
+					int duree = 0; // Valeur par défaut
+					if (!dureeField.getText().isEmpty()) {
+						duree = Integer.parseInt(dureeField.getText());
+					}
+
+					Date dateSortie = null; // Valeur par défaut
+					Object value = datePicker.getModel().getValue();
+					if (value instanceof Date) {
+						dateSortie = (Date) value;
+					}
+
+					// Gather selected platforms
+					java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
+					if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
+					if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
+					if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
+					if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
+					if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
+					if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
+					if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
+					if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
+					if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
+					if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
+					if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
+
+					Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
+					selectedPlateformes.toArray(plateformesArray);
+
+					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+
+					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
+					gestionnaire.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films
 				}
-
-				// Gather selected platforms
-				java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
-				if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
-				if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
-				if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
-				if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
-				if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
-				if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
-				if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
-				if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
-				if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
-				if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
-				if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
-
-				Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
-				selectedPlateformes.toArray(plateformesArray);
-
-				Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
-
-				Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
-				gestionnaire.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films
 
 				// Mettre à jour le modèle de tableau après l'ajout du film
 				List<Movie> updatedMovies = gestionnaire.getMovies(); // Récupérer la liste mise à jour des films
