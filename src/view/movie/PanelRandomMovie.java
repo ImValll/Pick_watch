@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class PanelRamdomMovie extends JPanel {
+public class PanelRandomMovie extends JPanel {
 
 	private Gestionnaire gestionnaire;
 	private MovieFrame movieFrame;
@@ -24,13 +24,13 @@ public class PanelRamdomMovie extends JPanel {
 	private JPanel moviePanel;
 	private JLabel movieLabel;
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame) {
+	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame) {
 		this.gestionnaire = gestionnaire;
 		this.movieFrame = movieFrame;
 		initializeUI();
 	}
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, Utilisateur addBy) {
+	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, Utilisateur addBy) {
 		this.gestionnaire = gestionnaire;
 		this.movieFrame = movieFrame;
 		this.addBy = addBy;
@@ -38,7 +38,7 @@ public class PanelRamdomMovie extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRamdomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
+	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
 		this.gestionnaire = gestionnaire;
 		this.movieFrame = movieFrame;
 		this.rea = rea;
@@ -65,6 +65,8 @@ public class PanelRamdomMovie extends JPanel {
 		moviePanel = new JPanel();
 		movieLabel = new JLabel();
 		moviePanel.add(movieLabel);
+
+		moviePanel.setBackground(new Color(50, 50, 50));
 		panel.add(moviePanel, BorderLayout.CENTER);
 
 		Movie movieSelected = gestionnaire.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, addBy);
@@ -90,6 +92,8 @@ public class PanelRamdomMovie extends JPanel {
 		bottomPanel.add(btnBack);
 		bottomPanel.add(btnGen);
 		bottomPanel.add(btnDelete);
+
+		bottomPanel.setBackground(new Color(50, 50, 50));
 		panel.add(bottomPanel, BorderLayout.SOUTH);
 
 		return panel;
@@ -109,6 +113,9 @@ public class PanelRamdomMovie extends JPanel {
 				Arrays.toString(movieSelected.getGenre()) + ".<br>Il dure " + movieSelected.getDuree() +
 				" et est sorti en " + date + ".<br>Il est disponible sur " + Arrays.toString(movieSelected.getPlateforme()) +
 				".<br>Il a été ajouté par " + movieSelected.getAddBy() + "</html>";
+
+		movieLabel.setForeground(Color.WHITE);
+
 		movieLabel.setText(movieInfo);
 		moviePanel.revalidate();
 		moviePanel.repaint();

@@ -1,9 +1,6 @@
 package view;
 
-import model.Gestionnaire;
 import view.movie.MovieFrame;
-import view.movie.PanelMovies;
-import view.movie.PanelRamdomMovie;
 import view.saga.SagaFrame;
 import view.serie.SerieFrame;
 

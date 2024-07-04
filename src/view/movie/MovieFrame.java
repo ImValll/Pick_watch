@@ -39,15 +39,15 @@ public class MovieFrame extends JFrame {
 
 	private void chooseMovie() {
 		// Initialisation du Panel utilisateur
-		PanelRamdomMovie panelRamdomMovie = new PanelRamdomMovie(new Gestionnaire(), this);
-		setContentPane(panelRamdomMovie);
+		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(new Gestionnaire(), this);
+		setContentPane(panelRandomMovie);
 		validate();
 	}
 
 	private void selectFilter() {
 		// Initialisation du Panel utilisateur
-		PanelMovies panelMovies = new PanelMovies(new Gestionnaire(), this);
-		setContentPane(panelMovies);
+		PanelFilterRandomMovie panelFilterRandomMovie = new PanelFilterRandomMovie(new Gestionnaire(), this);
+		setContentPane(panelFilterRandomMovie);
 		validate();
 	}
 

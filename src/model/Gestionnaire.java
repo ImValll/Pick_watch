@@ -106,10 +106,10 @@ public class Gestionnaire {
 					matches = false;
 				}
 			}
-			if (duree != 0 && movie.getDuree() != duree) {
+			if (duree != 0 && movie.getDuree() > duree) {
 				matches = false;
 			}
-			if (dateSortie != null && !movie.getDateSortie().equals(dateSortie)) {
+			if (dateSortie != null && movie.getDateSortie() == null || dateSortie != null && movie.getDateSortie().getYear() != dateSortie.getYear()) {
 				matches = false;
 			}
 			if (plateformes != null && plateformes.length > 0) {

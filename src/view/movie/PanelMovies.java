@@ -52,7 +52,10 @@ public class PanelMovies extends JPanel {
 
 		JButton addMovieButton = createButton("Ajouter un film", new Color(70, 130, 180));
 
-		topPanel.add(new JLabel("Titre : "));
+		JLabel titleLabel = new JLabel("Titre : ");
+		titleLabel.setForeground(Color.WHITE);
+		topPanel.add(titleLabel);
+
 		topPanel.add(searchTitleField);
 		topPanel.add(searchButton);
 		topPanel.add(addMovieButton);
@@ -62,6 +65,8 @@ public class PanelMovies extends JPanel {
 		// Get JScrollPane from showAllMovies method
 		JScrollPane scrollPane = showAllMovies();
 
+		topPanel.setBackground(new Color(50, 50, 50));
+		scrollPane.setBackground(new Color(50, 50, 50));
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -69,6 +74,7 @@ public class PanelMovies extends JPanel {
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
+		bottomPanel.setBackground(new Color(50, 50, 50));
 		bottomPanel.add(btnBack);
 		panel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -79,6 +85,7 @@ public class PanelMovies extends JPanel {
 		List<Movie> listMovies = gestionnaire.getMovies();
 		tableModel = new MoviesTableModel(listMovies);
 		tableArea = new JTable(tableModel);
+		tableArea.setBackground(Color.LIGHT_GRAY);
 
 		// Ajout de rendus personnalisés pour les colonnes "Modifier" et "Supprimer"
 		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
