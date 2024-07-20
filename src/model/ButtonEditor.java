@@ -1,6 +1,9 @@
 package model;
 
+import model.movie.Movie;
+import model.saga.Saga;
 import view.movie.PanelMovies;
+import view.saga.PanelSaga;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -14,7 +17,7 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 	private String label;
 	private boolean isClicked;
 	private int row;
-	private PanelMovies panel;
+	private JPanel panel;
 
 	public ButtonEditor(PanelMovies panel) {
 		super();
@@ -31,6 +34,26 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 					panel.editMovie(movie);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteMovie(movie);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelSaga panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the movie from the table model using the row index
+				Saga saga = panel.getGestionnaire().findSagaByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Movie objects
+				if ("Modifier".equals(label)) {
+					panel.editSaga(saga);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteSaga(saga);
 				}
 			}
 		});

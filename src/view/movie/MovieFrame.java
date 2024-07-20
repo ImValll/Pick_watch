@@ -1,6 +1,7 @@
 package view.movie;
 
-import model.Gestionnaire;
+import model.movie.GestionnaireMovie;
+import view.Frame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class MovieFrame extends JFrame {
 		JButton btnTotalRandom = createButton("Choisir un film aléatoire", new Color(70, 130, 180));
 		JButton btnFilterRandom = createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
 		JButton btnShowMovie = createButton("Consulter la liste des films", new Color(220, 20, 60));
+		JButton btnMenu = createButton("Retour au menu", new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -29,33 +31,40 @@ public class MovieFrame extends JFrame {
 		add(btnTotalRandom, gbc);
 		add(btnFilterRandom, gbc);
 		add(btnShowMovie, gbc);
+		add(btnMenu, gbc);
 
 		btnTotalRandom.addActionListener(e -> chooseMovie());
 		btnFilterRandom.addActionListener(e -> selectFilter());
 		btnShowMovie.addActionListener(e -> showMovies());
+		btnMenu.addActionListener(e -> backToMenu());
 
 		this.setVisible(true);
 	}
 
 	private void chooseMovie() {
 		// Initialisation du Panel utilisateur
-		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(new Gestionnaire(), this);
+		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(new GestionnaireMovie(), this);
 		setContentPane(panelRandomMovie);
 		validate();
 	}
 
 	private void selectFilter() {
 		// Initialisation du Panel utilisateur
-		PanelFilterRandomMovie panelFilterRandomMovie = new PanelFilterRandomMovie(new Gestionnaire(), this);
+		PanelFilterRandomMovie panelFilterRandomMovie = new PanelFilterRandomMovie(new GestionnaireMovie(), this);
 		setContentPane(panelFilterRandomMovie);
 		validate();
 	}
 
 	private void showMovies() {
 		// Initialisation du Panel utilisateur
-		PanelMovies panelMovies = new PanelMovies(new Gestionnaire(), this);
+		PanelMovies panelMovies = new PanelMovies(new GestionnaireMovie(), this);
 		setContentPane(panelMovies);
 		validate();
+	}
+
+	private void backToMenu() {
+		this.dispose();
+		new Frame();
 	}
 
 	public JButton createButton(String title, Color color) {

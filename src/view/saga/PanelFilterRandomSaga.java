@@ -1,9 +1,12 @@
-package view.movie;
+package view.saga;
 
 import model.Genre;
-import model.movie.GestionnaireMovie;
 import model.Plateforme;
 import model.Utilisateur;
+import model.movie.GestionnaireMovie;
+import model.saga.GestionnaireSaga;
+import view.movie.MovieFrame;
+import view.movie.PanelRandomMovie;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,34 +14,35 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PanelFilterRandomMovie extends JPanel {
+public class PanelFilterRandomSaga extends JPanel {
 
-	private GestionnaireMovie gestionnaireMovie;
-	private MovieFrame movieFrame;
+	private GestionnaireSaga gestionnaireSaga;
+	private SagaFrame sagaFrame;
 	private JTextField directorField;
 	private List<JCheckBox> genreCheckBoxes;
-	private JTextField durationField;
+	private JTextField nbMovieField;
 	private JTextField yearField;
+	private JTextField year2Field;
 	private List<JCheckBox> platformCheckBoxes;
 	JRadioButton dejaVuButton;
 	JRadioButton pasEncoreVuButton;
 	private JComboBox<Object> userComboBox;
 
-	public PanelFilterRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame) {
-		this.gestionnaireMovie = gestionnaireMovie;
-		this.movieFrame = movieFrame;
+	public PanelFilterRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame) {
+		this.gestionnaireSaga = gestionnaireSaga;
+		this.sagaFrame = sagaFrame;
 		initializeUI();
 	}
 
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 
-		JPanel movieSelectedPanel = filterMoviePanel();
+		JPanel sagaSelectedPanel = filterSagaPanel();
 
-		add(movieSelectedPanel);
+		add(sagaSelectedPanel);
 	}
 
-	private JPanel filterMoviePanel() {
+	private JPanel filterSagaPanel() {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setLayout(new BorderLayout());
 
@@ -74,23 +78,32 @@ public class PanelFilterRandomMovie extends JPanel {
 		genrePanel.setBackground(new Color(50, 50, 50));
 		centerPanel.add(scrollPaneGenre);
 
-		// Duration filter
-		JLabel labelDuree = new JLabel("Durée maximale (minutes):");
-		labelDuree.setForeground(Color.WHITE);
-		centerPanel.add(labelDuree);
+		// Number movie filter
+		JLabel labelNbMovie = new JLabel("Nombre de films:");
+		labelNbMovie.setForeground(Color.WHITE);
+		centerPanel.add(labelNbMovie);
 
-		durationField = new JTextField();
-		durationField.setBackground(Color.LIGHT_GRAY);
-		centerPanel.add(durationField);
+		nbMovieField = new JTextField();
+		nbMovieField.setBackground(Color.LIGHT_GRAY);
+		centerPanel.add(nbMovieField);
 
 		// Year filter
-		JLabel labelYear = new JLabel("Année de sortie:");
+		JLabel labelYear = new JLabel("Année de sortie du premier film:");
 		labelYear.setForeground(Color.WHITE);
 		centerPanel.add(labelYear);
 
 		yearField = new JTextField();
 		yearField.setBackground(Color.LIGHT_GRAY);
 		centerPanel.add(yearField);
+
+		// Year filter 2
+		JLabel labelYear2 = new JLabel("Année de sortie du deuxième film:");
+		labelYear2.setForeground(Color.WHITE);
+		centerPanel.add(labelYear2);
+
+		year2Field = new JTextField();
+		year2Field.setBackground(Color.LIGHT_GRAY);
+		centerPanel.add(year2Field);
 
 		// Platform filter
 		JLabel labelPlateforme = new JLabel("Plateformes:");
@@ -136,7 +149,7 @@ public class PanelFilterRandomMovie extends JPanel {
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
-		Utilisateur[] users = {Utilisateur.Valentin, Utilisateur.Ambre, Utilisateur.Nous2};
+		Utilisateur[] users = Utilisateur.values();
 		userComboBox = new JComboBox<>(new Object[]{"Ignorer", users[0], users[1], users[2]});
 		userComboBox.setSelectedItem("Ignorer"); // Default value
 		userComboBox.setBackground(Color.LIGHT_GRAY);
@@ -148,7 +161,7 @@ public class PanelFilterRandomMovie extends JPanel {
 		JButton backButton = createButton("Retour au menu", Color.BLUE);
 		backButton.addActionListener(e -> backMenu());
 		JButton submitButton = createButton("Envoyer", Color.GREEN);
-		submitButton.addActionListener(e -> askRandomMovie());
+		submitButton.addActionListener(e -> askRandomSaga());
 		bottomPanel.add(backButton);
 		bottomPanel.add(submitButton);
 
@@ -162,11 +175,11 @@ public class PanelFilterRandomMovie extends JPanel {
 	}
 
 	public void backMenu() {
-		movieFrame.dispose();
-		new MovieFrame();
+		sagaFrame.dispose();
+		new SagaFrame();
 	}
 
-	public void askRandomMovie() {
+	public void askRandomSaga() {
 		// Get director
 		String director = directorField.getText().trim();
 		if (director.isEmpty()) {
@@ -182,11 +195,11 @@ public class PanelFilterRandomMovie extends JPanel {
 		}
 		Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-		// Get duration
-		int duration = 0;
-		String durationText = durationField.getText().trim();
+		// Get nbMovie
+		int nbMovie = 0;
+		String durationText = nbMovieField.getText().trim();
 		if (!durationText.isEmpty()) {
-			duration = Integer.parseInt(durationText);
+			nbMovie = Integer.parseInt(durationText);
 		}
 
 		// Get year
@@ -195,6 +208,14 @@ public class PanelFilterRandomMovie extends JPanel {
 		if (!yearText.isEmpty()) {
 			int year = Integer.parseInt(yearText);
 			dateSortie = new Date(year - 1900, 0, 1); // Using deprecated Date constructor for simplicity
+		}
+
+		// Get year 2
+		Date dateSortie2 = null;
+		String yearText2 = year2Field.getText().trim();
+		if (!yearText2.isEmpty()) {
+			int year2 = Integer.parseInt(yearText2);
+			dateSortie2 = new Date(year2 - 1900, 0, 1); // Using deprecated Date constructor for simplicity
 		}
 
 		// Get platforms
@@ -226,13 +247,13 @@ public class PanelFilterRandomMovie extends JPanel {
 		}
 
 		// Create PanelRandomMovie
-		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(gestionnaireMovie, movieFrame, director, genresArray, duration, dateSortie, platformsArray, dejaVu, addBy);
+		PanelRandomSaga panelRandomSaga = new PanelRandomSaga(gestionnaireSaga, sagaFrame, director, genresArray, nbMovie, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 
 		// Replace current panel with PanelRandomMovie
-		movieFrame.getContentPane().removeAll();
-		movieFrame.add(panelRandomMovie);
-		movieFrame.revalidate();
-		movieFrame.repaint();
+		sagaFrame.getContentPane().removeAll();
+		sagaFrame.add(panelRandomSaga);
+		sagaFrame.revalidate();
+		sagaFrame.repaint();
 	}
 
 	public JButton createButton(String title, Color color) {

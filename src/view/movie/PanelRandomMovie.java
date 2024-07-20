@@ -1,6 +1,8 @@
 package view.movie;
 
 import model.*;
+import model.movie.GestionnaireMovie;
+import model.movie.Movie;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,7 @@ import java.util.Date;
 
 public class PanelRandomMovie extends JPanel {
 
-	private Gestionnaire gestionnaire;
+	private GestionnaireMovie gestionnaireMovie;
 	private MovieFrame movieFrame;
 
 	private String rea;
@@ -18,34 +20,28 @@ public class PanelRandomMovie extends JPanel {
 	private int duree;
 	private Date dateSortie;
 	private Plateforme[] plateformes;
+	private int dejaVu = -1;
 	private Utilisateur addBy;
 
 	private Movie movie;
 	private JPanel moviePanel;
 	private JLabel movieLabel;
 
-	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame) {
-		this.gestionnaire = gestionnaire;
+	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame) {
+		this.gestionnaireMovie = gestionnaireMovie;
 		this.movieFrame = movieFrame;
 		initializeUI();
 	}
 
-	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, Utilisateur addBy) {
-		this.gestionnaire = gestionnaire;
-		this.movieFrame = movieFrame;
-		this.addBy = addBy;
-
-		initializeUI();
-	}
-
-	public PanelRandomMovie(Gestionnaire gestionnaire, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
-		this.gestionnaire = gestionnaire;
+	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+		this.gestionnaireMovie = gestionnaireMovie;
 		this.movieFrame = movieFrame;
 		this.rea = rea;
 		this.genres = genres;
 		this.duree = duree;
 		this.dateSortie = dateSortie;
 		this.plateformes = plateformes;
+		this.dejaVu = dejaVu;
 		this.addBy = addBy;
 
 		initializeUI();
@@ -69,7 +65,7 @@ public class PanelRandomMovie extends JPanel {
 		moviePanel.setBackground(new Color(50, 50, 50));
 		panel.add(moviePanel, BorderLayout.CENTER);
 
-		Movie movieSelected = gestionnaire.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, addBy);
+		Movie movieSelected = gestionnaireMovie.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 
 		if (movieSelected == null) {
 			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -127,7 +123,7 @@ public class PanelRandomMovie extends JPanel {
 	}
 
 	public void generateAgain() {
-		Movie newMovie = gestionnaire.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, addBy);
+		Movie newMovie = gestionnaireMovie.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 		if (newMovie == null) {
 			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();
@@ -139,7 +135,7 @@ public class PanelRandomMovie extends JPanel {
 	}
 
 	public void deleteMovie() {
-		gestionnaire.deleteMovie(movie);
+		gestionnaireMovie.deleteMovie(movie);
 
 		backMenu();
 	}

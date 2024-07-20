@@ -1,4 +1,6 @@
-package model;
+package model.movie;
+
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,10 +8,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class Gestionnaire {
+public class GestionnaireMovie {
 	private List<Movie> movies;
 
-	public Gestionnaire() {
+	public GestionnaireMovie() {
 		movies = DataManager.loadMovie();
 		if (movies == null) {
 			movies = new ArrayList<>();
@@ -77,12 +79,12 @@ public class Gestionnaire {
 
 	public Movie findMovieByTitle(String titre) {
 		return movies.stream()
-				.filter(livre -> livre.getTitre().equals(titre))
+				.filter(movie -> movie.getTitre().equals(titre))
 				.findFirst()
 				.orElse(null);
 	}
 
-	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, Utilisateur addBy) {
+	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
 		List<Movie> filteredMovies = new ArrayList<>();
 
 		for (Movie movie : movies) {
@@ -124,6 +126,11 @@ public class Gestionnaire {
 					if (plateformeMatch) break;
 				}
 				if (!plateformeMatch) {
+					matches = false;
+				}
+			}
+			if (dejaVu != -1) {
+				if ((dejaVu == 0 && movie.getDejaVu()) || (dejaVu == 1 && !movie.getDejaVu())) {
 					matches = false;
 				}
 			}

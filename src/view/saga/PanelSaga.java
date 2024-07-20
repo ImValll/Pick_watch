@@ -1,9 +1,9 @@
-package view.movie;
+package view.saga;
 
 import model.*;
-import model.movie.GestionnaireMovie;
-import model.movie.Movie;
-import model.movie.MoviesTableModel;
+import model.saga.SagaTableModel;
+import model.saga.GestionnaireSaga;
+import model.saga.Saga;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -17,21 +17,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class PanelMovies extends JPanel {
+public class PanelSaga extends JPanel{
 
-	MovieFrame movieFrame;
+	SagaFrame sagaFrame;
 
 	private CardLayout cardLayout = new CardLayout();
 	private JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
 	private JTable tableArea; // Display book information
-	private MoviesTableModel tableModel;
-	GestionnaireMovie gestionnaireMovie;
+	private SagaTableModel tableModel;
+	GestionnaireSaga gestionnaireSaga;
 	private JTextField searchTitleField;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-	public PanelMovies(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame) {
-		this.gestionnaireMovie = gestionnaireMovie;
-		this.movieFrame = movieFrame;
+	public PanelSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame) {
+		this.gestionnaireSaga = gestionnaireSaga;
+		this.sagaFrame = sagaFrame;
 		initializeUI();
 	}
 
@@ -39,22 +39,22 @@ public class PanelMovies extends JPanel {
 		setLayout(new BorderLayout());
 		add(cards, BorderLayout.CENTER);
 
-		JPanel moviesGrid = createMoviesPanel();
+		JPanel sagaGrid = createSagaPanel();
 
-		add(moviesGrid);
+		add(sagaGrid);
 	}
 
-	private JPanel createMoviesPanel() {
+	private JPanel createSagaPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		// Top panel for search
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher Film", new Color(70, 130, 180));
-		searchButton.addActionListener(this::searchMovies);
+		JButton searchButton = createButton("Rechercher Saga", new Color(70, 130, 180));
+		searchButton.addActionListener(this::searchSaga);
 
-		JButton addMovieButton = createButton("Ajouter un film", new Color(70, 130, 180));
+		JButton addSagaButton = createButton("Ajouter une saga", new Color(70, 130, 180));
 
 		JLabel titleLabel = new JLabel("Titre : ");
 		titleLabel.setForeground(Color.WHITE);
@@ -62,12 +62,12 @@ public class PanelMovies extends JPanel {
 
 		topPanel.add(searchTitleField);
 		topPanel.add(searchButton);
-		topPanel.add(addMovieButton);
+		topPanel.add(addSagaButton);
 
-		addMovieButton.addActionListener(e -> addMovie());
+		addSagaButton.addActionListener(e -> addSaga());
 
-		// Get JScrollPane from showAllMovies method
-		JScrollPane scrollPane = showAllMovies();
+		// Get JScrollPane from showAllSaga method
+		JScrollPane scrollPane = showAllSaga();
 
 		topPanel.setBackground(new Color(50, 50, 50));
 		scrollPane.setBackground(new Color(50, 50, 50));
@@ -85,9 +85,9 @@ public class PanelMovies extends JPanel {
 		return panel;
 	}
 
-	private JScrollPane showAllMovies() {
-		List<Movie> listMovies = gestionnaireMovie.getMovies();
-		tableModel = new MoviesTableModel(listMovies);
+	private JScrollPane showAllSaga() {
+		java.util.List<Saga> listSaga = gestionnaireSaga.getSaga();
+		tableModel = new SagaTableModel(listSaga);
 		tableArea = new JTable(tableModel);
 		tableArea.setBackground(Color.LIGHT_GRAY);
 
@@ -101,26 +101,24 @@ public class PanelMovies extends JPanel {
 		return new JScrollPane(tableArea);
 	}
 
-	private void searchMovies(ActionEvent e) {
+	private void searchSaga(ActionEvent e) {
 		String titre = searchTitleField.getText();
-		List<Movie> result = gestionnaireMovie.searchMovie(titre);
+		java.util.List<Saga> result = gestionnaireSaga.searchSaga(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucun film trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur: Aucune saga trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
 		} else {
-			tableModel.setMovies(result); // Mettre à jour le modèle du tableau
+			tableModel.setSaga(result); // Mettre à jour le modèle du tableau
 		}
 	}
 
-	private void addMovie() {
+	private void addSaga() {
 		JTextField titleField = new JTextField();
 		JTextField reaField = new JTextField();
 		JTextField descriptionField = new JTextField();
 
-
-
 		Genre[] genres = Genre.values();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
+		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.name());
 			genreCheckBoxes.add(checkBox);
@@ -128,10 +126,10 @@ public class PanelMovies extends JPanel {
 		}
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		JTextField dureeField = new JTextField();
+		JTextField nbFilmField = new JTextField();
 
+		//Date premier film
 		UtilDateModel model = new UtilDateModel();
-
 		Properties p = new Properties();
 		p.put("text.today", "Today");
 		p.put("text.month", "Month");
@@ -139,10 +137,19 @@ public class PanelMovies extends JPanel {
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
+		//Date dernier film
+		UtilDateModel model2 = new UtilDateModel();
+		Properties p2 = new Properties();
+		p2.put("text.today", "Today");
+		p2.put("text.month", "Month");
+		p2.put("text.year", "Year");
+		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
+		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+
 
 		Plateforme[] platforms = Plateforme.values();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
+		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Plateforme platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.name());
 			platformCheckBoxes.add(checkBox);
@@ -165,27 +172,29 @@ public class PanelMovies extends JPanel {
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
 
 		final JComponent[] inputs = new JComponent[] {
-			new JLabel("Titre*"),
-			titleField,
-			new JLabel("Réalisateur"),
-			reaField,
-			new JLabel("Description"),
-			descriptionField,
-			new JLabel("Genres"),
-			scrollPaneGenre,
-			new JLabel("Durée"),
-			dureeField,
-			new JLabel("Date de sortie"),
-			datePicker,
-			new JLabel("Plateforme"),
-			scrollPanePlatform,
-			new JLabel("Déjà vu"),
-			vuPanel,
-			new JLabel("Ajouté par"),
-			addByComboBox
+				new JLabel("Titre*"),
+				titleField,
+				new JLabel("Réalisateur"),
+				reaField,
+				new JLabel("Description"),
+				descriptionField,
+				new JLabel("Genres"),
+				scrollPaneGenre,
+				new JLabel("Durée"),
+				nbFilmField,
+				new JLabel("Date de sortie du premier film"),
+				datePicker,
+				new JLabel("Date de sortie du dernier film"),
+				datePicker2,
+				new JLabel("Plateforme"),
+				scrollPanePlatform,
+				new JLabel("Déjà vu"),
+				vuPanel,
+				new JLabel("Ajouté par"),
+				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter un nouveau film", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -198,7 +207,7 @@ public class PanelMovies extends JPanel {
 					String desc = descriptionField.getText();
 
 					// Get genres
-					List<Genre> selectedGenres = new ArrayList<>();
+					java.util.List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
 							selectedGenres.add(Genre.valueOf(checkBox.getText()));
@@ -206,9 +215,9 @@ public class PanelMovies extends JPanel {
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-					int duree = 0; // Valeur par défaut
-					if (!dureeField.getText().isEmpty()) {
-						duree = Integer.parseInt(dureeField.getText());
+					int nbFilm = 0; // Valeur par défaut
+					if (!nbFilmField.getText().isEmpty()) {
+						nbFilm = Integer.parseInt(nbFilmField.getText());
 					}
 
 					Date dateSortie = null; // Valeur par défaut
@@ -217,8 +226,14 @@ public class PanelMovies extends JPanel {
 						dateSortie = (Date) value;
 					}
 
+					Date dateSortie2 = null; // Valeur par défaut
+					Object value2 = datePicker2.getModel().getValue();
+					if (value2 instanceof Date) {
+						dateSortie2 = (Date) value2;
+					}
+
 					// Get platforms
-					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					java.util.List<Plateforme> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
 							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
@@ -233,31 +248,31 @@ public class PanelMovies extends JPanel {
 
 					boolean canBeAdd = true;
 
-					List<Movie> listMovies = gestionnaireMovie.getMovies();
-					for (int i = 0; i < listMovies.size(); i++) {
-						Movie movie = listMovies.get(i);
-						if (movie.getTitre().equalsIgnoreCase(titre)) {
+					java.util.List<Saga> listSaga = gestionnaireSaga.getSaga();
+					for (int i = 0; i < listSaga.size(); i++) {
+						Saga saga = listSaga.get(i);
+						if (saga.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
-							if (movie.getAddBy() == Utilisateur.Nous2 || movie.getAddBy() == addBy) {
-								JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+							if (saga.getAddBy() == Utilisateur.Nous2 || saga.getAddBy() == addBy) {
+								JOptionPane.showMessageDialog(this, "Erreur: La saga " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
 							} else {
-								gestionnaireMovie.updateMovieAddBy(movie, Utilisateur.Nous2);
-								JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Nous2.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								gestionnaireSaga.updateSagaAddBy(saga, Utilisateur.Nous2);
+								JOptionPane.showMessageDialog(this, "La saga " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Nous2.", "Erreur saga déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
 					}
 
 					if (canBeAdd) {
-						Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
-						gestionnaireMovie.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
-						JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
+						Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+						gestionnaireSaga.addSaga(newSaga); // Ajouter la saga à votre gestionnaire de sagas
+						JOptionPane.showMessageDialog(this, "Saga ajoutée avec succès: " + titre, "Saga Ajoutée", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 
-				// Mettre à jour le modèle de tableau après l'ajout du film
-				List<Movie> updatedMovies = gestionnaireMovie.getMovies(); // Récupérer la liste mise à jour des films
-				tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
+				// Mettre à jour le modèle de tableau après l'ajout de la saga
+				java.util.List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
+				tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
 
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
@@ -266,32 +281,32 @@ public class PanelMovies extends JPanel {
 	}
 
 	public void backMenu() {
-		movieFrame.dispose();
-		new MovieFrame();
+		sagaFrame.dispose();
+		new SagaFrame();
 	}
 
-	public void deleteMovie(Movie movie) {
-		gestionnaireMovie.deleteMovie(movie);
+	public void deleteSaga(Saga saga) {
+		gestionnaireSaga.deleteSaga(saga);
 
-		List<Movie> updatedMovies = gestionnaireMovie.getMovies(); // Récupérer la liste mise à jour des films
-		tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
+		java.util.List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
+		tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
 	}
 
-	public void editMovie(Movie movie) {
+	public void editSaga(Saga saga) {
 
-		String oldTitle = movie.getTitre();
+		String oldTitle = saga.getTitre();
 
-		JTextField titleField = new JTextField(movie.getTitre());
+		JTextField titleField = new JTextField(saga.getTitre());
 		titleField.setEnabled(false);
-		JTextField reaField = new JTextField(movie.getRealistateur());
-		JTextField descriptionField = new JTextField(movie.getDescription());
+		JTextField reaField = new JTextField(saga.getRealistateur());
+		JTextField descriptionField = new JTextField(saga.getDescription());
 
 		Genre[] genres = Genre.values();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
+		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.name());
-			if(movie.getGenre() != null && check(movie.getGenre(), genre.name())) {
+			if(saga.getGenre() != null && check(saga.getGenre(), genre.name())) {
 				checkBox.setSelected(true);
 			}
 			genreCheckBoxes.add(checkBox);
@@ -300,12 +315,11 @@ public class PanelMovies extends JPanel {
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 
-		JTextField dureeField = new JTextField();
-		dureeField.setText(String.valueOf(movie.getDuree())); // Préremplir avec la durée du film
+		JTextField nbFilmField = new JTextField();
+		nbFilmField.setText(String.valueOf(saga.getNombreFilms())); // Préremplir avec le nombre de film
 
 		UtilDateModel model = new UtilDateModel();
-
-		Date oldDateSortie = movie.getDateSortie(); // Supposons que movie.getDateSortie() renvoie la date de sortie du film
+		Date oldDateSortie = saga.getDateSortiePremier(); // Supposons que saga.getDateSortiePremier() renvoie la date de sortie du film
 
 		if (oldDateSortie != null) {
 			model.setValue(oldDateSortie);
@@ -318,12 +332,26 @@ public class PanelMovies extends JPanel {
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
+		UtilDateModel model2 = new UtilDateModel();
+		Date oldDateSortie2 = saga.getDateSortieDernier(); // Supposons que saga.getDateSortiePremier() renvoie la date de sortie du film
+
+		if (oldDateSortie2 != null) {
+			model2.setValue(oldDateSortie2);
+		}
+
+		Properties p2 = new Properties();
+		p2.put("text.today", "Today");
+		p2.put("text.month", "Month");
+		p2.put("text.year", "Year");
+		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
+		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+
 		Plateforme[] platforms = Plateforme.values();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
+		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Plateforme platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.name());
-			if(movie.getPlateforme() != null && check(movie.getPlateforme(), platform.name())) {
+			if(saga.getPlateforme() != null && check(saga.getPlateforme(), platform.name())) {
 				checkBox.setSelected(true);
 			}
 			platformCheckBoxes.add(checkBox);
@@ -339,7 +367,7 @@ public class PanelMovies extends JPanel {
 		vuGroup.add(pasEncoreVuButton);
 
 		// Sélectionner le bouton approprié en fonction de l'état actuel du film
-		if (movie.getDejaVu()) {
+		if (saga.getDejaVu()) {
 			dejaVuButton.setSelected(true);
 		} else {
 			pasEncoreVuButton.setSelected(true);
@@ -351,7 +379,7 @@ public class PanelMovies extends JPanel {
 		vuPanel.add(pasEncoreVuButton);
 
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
-		addByComboBox.setSelectedItem(movie.getAddBy());
+		addByComboBox.setSelectedItem(saga.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
@@ -363,9 +391,11 @@ public class PanelMovies extends JPanel {
 				new JLabel("Genres"),
 				scrollPaneGenre,
 				new JLabel("Durée"),
-				dureeField,
-				new JLabel("Date de sortie"),
+				nbFilmField,
+				new JLabel("Date de sortie du premier film"),
 				datePicker,
+				new JLabel("Date de sortie du dernier film"),
+				datePicker2,
 				new JLabel("Plateforme"),
 				scrollPanePlatform,
 				new JLabel("Déjà vu"),
@@ -374,7 +404,7 @@ public class PanelMovies extends JPanel {
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier un film", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -387,7 +417,7 @@ public class PanelMovies extends JPanel {
 					String desc = descriptionField.getText();
 
 					// Get genres
-					List<Genre> selectedGenres = new ArrayList<>();
+					java.util.List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
 							selectedGenres.add(Genre.valueOf(checkBox.getText()));
@@ -395,9 +425,9 @@ public class PanelMovies extends JPanel {
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-					int duree = 0; // Valeur par défaut
-					if (!dureeField.getText().isEmpty()) {
-						duree = Integer.parseInt(dureeField.getText());
+					int nbFilm = 0; // Valeur par défaut
+					if (!nbFilmField.getText().isEmpty()) {
+						nbFilm = Integer.parseInt(nbFilmField.getText());
 					}
 
 					Date dateSortie = null; // Valeur par défaut
@@ -406,8 +436,14 @@ public class PanelMovies extends JPanel {
 						dateSortie = (Date) value;
 					}
 
+					Date dateSortie2 = null; // Valeur par défaut
+					Object value2 = datePicker2.getModel().getValue();
+					if (value2 instanceof Date) {
+						dateSortie2 = (Date) value2;
+					}
+
 					// Get platforms
-					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					java.util.List<Plateforme> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
 							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
@@ -420,15 +456,15 @@ public class PanelMovies extends JPanel {
 
 					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
 
-					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
-					gestionnaireMovie.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films
+					Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+					gestionnaireSaga.editSaga(oldTitle, newSaga); // Ajouter la saga à votre gestionnaire de sagas
 				}
 
-				// Mettre à jour le modèle de tableau après l'ajout du film
-				List<Movie> updatedMovies = gestionnaireMovie.getMovies(); // Récupérer la liste mise à jour des films
-				tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
+				// Mettre à jour le modèle de tableau après l'ajout de la saga
+				List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
+				tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
 
-				JOptionPane.showMessageDialog(this, "Film modifié avec succès: " + titre, "Film modifié", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Saga modifiée avec succès: " + titre, "Saga modifiée", JOptionPane.INFORMATION_MESSAGE);
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
 			}
@@ -466,7 +502,7 @@ public class PanelMovies extends JPanel {
 		return tableArea;
 	}
 
-	public GestionnaireMovie getGestionnaire() {
-		return gestionnaireMovie;
+	public GestionnaireSaga getGestionnaire() {
+		return gestionnaireSaga;
 	}
 }
