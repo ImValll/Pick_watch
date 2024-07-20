@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -112,37 +113,17 @@ public class PanelMovies extends JPanel {
 		JTextField reaField = new JTextField();
 		JTextField descriptionField = new JTextField();
 
-		Caller callerGender = new Caller();
-		JScrollPane scrollPaneGender = new JScrollPane(callerGender, JScrollPane.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		JCheckBox actionButton = new JCheckBox("Action");
-		callerGender.addItem(actionButton);
-		JCheckBox aventureButton = new JCheckBox("Aventure");
-		callerGender.addItem(aventureButton);
-		JCheckBox anticipationButton = new JCheckBox("Anticipation");
-		callerGender.addItem(anticipationButton);
-		JCheckBox noelButton = new JCheckBox("Noel");
-		callerGender.addItem(noelButton);
-		JCheckBox comedieButton = new JCheckBox("Comedie");
-		callerGender.addItem(comedieButton);
-		JCheckBox drameButton = new JCheckBox("Drame");
-		callerGender.addItem(drameButton);
-		JCheckBox fantastiqueButton = new JCheckBox("Fantastique");
-		callerGender.addItem(fantastiqueButton);
-		JCheckBox fantasyButton = new JCheckBox("Fantasy");
-		callerGender.addItem(fantasyButton);
-		JCheckBox horreurButton = new JCheckBox("Horreur");
-		callerGender.addItem(horreurButton);
-		JCheckBox historiqueButton = new JCheckBox("Historique");
-		callerGender.addItem(historiqueButton);
-		JCheckBox SFButton = new JCheckBox("SF");
-		callerGender.addItem(SFButton);
-		JCheckBox thrillerButton = new JCheckBox("Thriller");
-		callerGender.addItem(thrillerButton);
-		JCheckBox westernButton = new JCheckBox("Western");
-		callerGender.addItem(westernButton);
-		JCheckBox otherGenderButton = new JCheckBox("Autre");
-		callerGender.addItem(otherGenderButton);
+
+		Genre[] genres = Genre.values();
+		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
+		for (Genre genre : genres) {
+			JCheckBox checkBox = new JCheckBox(genre.name());
+			genreCheckBoxes.add(checkBox);
+			genrePanel.add(checkBox);
+		}
+		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		JTextField dureeField = new JTextField();
 		UtilDateModel model = new UtilDateModel();
@@ -155,31 +136,15 @@ public class PanelMovies extends JPanel {
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 
-		Caller callerPlateforme = new Caller();
-		JScrollPane scrollPanePlateforme = new JScrollPane(callerPlateforme, JScrollPane.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-		JCheckBox disneyButton = new JCheckBox("Disney");
-		callerPlateforme.addItem(disneyButton);
-		JCheckBox netflixButton = new JCheckBox("Netflix");
-		callerPlateforme.addItem(netflixButton);
-		JCheckBox primeButton = new JCheckBox("Prime");
-		callerPlateforme.addItem(primeButton);
-		JCheckBox canalButton = new JCheckBox("Canal");
-		callerPlateforme.addItem(canalButton);
-		JCheckBox crunchyrollButton = new JCheckBox("Crunchyroll");
-		callerPlateforme.addItem(crunchyrollButton);
-		JCheckBox maxButton = new JCheckBox("Max");
-		callerPlateforme.addItem(maxButton);
-		JCheckBox OCSButton = new JCheckBox("OCS");
-		callerPlateforme.addItem(OCSButton);
-		JCheckBox ParamountButton = new JCheckBox("Paramount");
-		callerPlateforme.addItem(ParamountButton);
-		JCheckBox aucuneIdeeButton = new JCheckBox("Aucune Idée");
-		callerPlateforme.addItem(aucuneIdeeButton);
-		JCheckBox horsLigneButton = new JCheckBox("Hors ligne");
-		callerPlateforme.addItem(horsLigneButton);
-		JCheckBox illegaleButton = new JCheckBox("Illégale");
-		callerPlateforme.addItem(illegaleButton);
+		Plateforme[] platforms = Plateforme.values();
+		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
+		for (Plateforme platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.name());
+			platformCheckBoxes.add(checkBox);
+			platformPanel.add(checkBox);
+		}
+		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
 
@@ -191,14 +156,14 @@ public class PanelMovies extends JPanel {
 			new JLabel("Description"),
 			descriptionField,
 			new JLabel("Genres"),
-			scrollPaneGender,
+			scrollPaneGenre,
 
 			new JLabel("Durée"),
 			dureeField,
 			new JLabel("Date de sortie"),
 			datePicker,
 			new JLabel("Plateforme"),
-			scrollPanePlateforme,
+			scrollPanePlatform,
 
 			new JLabel("Ajouté par"),
 			addByComboBox
@@ -216,25 +181,14 @@ public class PanelMovies extends JPanel {
 					String rea = reaField.getText();
 					String desc = descriptionField.getText();
 
-					// Gather selected genres
-					java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
-					if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
-					if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
-					if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
-					if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
-					if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
-					if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
-					if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
-					if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
-					if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
-					if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
-					if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
-					if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
-					if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
-					if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
-
-					Genre[] genresArray = new Genre[selectedGenres.size()];
-					selectedGenres.toArray(genresArray);
+					// Get genres
+					List<Genre> selectedGenres = new ArrayList<>();
+					for (JCheckBox checkBox : genreCheckBoxes) {
+						if (checkBox.isSelected()) {
+							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+						}
+					}
+					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
 					int duree = 0; // Valeur par défaut
 					if (!dureeField.getText().isEmpty()) {
@@ -247,22 +201,14 @@ public class PanelMovies extends JPanel {
 						dateSortie = (Date) value;
 					}
 
-					// Gather selected platforms
-					java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
-					if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
-					if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
-					if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
-					if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
-					if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
-					if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
-					if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
-					if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
-					if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
-					if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
-					if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
-
-					Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
-					selectedPlateformes.toArray(plateformesArray);
+					// Get platforms
+					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					for (JCheckBox checkBox : platformCheckBoxes) {
+						if (checkBox.isSelected()) {
+							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+						}
+					}
+					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
 
 					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
 
@@ -284,7 +230,7 @@ public class PanelMovies extends JPanel {
 					}
 
 					if (canBeAdd) {
-						Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
+						Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, addBy);
 						gestionnaire.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
 						JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
 					}
@@ -321,79 +267,19 @@ public class PanelMovies extends JPanel {
 		JTextField reaField = new JTextField(movie.getRealistateur());
 		JTextField descriptionField = new JTextField(movie.getDescription());
 
-		Caller callerGender = new Caller();
-		JScrollPane scrollPaneGender = new JScrollPane(callerGender, JScrollPane.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		Genre[] genres = Genre.values();
+		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
+		for (Genre genre : genres) {
+			JCheckBox checkBox = new JCheckBox(genre.name());
+			if(movie.getGenre() != null && check(movie.getGenre(), genre.name())) {
+				checkBox.setSelected(true);
+			}
+			genreCheckBoxes.add(checkBox);
+			genrePanel.add(checkBox);
+		}
+		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		JCheckBox actionButton = new JCheckBox("Action");
-		if(check(movie.getGenre(), "Action")) {
-			actionButton.setSelected(true);
-		}
-		callerGender.addItem(actionButton);
-		JCheckBox aventureButton = new JCheckBox("Aventure");
-		if(check(movie.getGenre(), "Aventure")) {
-			aventureButton.setSelected(true);
-		}
-		callerGender.addItem(aventureButton);
-		JCheckBox anticipationButton = new JCheckBox("Anticipation");
-		if(check(movie.getGenre(), "Anticipation")) {
-			anticipationButton.setSelected(true);
-		}
-		callerGender.addItem(anticipationButton);
-		JCheckBox noelButton = new JCheckBox("Noel");
-		if(check(movie.getGenre(), "Noel")) {
-			noelButton.setSelected(true);
-		}
-		callerGender.addItem(noelButton);
-		JCheckBox comedieButton = new JCheckBox("Comedie");
-		if(check(movie.getGenre(), "Comedie")) {
-			comedieButton.setSelected(true);
-		}
-		callerGender.addItem(comedieButton);
-		JCheckBox drameButton = new JCheckBox("Drame");
-		if(check(movie.getGenre(), "Drame")) {
-			drameButton.setSelected(true);
-		}
-		callerGender.addItem(drameButton);
-		JCheckBox fantastiqueButton = new JCheckBox("Fantastique");
-		if(check(movie.getGenre(), "Fantastique")) {
-			fantastiqueButton.setSelected(true);
-		}
-		callerGender.addItem(fantastiqueButton);
-		JCheckBox fantasyButton = new JCheckBox("Fantasy");
-		if(check(movie.getGenre(), "Fantasy")) {
-			fantasyButton.setSelected(true);
-		}
-		callerGender.addItem(fantasyButton);
-		JCheckBox horreurButton = new JCheckBox("Horreur");
-		if(check(movie.getGenre(), "Horreur")) {
-			horreurButton.setSelected(true);
-		}
-		callerGender.addItem(horreurButton);
-		JCheckBox historiqueButton = new JCheckBox("Historique");
-		if(check(movie.getGenre(), "Historique")) {
-			historiqueButton.setSelected(true);
-		}
-		callerGender.addItem(historiqueButton);
-		JCheckBox SFButton = new JCheckBox("SF");
-		if(check(movie.getGenre(), "SF")) {
-			SFButton.setSelected(true);
-		}
-		callerGender.addItem(SFButton);
-		JCheckBox thrillerButton = new JCheckBox("Thriller");
-		if(check(movie.getGenre(), "Thriller")) {
-			thrillerButton.setSelected(true);
-		}
-		callerGender.addItem(thrillerButton);
-		JCheckBox westernButton = new JCheckBox("Western");
-		if(check(movie.getGenre(), "Western")) {
-			westernButton.setSelected(true);
-		}
-		callerGender.addItem(westernButton);
-		JCheckBox otherGenderButton = new JCheckBox("Autre");
-		if(check(movie.getGenre(), "Autre")) {
-			otherGenderButton.setSelected(true);
-		}
-		callerGender.addItem(otherGenderButton);
 
 		JTextField dureeField = new JTextField();
 		dureeField.setText(String.valueOf(movie.getDuree())); // Préremplir avec la durée du film
@@ -412,65 +298,19 @@ public class PanelMovies extends JPanel {
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
+		Plateforme[] platforms = Plateforme.values();
+		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
+		for (Plateforme platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.name());
+			if(movie.getPlateforme() != null && check(movie.getPlateforme(), platform.name())) {
+				checkBox.setSelected(true);
+			}
+			platformCheckBoxes.add(checkBox);
+			platformPanel.add(checkBox);
+		}
+		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		Caller callerPlateforme = new Caller();
-		JScrollPane scrollPanePlateforme = new JScrollPane(callerPlateforme, JScrollPane.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-		JCheckBox disneyButton = new JCheckBox("Disney");
-		if(check(movie.getPlateforme(), "Disney")) {
-			disneyButton.setSelected(true);
-		}
-		callerPlateforme.addItem(disneyButton);
-		JCheckBox netflixButton = new JCheckBox("Netflix");
-		if(check(movie.getPlateforme(), "Netflix")) {
-			netflixButton.setSelected(true);
-		}
-		callerPlateforme.addItem(netflixButton);
-		JCheckBox primeButton = new JCheckBox("Prime");
-		if(check(movie.getPlateforme(), "Prime")) {
-			primeButton.setSelected(true);
-		}
-		callerPlateforme.addItem(primeButton);
-		JCheckBox canalButton = new JCheckBox("Canal");
-		if(check(movie.getPlateforme(), "Canal")) {
-			canalButton.setSelected(true);
-		}
-		callerPlateforme.addItem(canalButton);
-		JCheckBox crunchyrollButton = new JCheckBox("Crunchyroll");
-		if(check(movie.getPlateforme(), "Crunchyroll")) {
-			crunchyrollButton.setSelected(true);
-		}
-		callerPlateforme.addItem(crunchyrollButton);
-		JCheckBox maxButton = new JCheckBox("Max");
-		if(check(movie.getPlateforme(), "Max")) {
-			maxButton.setSelected(true);
-		}
-		callerPlateforme.addItem(maxButton);
-		JCheckBox OCSButton = new JCheckBox("OCS");
-		if(check(movie.getPlateforme(), "OCS")) {
-			OCSButton.setSelected(true);
-		}
-		callerPlateforme.addItem(OCSButton);
-		JCheckBox ParamountButton = new JCheckBox("Paramount");
-		if(check(movie.getPlateforme(), "Paramount")) {
-			ParamountButton.setSelected(true);
-		}
-		callerPlateforme.addItem(ParamountButton);
-		JCheckBox aucuneIdeeButton = new JCheckBox("Aucune Idée");
-		if(check(movie.getPlateforme(), "AucuneIdee")) {
-			aucuneIdeeButton.setSelected(true);
-		}
-		callerPlateforme.addItem(aucuneIdeeButton);
-		JCheckBox horsLigneButton = new JCheckBox("Hors ligne");
-		if(check(movie.getPlateforme(), "HorsLigne")) {
-			horsLigneButton.setSelected(true);
-		}
-		callerPlateforme.addItem(horsLigneButton);
-		JCheckBox illegaleButton = new JCheckBox("Illégale");
-		if(check(movie.getPlateforme(), "Illegale")) {
-			illegaleButton.setSelected(true);
-		}
-		callerPlateforme.addItem(illegaleButton);
 
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
 		addByComboBox.setSelectedItem(movie.getAddBy());
@@ -483,14 +323,14 @@ public class PanelMovies extends JPanel {
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
-				scrollPaneGender,
+				scrollPaneGenre,
 
 				new JLabel("Durée"),
 				dureeField,
 				new JLabel("Date de sortie"),
 				datePicker,
 				new JLabel("Plateforme"),
-				scrollPanePlateforme,
+				scrollPanePlatform,
 
 				new JLabel("Ajouté par"),
 				addByComboBox
@@ -508,25 +348,14 @@ public class PanelMovies extends JPanel {
 					String rea = reaField.getText();
 					String desc = descriptionField.getText();
 
-					// Gather selected genres
-					java.util.List<Genre> selectedGenres = new java.util.ArrayList<>();
-					if (actionButton.isSelected()) selectedGenres.add(Genre.Action);
-					if (aventureButton.isSelected()) selectedGenres.add(Genre.Aventure);
-					if (anticipationButton.isSelected()) selectedGenres.add(Genre.Anticipation);
-					if (noelButton.isSelected()) selectedGenres.add(Genre.Noel);
-					if (comedieButton.isSelected()) selectedGenres.add(Genre.Comedie);
-					if (drameButton.isSelected()) selectedGenres.add(Genre.Drame);
-					if (fantastiqueButton.isSelected()) selectedGenres.add(Genre.Fantastique);
-					if (fantasyButton.isSelected()) selectedGenres.add(Genre.Fantasy);
-					if (horreurButton.isSelected()) selectedGenres.add(Genre.Horreur);
-					if (historiqueButton.isSelected()) selectedGenres.add(Genre.Historique);
-					if (SFButton.isSelected()) selectedGenres.add(Genre.SF);
-					if (thrillerButton.isSelected()) selectedGenres.add(Genre.Thriller);
-					if (westernButton.isSelected()) selectedGenres.add(Genre.Western);
-					if (otherGenderButton.isSelected()) selectedGenres.add(Genre.Autre);
-
-					Genre[] genresArray = new Genre[selectedGenres.size()];
-					selectedGenres.toArray(genresArray);
+					// Get genres
+					List<Genre> selectedGenres = new ArrayList<>();
+					for (JCheckBox checkBox : genreCheckBoxes) {
+						if (checkBox.isSelected()) {
+							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+						}
+					}
+					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
 					int duree = 0; // Valeur par défaut
 					if (!dureeField.getText().isEmpty()) {
@@ -539,26 +368,18 @@ public class PanelMovies extends JPanel {
 						dateSortie = (Date) value;
 					}
 
-					// Gather selected platforms
-					java.util.List<Plateforme> selectedPlateformes = new java.util.ArrayList<>();
-					if (disneyButton.isSelected()) selectedPlateformes.add(Plateforme.Disney);
-					if (netflixButton.isSelected()) selectedPlateformes.add(Plateforme.Netflix);
-					if (primeButton.isSelected()) selectedPlateformes.add(Plateforme.Prime);
-					if (canalButton.isSelected()) selectedPlateformes.add(Plateforme.Canal);
-					if (crunchyrollButton.isSelected()) selectedPlateformes.add(Plateforme.Crunchyroll);
-					if (maxButton.isSelected()) selectedPlateformes.add(Plateforme.Max);
-					if (OCSButton.isSelected()) selectedPlateformes.add(Plateforme.OCS);
-					if (ParamountButton.isSelected()) selectedPlateformes.add(Plateforme.Paramount);
-					if (aucuneIdeeButton.isSelected()) selectedPlateformes.add(Plateforme.AucuneIdee);
-					if (horsLigneButton.isSelected()) selectedPlateformes.add(Plateforme.HorsLigne);
-					if (illegaleButton.isSelected()) selectedPlateformes.add(Plateforme.Illegale);
-
-					Plateforme[] plateformesArray = new Plateforme[selectedPlateformes.size()];
-					selectedPlateformes.toArray(plateformesArray);
+					// Get platforms
+					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					for (JCheckBox checkBox : platformCheckBoxes) {
+						if (checkBox.isSelected()) {
+							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+						}
+					}
+					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
 
 					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
 
-					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, plateformesArray, addBy);
+					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, addBy);
 					gestionnaire.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films
 				}
 
