@@ -51,7 +51,7 @@ public class PanelSaga extends JPanel{
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher Saga", new Color(70, 130, 180));
+		JButton searchButton = createButton("Rechercher une saga", new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchSaga);
 
 		JButton addSagaButton = createButton("Ajouter une saga", new Color(70, 130, 180));

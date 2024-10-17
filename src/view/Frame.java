@@ -22,6 +22,7 @@ public class Frame extends JFrame {
 		JButton btnSaga = createButton("SAGAS", new Color(70, 130, 180));
 		JButton btnSerie = createButton("SERIES", new Color(70, 130, 180));
 		JButton btnSerieCourte = createButton("SERIES COURTE", new Color(70, 130, 180));
+		JButton btnQuitter = createButton("QUITTER", new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -33,11 +34,13 @@ public class Frame extends JFrame {
 		add(btnSaga, gbc);
 		add(btnSerie, gbc);
 		add(btnSerieCourte, gbc);
+		add(btnQuitter, gbc);
 
 		btnMovie.addActionListener(e -> movieFunction());
 		btnSaga.addActionListener(e -> sagaFunction());
 		btnSerie.addActionListener(e -> serieFunction());
 		btnSerieCourte.addActionListener(e -> serieCourteFunction());
+		btnQuitter.addActionListener(e -> quitter());
 
 		this.setVisible(true);
 	}
@@ -60,6 +63,10 @@ public class Frame extends JFrame {
 	private void serieCourteFunction() {
 		dispose();
 		new SerieCourteFrame();
+	}
+
+	private void quitter() {
+		dispose();
 	}
 
 	public JButton createButton(String title, Color color) {

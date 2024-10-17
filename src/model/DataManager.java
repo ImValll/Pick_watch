@@ -3,6 +3,7 @@ package model;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
+import model.serie_courte.SerieCourte;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class DataManager {
 	private static final String MOVIE_FILE = "movies.ser";
 	private static final String SAGA_FILE = "sagas.ser";
 	private static final String SERIE_FILE = "series.ser";
+	private static final String SERIE_COURTE_FILE = "shortSeries.ser";
 
 	public static void saveMovie(List<Movie> movies) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(MOVIE_FILE))) {
@@ -90,6 +92,33 @@ public class DataManager {
 			List<Serie> series = (List<Serie>) ois.readObject();
 			System.out.println("Series deserialized successfully.");
 			return series;
+		} catch (FileNotFoundException e) {
+			System.err.println("Fichier non trouvé: " + e.getMessage());
+			return new ArrayList<>(); // Fichier non trouvé, retourne une liste vide pour initialisation
+		} catch (IOException | ClassNotFoundException e) {
+			System.err.println("Erreur lors du chargement des séries: " + e.getMessage());
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
+
+
+	public static void saveSerieCourte(List<SerieCourte> seriesCourte) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SERIE_COURTE_FILE))) {
+			oos.writeObject(seriesCourte);
+			System.out.println("Series serialized successfully.");
+		} catch (IOException e) {
+			System.err.println("Erreur lors de la sauvegarde des Séries: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public static List<SerieCourte> loadSerieCourte() {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SERIE_COURTE_FILE))) {
+			List<SerieCourte> seriesCourte = (List<SerieCourte>) ois.readObject();
+			System.out.println("Series deserialized successfully.");
+			return seriesCourte;
 		} catch (FileNotFoundException e) {
 			System.err.println("Fichier non trouvé: " + e.getMessage());
 			return new ArrayList<>(); // Fichier non trouvé, retourne une liste vide pour initialisation

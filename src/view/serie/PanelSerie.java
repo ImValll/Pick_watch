@@ -52,10 +52,10 @@ public class PanelSerie extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher Serie", new Color(70, 130, 180));
+		JButton searchButton = createButton("Rechercher une série", new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchSerie);
 
-		JButton addSerieButton = createButton("Ajouter une serie", new Color(70, 130, 180));
+		JButton addSerieButton = createButton("Ajouter une série", new Color(70, 130, 180));
 
 		JLabel titleLabel = new JLabel("Titre : ");
 		titleLabel.setForeground(Color.WHITE);

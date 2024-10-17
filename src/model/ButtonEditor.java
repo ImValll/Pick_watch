@@ -3,9 +3,11 @@ package model;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
+import model.serie_courte.SerieCourte;
 import view.movie.PanelMovies;
 import view.saga.PanelSaga;
 import view.serie.PanelSerie;
+import view.serie_courte.PanelSerieCourte;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -76,6 +78,26 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 					panel.editSerie(serie);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSerie(serie);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelSerieCourte panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the serie from the table model using the row index
+				SerieCourte serieCourte = panel.getGestionnaire().findSerieCourteByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
+				if ("Modifier".equals(label)) {
+					panel.editSerieCourte(serieCourte);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteSerieCourte(serieCourte);
 				}
 			}
 		});

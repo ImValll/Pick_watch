@@ -76,7 +76,7 @@ public class GestionnaireSerie {
 	public void deleteSerie(Serie serie) {
 		if (serie != null) {
 			series.remove(serie);
-			DataManager.saveSerie(series); // Mettre à jour la liste des films
+			DataManager.saveSerie(series); // Mettre à jour la liste des séries
 			System.out.println("Série supprimée: " + serie.getTitre());
 		} else {
 			System.out.println("Série non trouvée.");

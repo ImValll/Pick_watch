@@ -51,7 +51,7 @@ public class PanelMovies extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher Film", new Color(70, 130, 180));
+		JButton searchButton = createButton("Rechercher un film", new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchMovies);
 
 		JButton addMovieButton = createButton("Ajouter un film", new Color(70, 130, 180));

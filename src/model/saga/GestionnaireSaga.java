@@ -75,7 +75,7 @@ public class GestionnaireSaga {
 	public void deleteSaga(Saga saga) {
 		if (saga != null) {
 			sagas.remove(saga);
-			DataManager.saveSaga(sagas); // Mettre à jour la liste des films
+			DataManager.saveSaga(sagas); // Mettre à jour la liste des sagas
 			System.out.println("Saga supprimée: " + saga.getTitre());
 		} else {
 			System.out.println("Saga non trouvée.");
