@@ -1,12 +1,11 @@
-package view.saga;
+package view.serie;
 
 import model.Genre;
 import model.Plateforme;
 import model.Utilisateur;
-import model.movie.GestionnaireMovie;
-import model.saga.GestionnaireSaga;
-import view.movie.MovieFrame;
-import view.movie.PanelRandomMovie;
+import model.serie.GestionnaireSerie;
+import view.serie.PanelRandomSerie;
+import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +13,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PanelFilterRandomSaga extends JPanel {
+public class PanelFilterRandomSerie extends JPanel {
 
-	private GestionnaireSaga gestionnaireSaga;
-	private SagaFrame sagaFrame;
-	private JTextField directorField;
+	private GestionnaireSerie gestionnaireSerie;
+	private SerieFrame serieFrame;
 	private List<JCheckBox> genreCheckBoxes;
-	private JTextField nbMovieField;
+	private JTextField nbSeasonField;
+	private JTextField nbEpisodeField;
+	private JTextField meanLengthField;
 	private JTextField yearField;
 	private JTextField year2Field;
 	private List<JCheckBox> platformCheckBoxes;
@@ -28,36 +28,27 @@ public class PanelFilterRandomSaga extends JPanel {
 	JRadioButton pasEncoreVuButton;
 	private JComboBox<Object> userComboBox;
 
-	public PanelFilterRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame) {
-		this.gestionnaireSaga = gestionnaireSaga;
-		this.sagaFrame = sagaFrame;
+	public PanelFilterRandomSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame) {
+		this.gestionnaireSerie = gestionnaireSerie;
+		this.serieFrame = serieFrame;
 		initializeUI();
 	}
 
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 
-		JPanel sagaSelectedPanel = filterSagaPanel();
+		JPanel serieSelectedPanel = filterSeriePanel();
 
-		add(sagaSelectedPanel);
+		add(serieSelectedPanel);
 	}
 
-	private JPanel filterSagaPanel() {
+	private JPanel filterSeriePanel() {
 		JPanel filterPanel = new JPanel();
 		filterPanel.setLayout(new BorderLayout());
 
 		// Center panel with filters
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(0, 1)); // One column layout
-
-		// Director filter
-		JLabel labelRea = new JLabel("Réalisateur:");
-		labelRea.setForeground(Color.WHITE);
-		centerPanel.add(labelRea);
-
-		directorField = new JTextField();
-		directorField.setBackground(Color.LIGHT_GRAY);
-		centerPanel.add(directorField);
 
 		// Genre filter
 		JLabel labelGenre = new JLabel("Genres:");
@@ -78,17 +69,35 @@ public class PanelFilterRandomSaga extends JPanel {
 		genrePanel.setBackground(new Color(50, 50, 50));
 		centerPanel.add(scrollPaneGenre);
 
-		// Number movie filter
-		JLabel labelNbMovie = new JLabel("Nombre de films:");
-		labelNbMovie.setForeground(Color.WHITE);
-		centerPanel.add(labelNbMovie);
+		// Number season filter
+		JLabel labelNbSeason = new JLabel("Nombre de saisons:");
+		labelNbSeason.setForeground(Color.WHITE);
+		centerPanel.add(labelNbSeason);
 
-		nbMovieField = new JTextField();
-		nbMovieField.setBackground(Color.LIGHT_GRAY);
-		centerPanel.add(nbMovieField);
+		nbSeasonField = new JTextField();
+		nbSeasonField.setBackground(Color.LIGHT_GRAY);
+		centerPanel.add(nbSeasonField);
+
+		// Number episode filter
+		JLabel labelNbEpisode = new JLabel("Nombre d'épisodes par saison:");
+		labelNbEpisode.setForeground(Color.WHITE);
+		centerPanel.add(labelNbEpisode);
+
+		nbEpisodeField = new JTextField();
+		nbEpisodeField.setBackground(Color.LIGHT_GRAY);
+		centerPanel.add(nbEpisodeField);
+
+		// mean length filter
+		JLabel labelMeanLength = new JLabel("Durée moyenne des épisodes:");
+		labelMeanLength.setForeground(Color.WHITE);
+		centerPanel.add(labelMeanLength);
+
+		meanLengthField = new JTextField();
+		meanLengthField.setBackground(Color.LIGHT_GRAY);
+		centerPanel.add(meanLengthField);
 
 		// Year filter
-		JLabel labelYear = new JLabel("Année de sortie du premier film:");
+		JLabel labelYear = new JLabel("Année de sortie de la première saison:");
 		labelYear.setForeground(Color.WHITE);
 		centerPanel.add(labelYear);
 
@@ -97,7 +106,7 @@ public class PanelFilterRandomSaga extends JPanel {
 		centerPanel.add(yearField);
 
 		// Year filter 2
-		JLabel labelYear2 = new JLabel("Année de sortie du dernier film:");
+		JLabel labelYear2 = new JLabel("Année de sortie de la dernière saison:");
 		labelYear2.setForeground(Color.WHITE);
 		centerPanel.add(labelYear2);
 
@@ -161,7 +170,7 @@ public class PanelFilterRandomSaga extends JPanel {
 		JButton backButton = createButton("Retour au menu", Color.BLUE);
 		backButton.addActionListener(e -> backMenu());
 		JButton submitButton = createButton("Envoyer", Color.GREEN);
-		submitButton.addActionListener(e -> askRandomSaga());
+		submitButton.addActionListener(e -> askRandomSerie());
 		bottomPanel.add(backButton);
 		bottomPanel.add(submitButton);
 
@@ -175,16 +184,11 @@ public class PanelFilterRandomSaga extends JPanel {
 	}
 
 	public void backMenu() {
-		sagaFrame.dispose();
-		new SagaFrame();
+		serieFrame.dispose();
+		new SerieFrame();
 	}
 
-	public void askRandomSaga() {
-		// Get director
-		String director = directorField.getText().trim();
-		if (director.isEmpty()) {
-			director = null;
-		}
+	public void askRandomSerie() {
 
 		// Get genres
 		List<Genre> selectedGenres = new ArrayList<>();
@@ -195,11 +199,25 @@ public class PanelFilterRandomSaga extends JPanel {
 		}
 		Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-		// Get nbMovie
-		int nbMovie = 0;
-		String nbMovieText = nbMovieField.getText().trim();
-		if (!nbMovieText.isEmpty()) {
-			nbMovie = Integer.parseInt(nbMovieText);
+		// Get nbSeason
+		int nbSeason = 0;
+		String nbSeasonText = nbSeasonField.getText().trim();
+		if (!nbSeasonText.isEmpty()) {
+			nbSeason = Integer.parseInt(nbSeasonText);
+		}
+
+		// Get nbEpisode
+		int nbEpisode = 0;
+		String nbEpisodeText = nbEpisodeField.getText().trim();
+		if (!nbEpisodeText.isEmpty()) {
+			nbEpisode = Integer.parseInt(nbEpisodeText);
+		}
+
+		// Get meanLength
+		int meanLength = 0;
+		String meanLengthText = meanLengthField.getText().trim();
+		if (!meanLengthText.isEmpty()) {
+			meanLength = Integer.parseInt(meanLengthText);
 		}
 
 		// Get year
@@ -246,14 +264,14 @@ public class PanelFilterRandomSaga extends JPanel {
 			addBy = (Utilisateur) selectedUser;
 		}
 
-		// Create PanelRandomMovie
-		PanelRandomSaga panelRandomSaga = new PanelRandomSaga(gestionnaireSaga, sagaFrame, director, genresArray, nbMovie, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+		// Create PanelRandomSerie
+		PanelRandomSerie panelRandomSerie = new PanelRandomSerie(gestionnaireSerie, serieFrame, genresArray, nbSeason, nbEpisode, meanLength, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 
-		// Replace current panel with PanelRandomMovie
-		sagaFrame.getContentPane().removeAll();
-		sagaFrame.add(panelRandomSaga);
-		sagaFrame.revalidate();
-		sagaFrame.repaint();
+		// Replace current panel with PanelRandomSerie
+		serieFrame.getContentPane().removeAll();
+		serieFrame.add(panelRandomSerie);
+		serieFrame.revalidate();
+		serieFrame.repaint();
 	}
 
 	public JButton createButton(String title, Color color) {

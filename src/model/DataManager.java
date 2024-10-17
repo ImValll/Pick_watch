@@ -2,6 +2,7 @@ package model;
 
 import model.movie.Movie;
 import model.saga.Saga;
+import model.serie.Serie;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 public class DataManager {
 	private static final String MOVIE_FILE = "movies.ser";
 	private static final String SAGA_FILE = "sagas.ser";
+	private static final String SERIE_FILE = "series.ser";
 
 	public static void saveMovie(List<Movie> movies) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(MOVIE_FILE))) {
@@ -66,6 +68,33 @@ public class DataManager {
 			return new ArrayList<>(); // Fichier non trouvé, retourne une liste vide pour initialisation
 		} catch (IOException | ClassNotFoundException e) {
 			System.err.println("Erreur lors du chargement des sagas: " + e.getMessage());
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
+	}
+
+
+
+	public static void saveSerie(List<Serie> series) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SERIE_FILE))) {
+			oos.writeObject(series);
+			System.out.println("Series serialized successfully.");
+		} catch (IOException e) {
+			System.err.println("Erreur lors de la sauvegarde des Séries: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public static List<Serie> loadSerie() {
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SERIE_FILE))) {
+			List<Serie> series = (List<Serie>) ois.readObject();
+			System.out.println("Series deserialized successfully.");
+			return series;
+		} catch (FileNotFoundException e) {
+			System.err.println("Fichier non trouvé: " + e.getMessage());
+			return new ArrayList<>(); // Fichier non trouvé, retourne une liste vide pour initialisation
+		} catch (IOException | ClassNotFoundException e) {
+			System.err.println("Erreur lors du chargement des séries: " + e.getMessage());
 			e.printStackTrace();
 			return new ArrayList<>();
 		}

@@ -2,8 +2,10 @@ package model;
 
 import model.movie.Movie;
 import model.saga.Saga;
+import model.serie.Serie;
 import view.movie.PanelMovies;
 import view.saga.PanelSaga;
+import view.serie.PanelSerie;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -48,12 +50,32 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				fireEditingStopped();
-				// Get the movie from the table model using the row index
-				Saga saga = panel.getGestionnaire().findSagaByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Movie objects
+				// Get the saga from the table model using the row index
+				Saga saga = panel.getGestionnaire().findSagaByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Saga objects
 				if ("Modifier".equals(label)) {
 					panel.editSaga(saga);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSaga(saga);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelSerie panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the serie from the table model using the row index
+				Serie serie = panel.getGestionnaire().findSerieByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
+				if ("Modifier".equals(label)) {
+					panel.editSerie(serie);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteSerie(serie);
 				}
 			}
 		});

@@ -1,12 +1,13 @@
-package view.saga;
+package view.serie;
 
 import model.*;
-import model.saga.SagaTableModel;
-import model.saga.GestionnaireSaga;
-import model.saga.Saga;
+import model.serie.GestionnaireSerie;
+import model.serie.Serie;
+import model.serie.SerieTableModel;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,21 +18,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class PanelSaga extends JPanel{
+public class PanelSerie extends JPanel {
 
-	SagaFrame sagaFrame;
+	SerieFrame serieFrame;
 
 	private CardLayout cardLayout = new CardLayout();
 	private JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
 	private JTable tableArea; // Display book information
-	private SagaTableModel tableModel;
-	GestionnaireSaga gestionnaireSaga;
+	private SerieTableModel tableModel;
+	GestionnaireSerie gestionnaireSerie;
 	private JTextField searchTitleField;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-	public PanelSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame) {
-		this.gestionnaireSaga = gestionnaireSaga;
-		this.sagaFrame = sagaFrame;
+	public PanelSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame) {
+		this.gestionnaireSerie = gestionnaireSerie;
+		this.serieFrame = serieFrame;
 		initializeUI();
 	}
 
@@ -39,22 +40,22 @@ public class PanelSaga extends JPanel{
 		setLayout(new BorderLayout());
 		add(cards, BorderLayout.CENTER);
 
-		JPanel sagaGrid = createSagaPanel();
+		JPanel serieGrid = createSeriePanel();
 
-		add(sagaGrid);
+		add(serieGrid);
 	}
 
-	private JPanel createSagaPanel() {
+	private JPanel createSeriePanel() {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		// Top panel for search
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher Saga", new Color(70, 130, 180));
-		searchButton.addActionListener(this::searchSaga);
+		JButton searchButton = createButton("Rechercher Serie", new Color(70, 130, 180));
+		searchButton.addActionListener(this::searchSerie);
 
-		JButton addSagaButton = createButton("Ajouter une saga", new Color(70, 130, 180));
+		JButton addSerieButton = createButton("Ajouter une serie", new Color(70, 130, 180));
 
 		JLabel titleLabel = new JLabel("Titre : ");
 		titleLabel.setForeground(Color.WHITE);
@@ -62,12 +63,12 @@ public class PanelSaga extends JPanel{
 
 		topPanel.add(searchTitleField);
 		topPanel.add(searchButton);
-		topPanel.add(addSagaButton);
+		topPanel.add(addSerieButton);
 
-		addSagaButton.addActionListener(e -> addSaga());
+		addSerieButton.addActionListener(e -> addSerie());
 
-		// Get JScrollPane from showAllSaga method
-		JScrollPane scrollPane = showAllSaga();
+		// Get JScrollPane from showAllSerie method
+		JScrollPane scrollPane = showAllSerie();
 
 		topPanel.setBackground(new Color(50, 50, 50));
 		scrollPane.setBackground(new Color(50, 50, 50));
@@ -85,9 +86,9 @@ public class PanelSaga extends JPanel{
 		return panel;
 	}
 
-	private JScrollPane showAllSaga() {
-		java.util.List<Saga> listSaga = gestionnaireSaga.getSaga();
-		tableModel = new SagaTableModel(listSaga);
+	private JScrollPane showAllSerie() {
+		java.util.List<Serie> listSerie = gestionnaireSerie.getSerie();
+		tableModel = new SerieTableModel(listSerie);
 		tableArea = new JTable(tableModel);
 		tableArea.setBackground(Color.LIGHT_GRAY);
 
@@ -101,19 +102,18 @@ public class PanelSaga extends JPanel{
 		return new JScrollPane(tableArea);
 	}
 
-	private void searchSaga(ActionEvent e) {
+	private void searchSerie(ActionEvent e) {
 		String titre = searchTitleField.getText();
-		java.util.List<Saga> result = gestionnaireSaga.searchSaga(titre);
+		java.util.List<Serie> result = gestionnaireSerie.searchSerie(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucune saga trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur: Aucune série trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
 		} else {
-			tableModel.setSaga(result); // Mettre à jour le modèle du tableau
+			tableModel.setSerie(result); // Mettre à jour le modèle du tableau
 		}
 	}
 
-	private void addSaga() {
+	private void addSerie() {
 		JTextField titleField = new JTextField();
-		JTextField reaField = new JTextField();
 		JTextField descriptionField = new JTextField();
 
 		Genre[] genres = Genre.values();
@@ -126,9 +126,11 @@ public class PanelSaga extends JPanel{
 		}
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		JTextField nbFilmField = new JTextField();
+		JTextField nbSaisonField = new JTextField();
+		JTextField nbEpisodeField = new JTextField();
+		JTextField dureeMoyenneField = new JTextField();
 
-		//Date premier film
+		//Date première saison
 		UtilDateModel model = new UtilDateModel();
 		Properties p = new Properties();
 		p.put("text.today", "Today");
@@ -137,7 +139,7 @@ public class PanelSaga extends JPanel{
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
-		//Date dernier film
+		//Date dernière saison
 		UtilDateModel model2 = new UtilDateModel();
 		Properties p2 = new Properties();
 		p2.put("text.today", "Today");
@@ -174,17 +176,19 @@ public class PanelSaga extends JPanel{
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
-				new JLabel("Réalisateur"),
-				reaField,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
 				scrollPaneGenre,
-				new JLabel("Nombre de films"),
-				nbFilmField,
-				new JLabel("Date de sortie du premier film"),
+				new JLabel("Nombre de saisons"),
+				nbSaisonField,
+				new JLabel("Nombre d'épisodes par saison"),
+				nbEpisodeField,
+				new JLabel("Durée moyenne des épisodes"),
+				dureeMoyenneField,
+				new JLabel("Date de sortie de la première saison"),
 				datePicker,
-				new JLabel("Date de sortie du dernier film"),
+				new JLabel("Date de sortie de la dernière saison"),
 				datePicker2,
 				new JLabel("Plateforme"),
 				scrollPanePlatform,
@@ -194,7 +198,7 @@ public class PanelSaga extends JPanel{
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle série", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -203,7 +207,6 @@ public class PanelSaga extends JPanel{
 					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
-					String rea = reaField.getText();
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -215,9 +218,19 @@ public class PanelSaga extends JPanel{
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-					int nbFilm = 0; // Valeur par défaut
-					if (!nbFilmField.getText().isEmpty()) {
-						nbFilm = Integer.parseInt(nbFilmField.getText());
+					int nbSaison = 0; // Valeur par défaut
+					if (!nbSaisonField.getText().isEmpty()) {
+						nbSaison = Integer.parseInt(nbSaisonField.getText());
+					}
+
+					int nbEpisode = 0; // Valeur par défaut
+					if (!nbEpisodeField.getText().isEmpty()) {
+						nbEpisode = Integer.parseInt(nbEpisodeField.getText());
+					}
+
+					int dureeMoyenne = 0; // Valeur par défaut
+					if (!dureeMoyenneField.getText().isEmpty()) {
+						dureeMoyenne = Integer.parseInt(dureeMoyenneField.getText());
 					}
 
 					Date dateSortie = null; // Valeur par défaut
@@ -248,31 +261,31 @@ public class PanelSaga extends JPanel{
 
 					boolean canBeAdd = true;
 
-					java.util.List<Saga> listSaga = gestionnaireSaga.getSaga();
-					for (int i = 0; i < listSaga.size(); i++) {
-						Saga saga = listSaga.get(i);
-						if (saga.getTitre().equalsIgnoreCase(titre)) {
+					java.util.List<Serie> listSerie = gestionnaireSerie.getSerie();
+					for (int i = 0; i < listSerie.size(); i++) {
+						Serie serie = listSerie.get(i);
+						if (serie.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
-							if (saga.getAddBy() == Utilisateur.Nous2 || saga.getAddBy() == addBy) {
-								JOptionPane.showMessageDialog(this, "Erreur: La saga " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+							if (serie.getAddBy() == Utilisateur.Nous2 || serie.getAddBy() == addBy) {
+								JOptionPane.showMessageDialog(this, "Erreur: La série " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
 							} else {
-								gestionnaireSaga.updateSagaAddBy(saga, Utilisateur.Nous2);
-								JOptionPane.showMessageDialog(this, "La saga " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Nous2.", "Erreur saga déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								gestionnaireSerie.updateSerieAddBy(serie, Utilisateur.Nous2);
+								JOptionPane.showMessageDialog(this, "La série " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Nous2.", "Erreur série déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
 					}
 
 					if (canBeAdd) {
-						Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
-						gestionnaireSaga.addSaga(newSaga); // Ajouter la saga à votre gestionnaire de sagas
-						JOptionPane.showMessageDialog(this, "Saga ajoutée avec succès: " + titre, "Saga Ajoutée", JOptionPane.INFORMATION_MESSAGE);
+						Serie newSerie = new Serie(titre, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+						gestionnaireSerie.addSerie(newSerie); // Ajouter la serie à votre gestionnaire de series
+						JOptionPane.showMessageDialog(this, "Série ajoutée avec succès: " + titre, "Série Ajoutée", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 
-				// Mettre à jour le modèle de tableau après l'ajout de la saga
-				java.util.List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
-				tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
+				// Mettre à jour le modèle de tableau après l'ajout de la serie
+				java.util.List<Serie> updatedSerie = gestionnaireSerie.getSerie(); // Récupérer la liste mise à jour des series
+				tableModel.setSerie(updatedSerie); // Mettre à jour le modèle du tableau
 
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
@@ -281,32 +294,31 @@ public class PanelSaga extends JPanel{
 	}
 
 	public void backMenu() {
-		sagaFrame.dispose();
-		new SagaFrame();
+		serieFrame.dispose();
+		new SerieFrame();
 	}
 
-	public void deleteSaga(Saga saga) {
-		gestionnaireSaga.deleteSaga(saga);
+	public void deleteSerie(Serie serie) {
+		gestionnaireSerie.deleteSerie(serie);
 
-		java.util.List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
-		tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
+		java.util.List<Serie> updatedSerie = gestionnaireSerie.getSerie(); // Récupérer la liste mise à jour des series
+		tableModel.setSerie(updatedSerie); // Mettre à jour le modèle du tableau
 	}
 
-	public void editSaga(Saga saga) {
+	public void editSerie(Serie serie) {
 
-		String oldTitle = saga.getTitre();
+		String oldTitle = serie.getTitre();
 
-		JTextField titleField = new JTextField(saga.getTitre());
+		JTextField titleField = new JTextField(serie.getTitre());
 		titleField.setEnabled(false);
-		JTextField reaField = new JTextField(saga.getRealistateur());
-		JTextField descriptionField = new JTextField(saga.getDescription());
+		JTextField descriptionField = new JTextField(serie.getDescription());
 
 		Genre[] genres = Genre.values();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.name());
-			if(saga.getGenre() != null && check(saga.getGenre(), genre.name())) {
+			if(serie.getGenre() != null && check(serie.getGenre(), genre.name())) {
 				checkBox.setSelected(true);
 			}
 			genreCheckBoxes.add(checkBox);
@@ -315,11 +327,17 @@ public class PanelSaga extends JPanel{
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 
-		JTextField nbFilmField = new JTextField();
-		nbFilmField.setText(String.valueOf(saga.getNombreFilms())); // Préremplir avec le nombre de film
+		JTextField nbSaisonField = new JTextField();
+		nbSaisonField.setText(String.valueOf(serie.getNombreSaison())); // Préremplir avec le nombre de saisons
+
+		JTextField nbEpisodeField = new JTextField();
+		nbEpisodeField.setText(String.valueOf(serie.getNombreEpisode())); // Préremplir avec le nombre d'épisodes par saison
+
+		JTextField dureeMoyenneField = new JTextField();
+		dureeMoyenneField.setText(String.valueOf(serie.getDureeMoyenne())); // Préremplir avec la durée moyenne des épisodes
 
 		UtilDateModel model = new UtilDateModel();
-		Date oldDateSortie = saga.getDateSortiePremier(); // Supposons que saga.getDateSortiePremier() renvoie la date de sortie du film
+		Date oldDateSortie = serie.getDateSortiePremiereSaison(); // Supposons que serie.getDateSortiePremiereSaison() renvoie la date de sortie de la première saison
 
 		if (oldDateSortie != null) {
 			model.setValue(oldDateSortie);
@@ -333,7 +351,7 @@ public class PanelSaga extends JPanel{
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 		UtilDateModel model2 = new UtilDateModel();
-		Date oldDateSortie2 = saga.getDateSortieDernier(); // Supposons que saga.getDateSortiePremier() renvoie la date de sortie du film
+		Date oldDateSortie2 = serie.getDateSortieDerniereSaison(); // Supposons que serie.getDateSortieDerniereSaison() renvoie la date de sortie de la dernière saison
 
 		if (oldDateSortie2 != null) {
 			model2.setValue(oldDateSortie2);
@@ -351,7 +369,7 @@ public class PanelSaga extends JPanel{
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Plateforme platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.name());
-			if(saga.getPlateforme() != null && check(saga.getPlateforme(), platform.name())) {
+			if(serie.getPlateforme() != null && check(serie.getPlateforme(), platform.name())) {
 				checkBox.setSelected(true);
 			}
 			platformCheckBoxes.add(checkBox);
@@ -367,7 +385,7 @@ public class PanelSaga extends JPanel{
 		vuGroup.add(pasEncoreVuButton);
 
 		// Sélectionner le bouton approprié en fonction de l'état actuel du film
-		if (saga.getDejaVu()) {
+		if (serie.getDejaVu()) {
 			dejaVuButton.setSelected(true);
 		} else {
 			pasEncoreVuButton.setSelected(true);
@@ -379,22 +397,24 @@ public class PanelSaga extends JPanel{
 		vuPanel.add(pasEncoreVuButton);
 
 		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
-		addByComboBox.setSelectedItem(saga.getAddBy());
+		addByComboBox.setSelectedItem(serie.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
-				new JLabel("Réalisateur"),
-				reaField,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
 				scrollPaneGenre,
-				new JLabel("Nombre de films"),
-				nbFilmField,
-				new JLabel("Date de sortie du premier film"),
+				new JLabel("Nombre de saisons"),
+				nbSaisonField,
+				new JLabel("Nombre d'épisodes par saison"),
+				nbEpisodeField,
+				new JLabel("Durée moyenne des épisodes"),
+				dureeMoyenneField,
+				new JLabel("Date de sortie de la première saison"),
 				datePicker,
-				new JLabel("Date de sortie du dernier film"),
+				new JLabel("Date de sortie de la dernière saison"),
 				datePicker2,
 				new JLabel("Plateforme"),
 				scrollPanePlatform,
@@ -404,7 +424,7 @@ public class PanelSaga extends JPanel{
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une série", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -413,7 +433,6 @@ public class PanelSaga extends JPanel{
 					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
-					String rea = reaField.getText();
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -425,10 +444,22 @@ public class PanelSaga extends JPanel{
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
 
-					int nbFilm = 0; // Valeur par défaut
-					if (!nbFilmField.getText().isEmpty()) {
-						nbFilm = Integer.parseInt(nbFilmField.getText());
+					int nbSaison = 0; // Valeur par défaut
+					if (!nbSaisonField.getText().isEmpty()) {
+						nbSaison = Integer.parseInt(nbSaisonField.getText());
 					}
+
+					int nbEpisode = 0; // Valeur par défaut
+					if (!nbEpisodeField.getText().isEmpty()) {
+						nbEpisode = Integer.parseInt(nbEpisodeField.getText());
+					}
+
+
+					int dureeMoyenne = 0; // Valeur par défaut
+					if (!dureeMoyenneField.getText().isEmpty()) {
+						dureeMoyenne = Integer.parseInt(dureeMoyenneField.getText());
+					}
+
 
 					Date dateSortie = null; // Valeur par défaut
 					Object value = datePicker.getModel().getValue();
@@ -456,15 +487,15 @@ public class PanelSaga extends JPanel{
 
 					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
 
-					Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
-					gestionnaireSaga.editSaga(oldTitle, newSaga); // Ajouter la saga à votre gestionnaire de sagas
+					Serie newSerie = new Serie(titre, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+					gestionnaireSerie.editSerie(oldTitle, newSerie); // Ajouter la serie à votre gestionnaire de séries
 				}
 
-				// Mettre à jour le modèle de tableau après l'ajout de la saga
-				List<Saga> updatedSaga = gestionnaireSaga.getSaga(); // Récupérer la liste mise à jour des sagas
-				tableModel.setSaga(updatedSaga); // Mettre à jour le modèle du tableau
+				// Mettre à jour le modèle de tableau après l'ajout de la serie
+				List<Serie> updatedSerie = gestionnaireSerie.getSerie(); // Récupérer la liste mise à jour des séries
+				tableModel.setSerie(updatedSerie); // Mettre à jour le modèle du tableau
 
-				JOptionPane.showMessageDialog(this, "Saga modifiée avec succès: " + titre, "Saga modifiée", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Série modifiée avec succès: " + titre, "Série modifiée", JOptionPane.INFORMATION_MESSAGE);
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
 			}
@@ -502,7 +533,7 @@ public class PanelSaga extends JPanel{
 		return tableArea;
 	}
 
-	public GestionnaireSaga getGestionnaire() {
-		return gestionnaireSaga;
+	public GestionnaireSerie getGestionnaire() {
+		return gestionnaireSerie;
 	}
 }

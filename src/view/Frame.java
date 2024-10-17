@@ -3,6 +3,7 @@ package view;
 import view.movie.MovieFrame;
 import view.saga.SagaFrame;
 import view.serie.SerieFrame;
+import view.serie_courte.SerieCourteFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +21,7 @@ public class Frame extends JFrame {
 		JButton btnMovie = createButton("FILMS", new Color(70, 130, 180));
 		JButton btnSaga = createButton("SAGAS", new Color(70, 130, 180));
 		JButton btnSerie = createButton("SERIES", new Color(70, 130, 180));
+		JButton btnSerieCourte = createButton("SERIES COURTE", new Color(70, 130, 180));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -30,10 +32,12 @@ public class Frame extends JFrame {
 		add(btnMovie, gbc);
 		add(btnSaga, gbc);
 		add(btnSerie, gbc);
+		add(btnSerieCourte, gbc);
 
 		btnMovie.addActionListener(e -> movieFunction());
 		btnSaga.addActionListener(e -> sagaFunction());
 		btnSerie.addActionListener(e -> serieFunction());
+		btnSerieCourte.addActionListener(e -> serieCourteFunction());
 
 		this.setVisible(true);
 	}
@@ -51,6 +55,11 @@ public class Frame extends JFrame {
 	private void serieFunction() {
 		dispose();
 		new SerieFrame();
+	}
+
+	private void serieCourteFunction() {
+		dispose();
+		new SerieCourteFrame();
 	}
 
 	public JButton createButton(String title, Color color) {
