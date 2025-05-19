@@ -1,5 +1,8 @@
 package model;
 
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -10,10 +13,73 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
+	private static final String GENRES_FILE = "genres.ser";
+	private static final String PLATFORMS_FILE = "platforms.ser";
+	private static final String USERS_FILE = "users.ser";
 	private static final String MOVIE_FILE = "movies.ser";
 	private static final String SAGA_FILE = "sagas.ser";
 	private static final String SERIE_FILE = "series.ser";
 	private static final String SERIE_COURTE_FILE = "shortSeries.ser";
+
+	public static void saveGenre(ArrayList<Genre> genres) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+			oos.writeObject(genres);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static ArrayList<Genre> loadGenre() {
+		ArrayList<Genre> genres = new ArrayList<>();
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GENRES_FILE))) {
+			genres = (ArrayList<Genre>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return genres;
+	}
+
+	public static void savePlatform(ArrayList<Platform> platforms) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+			oos.writeObject(platforms);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static ArrayList<Platform> loadPlatform() {
+		ArrayList<Platform> platforms = new ArrayList<>();
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(PLATFORMS_FILE))) {
+			platforms = (ArrayList<Platform>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return platforms;
+	}
+
+	public static void saveUser(ArrayList<User> users) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+			oos.writeObject(users);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static ArrayList<User> loadUser() {
+		ArrayList<User> users = new ArrayList<>();
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(USERS_FILE))) {
+			users = (ArrayList<User>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return users;
+	}
 
 	public static void saveMovie(List<Movie> movies) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(MOVIE_FILE))) {

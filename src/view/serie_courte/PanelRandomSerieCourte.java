@@ -1,10 +1,8 @@
 package view.serie_courte;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
-import model.serie.GestionnaireSerie;
-import model.serie.Serie;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.serie_courte.GestionnaireSerieCourte;
 import model.serie_courte.SerieCourte;
 import view.serie.SerieFrame;
@@ -26,9 +24,9 @@ public class PanelRandomSerieCourte extends JPanel {
 	private int dureeMoyenne;
 	private Date dateSortie;
 	private Date dateSortie2;
-	private Plateforme[] plateformes;
+	private Platform[] plateformes;
 	private int dejaVu = -1;
-	private Utilisateur addBy;
+	private User addBy;
 
 	private SerieCourte serieCourte;
 	private JPanel serieCourtePanel;
@@ -40,7 +38,7 @@ public class PanelRandomSerieCourte extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public PanelRandomSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireSerieCourte = gestionnaireSerieCourte;
 		this.serieCourteFrame = serieCourteFrame;
 		this.genres = genres;

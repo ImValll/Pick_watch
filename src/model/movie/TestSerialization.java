@@ -1,9 +1,9 @@
 package model.movie;
 
 import model.DataManager;
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,9 +12,9 @@ import java.util.List;
 public class TestSerialization {
 	public static void main(String[] args) {
 		// Créez des exemples de données pour les tests
-		Genre[] genres = {Genre.Action, Genre.Comedie};
-		Plateforme[] plateformes = {Plateforme.Netflix, Plateforme.Prime};
-		Utilisateur user = Utilisateur.Valentin;
+		Genre[] genres = {new Genre("Action"), new Genre("Science-Fiction"), new Genre("Thriller")};
+		Platform[] plateformes = {new Platform("Netflix"), new Platform("Prime")};
+		User user = new User("Valentin");
 
 		// Créez des objets Movie
 		Movie movie1 = new Movie("Inception", "Christopher Nolan", "A mind-bending thriller",

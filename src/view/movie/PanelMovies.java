@@ -1,6 +1,9 @@
 package view.movie;
 
 import model.*;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.movie.GestionnaireMovie;
 import model.movie.Movie;
 import model.movie.MoviesTableModel;
@@ -12,12 +15,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
 
 public class PanelMovies extends JPanel {
+
+	DataManager dataManager = new DataManager();
 
 	MovieFrame movieFrame;
 
@@ -118,11 +121,11 @@ public class PanelMovies extends JPanel {
 
 
 
-		Genre[] genres = Genre.values();
+		ArrayList<Genre> genres = dataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
-			JCheckBox checkBox = new JCheckBox(genre.name());
+			JCheckBox checkBox = new JCheckBox(genre.getName());
 			genreCheckBoxes.add(checkBox);
 			genrePanel.add(checkBox);
 		}
@@ -140,11 +143,11 @@ public class PanelMovies extends JPanel {
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 
-		Plateforme[] platforms = Plateforme.values();
+		ArrayList<Platform> platforms = dataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
-		for (Plateforme platform : platforms) {
-			JCheckBox checkBox = new JCheckBox(platform.name());
+		for (Platform platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.getName());
 			platformCheckBoxes.add(checkBox);
 			platformPanel.add(checkBox);
 		}
@@ -162,7 +165,12 @@ public class PanelMovies extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
+		ArrayList<User> users = dataManager.loadUser();
+		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
+		for (User user : users) {
+			addByModel.addElement(user);
+		}
+		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 
 		final JComponent[] inputs = new JComponent[] {
 			new JLabel("Titre*"),
@@ -201,7 +209,7 @@ public class PanelMovies extends JPanel {
 					List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+							selectedGenres.add(new Genre(checkBox.getText()));
 						}
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
@@ -218,18 +226,23 @@ public class PanelMovies extends JPanel {
 					}
 
 					// Get platforms
-					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					List<Platform> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+							selectedPlatforms.add(new Platform(checkBox.getText()));
 						}
 					}
-					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
+					Platform[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Platform[0]);
 
 					// Get "Déjà vu" status
 					boolean dejaVu = dejaVuButton.isSelected();
 
-					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+					User addBy;
+					if(addByComboBox.getSelectedItem() == null) {
+						addBy = new User("Tous");
+					} else {
+						addBy = new User(addByComboBox.getSelectedItem().toString());
+					}
 
 					boolean canBeAdd = true;
 
@@ -238,11 +251,11 @@ public class PanelMovies extends JPanel {
 						Movie movie = listMovies.get(i);
 						if (movie.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
-							if (movie.getAddBy() == Utilisateur.Nous2 || movie.getAddBy() == addBy) {
+							if (Objects.equals(movie.getAddBy().getName(), "Tous") || movie.getAddBy() == addBy) {
 								JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
 							} else {
-								gestionnaireMovie.updateMovieAddBy(movie, Utilisateur.Nous2);
-								JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Nous2.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								gestionnaireMovie.updateMovieAddBy(movie, new User("Tous"));
+								JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Tous.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
@@ -286,12 +299,12 @@ public class PanelMovies extends JPanel {
 		JTextField reaField = new JTextField(movie.getRealistateur());
 		JTextField descriptionField = new JTextField(movie.getDescription());
 
-		Genre[] genres = Genre.values();
+		ArrayList<Genre> genres = dataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
-			JCheckBox checkBox = new JCheckBox(genre.name());
-			if(movie.getGenre() != null && check(movie.getGenre(), genre.name())) {
+			JCheckBox checkBox = new JCheckBox(genre.getName());
+			if(movie.getGenre() != null && check(movie.getGenre(), genre.getName())) {
 				checkBox.setSelected(true);
 			}
 			genreCheckBoxes.add(checkBox);
@@ -318,12 +331,12 @@ public class PanelMovies extends JPanel {
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
-		Plateforme[] platforms = Plateforme.values();
+		ArrayList<Platform> platforms = dataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
-		for (Plateforme platform : platforms) {
-			JCheckBox checkBox = new JCheckBox(platform.name());
-			if(movie.getPlateforme() != null && check(movie.getPlateforme(), platform.name())) {
+		for (Platform platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.getName());
+			if(movie.getPlateforme() != null && check(movie.getPlateforme(), platform.getName())) {
 				checkBox.setSelected(true);
 			}
 			platformCheckBoxes.add(checkBox);
@@ -350,7 +363,12 @@ public class PanelMovies extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
+		ArrayList<User> users = dataManager.loadUser();
+		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
+		for (User user : users) {
+			addByModel.addElement(user);
+		}
+		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(movie.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {
@@ -390,7 +408,7 @@ public class PanelMovies extends JPanel {
 					List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+							selectedGenres.add(new Genre(checkBox.getText()));
 						}
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
@@ -407,18 +425,23 @@ public class PanelMovies extends JPanel {
 					}
 
 					// Get platforms
-					List<Plateforme> selectedPlatforms = new ArrayList<>();
+					List<Platform> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+							selectedPlatforms.add(new Platform(checkBox.getText()));
 						}
 					}
-					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
+					Platform[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Platform[0]);
 
 					// Get "Déjà vu" status
 					boolean dejaVu = dejaVuButton.isSelected();
 
-					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+					User addBy;
+					if(addByComboBox.getSelectedItem() == null) {
+						addBy = new User("Tous");
+					} else {
+						addBy = new User(addByComboBox.getSelectedItem().toString());
+					}
 
 					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
 					gestionnaireMovie.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films

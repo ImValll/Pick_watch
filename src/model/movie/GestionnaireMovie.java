@@ -1,6 +1,9 @@
 package model.movie;
 
 import model.*;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +57,7 @@ public class GestionnaireMovie {
 		}
 	}
 
-	public void updateMovieAddBy(Movie movie, Utilisateur newAddBy) {
+	public void updateMovieAddBy(Movie movie, User newAddBy) {
 		movie.setAddBy(newAddBy);
 	}
 
@@ -84,7 +87,7 @@ public class GestionnaireMovie {
 				.orElse(null);
 	}
 
-	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Movie> filteredMovies = new ArrayList<>();
 
 		for (Movie movie : movies) {
@@ -116,8 +119,8 @@ public class GestionnaireMovie {
 			}
 			if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
-				for (Plateforme plateforme : plateformes) {
-					for (Plateforme moviePlateforme : movie.getPlateforme()) {
+				for (Platform plateforme : plateformes) {
+					for (Platform moviePlateforme : movie.getPlateforme()) {
 						if (moviePlateforme.equals(plateforme)) {
 							plateformeMatch = true;
 							break;
@@ -134,7 +137,7 @@ public class GestionnaireMovie {
 					matches = false;
 				}
 			}
-			if (addBy != null && !movie.getAddBy().equals(addBy)) {
+			if (addBy != null && !movie.getAddBy().equals(addBy.getName())) {
 				matches = false;
 			}
 

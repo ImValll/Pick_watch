@@ -1,6 +1,9 @@
 package view.movie;
 
 import model.*;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.movie.GestionnaireMovie;
 import model.movie.Movie;
 
@@ -19,9 +22,9 @@ public class PanelRandomMovie extends JPanel {
 	private Genre[] genres;
 	private int duree;
 	private Date dateSortie;
-	private Plateforme[] plateformes;
+	private Platform[] plateformes;
 	private int dejaVu = -1;
-	private Utilisateur addBy;
+	private User addBy;
 
 	private Movie movie;
 	private JPanel moviePanel;
@@ -33,7 +36,7 @@ public class PanelRandomMovie extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireMovie = gestionnaireMovie;
 		this.movieFrame = movieFrame;
 		this.rea = rea;

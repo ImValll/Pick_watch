@@ -1,10 +1,9 @@
 package model.serie_courte;
 
 import model.DataManager;
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
-import model.serie.Serie;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +59,7 @@ public class GestionnaireSerieCourte {
 		}
 	}
 
-	public void updateSerieCourteAddBy(SerieCourte serieCourte, Utilisateur newAddBy) {
+	public void updateSerieCourteAddBy(SerieCourte serieCourte, User newAddBy) {
 		serieCourte.setAddBy(newAddBy);
 	}
 
@@ -90,7 +89,7 @@ public class GestionnaireSerieCourte {
 				.orElse(null);
 	}
 
-	public SerieCourte pickRandomSerieCourte(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public SerieCourte pickRandomSerieCourte(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<SerieCourte> filteredSerieCourte = new ArrayList<>();
 
 		for (SerieCourte serieCourte : seriesCourte) {
@@ -128,8 +127,8 @@ public class GestionnaireSerieCourte {
 			}
 			if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
-				for (Plateforme plateforme : plateformes) {
-					for (Plateforme serieCourtePlateforme : serieCourte.getPlateforme()) {
+				for (Platform plateforme : plateformes) {
+					for (Platform serieCourtePlateforme : serieCourte.getPlateforme()) {
 						if (serieCourtePlateforme.equals(plateforme)) {
 							plateformeMatch = true;
 							break;

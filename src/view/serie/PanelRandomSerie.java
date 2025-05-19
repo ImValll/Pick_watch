@@ -1,11 +1,10 @@
 package view.serie;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.serie.GestionnaireSerie;
 import model.serie.Serie;
-import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +23,9 @@ public class PanelRandomSerie extends JPanel {
 	private int dureeMoyenne;
 	private Date dateSortie;
 	private Date dateSortie2;
-	private Plateforme[] plateformes;
+	private Platform[] plateformes;
 	private int dejaVu = -1;
-	private Utilisateur addBy;
+	private User addBy;
 
 	private Serie serie;
 	private JPanel seriePanel;
@@ -38,7 +37,7 @@ public class PanelRandomSerie extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public PanelRandomSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireSerie = gestionnaireSerie;
 		this.serieFrame = serieFrame;
 		this.genres = genres;

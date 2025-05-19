@@ -1,8 +1,8 @@
 package view.saga;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.saga.GestionnaireSaga;
 import model.saga.Saga;
 
@@ -22,9 +22,9 @@ public class PanelRandomSaga extends JPanel {
 	private int nbFilm;
 	private Date dateSortie;
 	private Date dateSortie2;
-	private Plateforme[] plateformes;
+	private Platform[] plateformes;
 	private int dejaVu = -1;
-	private Utilisateur addBy;
+	private User addBy;
 
 	private Saga saga;
 	private JPanel sagaPanel;
@@ -36,7 +36,7 @@ public class PanelRandomSaga extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame, String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public PanelRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame, String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireSaga = gestionnaireSaga;
 		this.sagaFrame = sagaFrame;
 		this.rea = rea;

@@ -1,10 +1,16 @@
 package model;
 
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
 import model.serie_courte.SerieCourte;
 import view.movie.PanelMovies;
+import view.parameter.genres.PanelGenre;
+import view.parameter.platforms.PanelPlatform;
+import view.parameter.users.PanelUser;
 import view.saga.PanelSaga;
 import view.serie.PanelSerie;
 import view.serie_courte.PanelSerieCourte;
@@ -98,6 +104,66 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 					panel.editSerieCourte(serieCourte);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSerieCourte(serieCourte);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelGenre panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the genre from the table model using the row index
+				Genre genre = panel.getGestionnaire().findGenreByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
+				if ("Modifier".equals(label)) {
+					panel.editGenre(genre);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteGenre(genre);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelPlatform panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the platform from the table model using the row index
+				Platform platform = panel.getGestionnaire().findPlatformByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Plateform objects
+				if ("Modifier".equals(label)) {
+					panel.editPlatform(platform);
+				} else if ("Supprimer".equals(label)) {
+					panel.deletePlatform(platform);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelUser panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the user from the table model using the row index
+				User user = panel.getGestionnaire().findUserByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds User objects
+				if ("Modifier".equals(label)) {
+					panel.editUser(user);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteUser(user);
 				}
 			}
 		});

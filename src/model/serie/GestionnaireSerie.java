@@ -1,10 +1,9 @@
 package model.serie;
 
 import model.DataManager;
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
-import model.serie.Serie;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +59,7 @@ public class GestionnaireSerie {
 		}
 	}
 
-	public void updateSerieAddBy(Serie serie, Utilisateur newAddBy) {
+	public void updateSerieAddBy(Serie serie, User newAddBy) {
 		serie.setAddBy(newAddBy);
 	}
 
@@ -90,7 +89,7 @@ public class GestionnaireSerie {
 				.orElse(null);
 	}
 
-	public Serie pickRandomSerie(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public Serie pickRandomSerie(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Serie> filteredSerie = new ArrayList<>();
 
 		for (Serie serie : series) {
@@ -128,8 +127,8 @@ public class GestionnaireSerie {
 			}
 			if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
-				for (Plateforme plateforme : plateformes) {
-					for (Plateforme seriePlateforme : serie.getPlateforme()) {
+				for (Platform plateforme : plateformes) {
+					for (Platform seriePlateforme : serie.getPlateforme()) {
 						if (seriePlateforme.equals(plateforme)) {
 							plateformeMatch = true;
 							break;

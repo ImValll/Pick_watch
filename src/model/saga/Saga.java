@@ -1,8 +1,8 @@
 package model.saga;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,11 +16,11 @@ public class Saga implements Serializable {
 	private int nombreFilms;
 	private Date dateSortiePremier;
 	private Date dateSortieDernier;
-	private Plateforme[] plateforme;
+	private Platform[] plateforme;
 	private Boolean dejaVu;
-	private Utilisateur addBy;
+	private User addBy;
 
-	public Saga(String titre, String realistateur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Plateforme[] plateforme, Boolean dejaVu, Utilisateur addBy) {
+	public Saga(String titre, String realistateur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Platform[] plateforme, Boolean dejaVu, User addBy) {
 		this.titre = titre;
 		this.realistateur = realistateur;
 		this.description = description;
@@ -89,11 +89,11 @@ public class Saga implements Serializable {
 		this.dateSortieDernier = dateSortieDernier;
 	}
 
-	public Plateforme[] getPlateforme() {
+	public Platform[] getPlateforme() {
 		return plateforme;
 	}
 
-	public void setPlateforme(Plateforme[] plateforme) {
+	public void setPlateforme(Platform[] plateforme) {
 		this.plateforme = plateforme;
 	}
 
@@ -105,11 +105,11 @@ public class Saga implements Serializable {
 		this.dejaVu = dejaVu;
 	}
 
-	public Utilisateur getAddBy() {
+	public User getAddBy() {
 		return addBy;
 	}
 
-	public void setAddBy(Utilisateur addBy) {
+	public void setAddBy(User addBy) {
 		this.addBy = addBy;
 	}
 }

@@ -1,10 +1,9 @@
 package model.saga;
 
 import model.DataManager;
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
-import model.movie.Movie;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,7 +58,7 @@ public class GestionnaireSaga {
 		}
 	}
 
-	public void updateSagaAddBy(Saga saga, Utilisateur newAddBy) {
+	public void updateSagaAddBy(Saga saga, User newAddBy) {
 		saga.setAddBy(newAddBy);
 	}
 
@@ -89,7 +88,7 @@ public class GestionnaireSaga {
 				.orElse(null);
 	}
 
-	public Saga pickRandomSaga(String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Plateforme[] plateformes, int dejaVu, Utilisateur addBy) {
+	public Saga pickRandomSaga(String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Saga> filteredSaga = new ArrayList<>();
 
 		for (Saga saga : sagas) {
@@ -124,8 +123,8 @@ public class GestionnaireSaga {
 			}
 			if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
-				for (Plateforme plateforme : plateformes) {
-					for (Plateforme moviePlateforme : saga.getPlateforme()) {
+				for (Platform plateforme : plateformes) {
+					for (Platform moviePlateforme : saga.getPlateforme()) {
 						if (moviePlateforme.equals(plateforme)) {
 							plateformeMatch = true;
 							break;

@@ -1,27 +1,26 @@
 package view.serie_courte;
 
 import model.*;
-import model.serie.GestionnaireSerie;
-import model.serie.Serie;
-import model.serie.SerieTableModel;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.serie_courte.GestionnaireSerieCourte;
 import model.serie_courte.SerieCourte;
 import model.serie_courte.SerieCourteTableModel;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
 
 public class PanelSerieCourte extends JPanel {
+
+	DataManager dataManager = new DataManager();
 
 	SerieCourteFrame serieCourteFrame;
 
@@ -119,11 +118,11 @@ public class PanelSerieCourte extends JPanel {
 		JTextField titleField = new JTextField();
 		JTextField descriptionField = new JTextField();
 
-		Genre[] genres = Genre.values();
+		ArrayList<Genre> genres = dataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
-			JCheckBox checkBox = new JCheckBox(genre.name());
+			JCheckBox checkBox = new JCheckBox(genre.getName());
 			genreCheckBoxes.add(checkBox);
 			genrePanel.add(checkBox);
 		}
@@ -152,11 +151,11 @@ public class PanelSerieCourte extends JPanel {
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 
 
-		Plateforme[] platforms = Plateforme.values();
+		ArrayList<Platform> platforms = dataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
-		for (Plateforme platform : platforms) {
-			JCheckBox checkBox = new JCheckBox(platform.name());
+		for (Platform platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.getName());
 			platformCheckBoxes.add(checkBox);
 			platformPanel.add(checkBox);
 		}
@@ -174,7 +173,12 @@ public class PanelSerieCourte extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
+		ArrayList<User> users = dataManager.loadUser();
+		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
+		for (User user : users) {
+			addByModel.addElement(user);
+		}
+		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
@@ -216,7 +220,7 @@ public class PanelSerieCourte extends JPanel {
 					java.util.List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+							selectedGenres.add(new Genre(checkBox.getText()));
 						}
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
@@ -249,18 +253,23 @@ public class PanelSerieCourte extends JPanel {
 					}
 
 					// Get platforms
-					java.util.List<Plateforme> selectedPlatforms = new ArrayList<>();
+					java.util.List<Platform> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+							selectedPlatforms.add(new Platform(checkBox.getText()));
 						}
 					}
-					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
+					Platform[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Platform[0]);
 
 					// Get "Déjà vu" status
 					boolean dejaVu = dejaVuButton.isSelected();
 
-					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+					User addBy;
+					if(addByComboBox.getSelectedItem() == null) {
+						addBy = new User("Tous");
+					} else {
+						addBy = new User(addByComboBox.getSelectedItem().toString());
+					}
 
 					boolean canBeAdd = true;
 
@@ -269,11 +278,11 @@ public class PanelSerieCourte extends JPanel {
 						SerieCourte serieCourte = listSerieCourte.get(i);
 						if (serieCourte.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
-							if (serieCourte.getAddBy() == Utilisateur.Nous2 || serieCourte.getAddBy() == addBy) {
+							if (Objects.equals(serieCourte.getAddBy().getName(), "Tous") || serieCourte.getAddBy() == addBy) {
 								JOptionPane.showMessageDialog(this, "Erreur: La série " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
 							} else {
-								gestionnaireSerieCourte.updateSerieCourteAddBy(serieCourte, Utilisateur.Nous2);
-								JOptionPane.showMessageDialog(this, "La série " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Nous2.", "Erreur série déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								gestionnaireSerieCourte.updateSerieCourteAddBy(serieCourte, new User("Tous"));
+								JOptionPane.showMessageDialog(this, "La série " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Tous.", "Erreur série déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
@@ -316,12 +325,12 @@ public class PanelSerieCourte extends JPanel {
 		titleField.setEnabled(false);
 		JTextField descriptionField = new JTextField(serieCourte.getDescription());
 
-		Genre[] genres = Genre.values();
+		ArrayList<Genre> genres = dataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
-			JCheckBox checkBox = new JCheckBox(genre.name());
-			if(serieCourte.getGenre() != null && check(serieCourte.getGenre(), genre.name())) {
+			JCheckBox checkBox = new JCheckBox(genre.getName());
+			if(serieCourte.getGenre() != null && check(serieCourte.getGenre(), genre.getName())) {
 				checkBox.setSelected(true);
 			}
 			genreCheckBoxes.add(checkBox);
@@ -367,12 +376,12 @@ public class PanelSerieCourte extends JPanel {
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 
-		Plateforme[] platforms = Plateforme.values();
+		ArrayList<Platform> platforms = dataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
-		for (Plateforme platform : platforms) {
-			JCheckBox checkBox = new JCheckBox(platform.name());
-			if(serieCourte.getPlateforme() != null && check(serieCourte.getPlateforme(), platform.name())) {
+		for (Platform platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.getName());
+			if(serieCourte.getPlateforme() != null && check(serieCourte.getPlateforme(), platform.getName())) {
 				checkBox.setSelected(true);
 			}
 			platformCheckBoxes.add(checkBox);
@@ -399,7 +408,12 @@ public class PanelSerieCourte extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		JComboBox<Utilisateur> addByComboBox = new JComboBox<>(Utilisateur.values());
+		ArrayList<User> users = dataManager.loadUser();
+		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
+		for (User user : users) {
+			addByModel.addElement(user);
+		}
+		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(serieCourte.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {
@@ -442,7 +456,7 @@ public class PanelSerieCourte extends JPanel {
 					java.util.List<Genre> selectedGenres = new ArrayList<>();
 					for (JCheckBox checkBox : genreCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedGenres.add(Genre.valueOf(checkBox.getText()));
+							selectedGenres.add(new Genre(checkBox.getText()));
 						}
 					}
 					Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
@@ -477,18 +491,23 @@ public class PanelSerieCourte extends JPanel {
 					}
 
 					// Get platforms
-					java.util.List<Plateforme> selectedPlatforms = new ArrayList<>();
+					java.util.List<Platform> selectedPlatforms = new ArrayList<>();
 					for (JCheckBox checkBox : platformCheckBoxes) {
 						if (checkBox.isSelected()) {
-							selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+							selectedPlatforms.add(new Platform(checkBox.getText()));
 						}
 					}
-					Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
+					Platform[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Platform[0]);
 
 					// Get "Déjà vu" status
 					boolean dejaVu = dejaVuButton.isSelected();
 
-					Utilisateur addBy = Utilisateur.valueOf(addByComboBox.getSelectedItem().toString());
+					User addBy;
+					if(addByComboBox.getSelectedItem() == null) {
+						addBy = new User("Tous");
+					} else {
+						addBy = new User(addByComboBox.getSelectedItem().toString());
+					}
 
 					SerieCourte newSerieCourte = new SerieCourte(titre, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 					gestionnaireSerieCourte.editSerieCourte(oldTitle, newSerieCourte); // Ajouter la serie courte à votre gestionnaire de séries

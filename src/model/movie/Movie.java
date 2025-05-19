@@ -1,8 +1,9 @@
 package model.movie;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,11 +16,11 @@ public class Movie implements Serializable {
 	private Genre[] genre;
 	private int duree;
 	private Date dateSortie;
-	private Plateforme[] plateforme;
+	private Platform[] plateforme;
 	private boolean dejaVu;
-	private Utilisateur addBy;
+	private User addBy;
 
-	public Movie(String titre, String realistateur, String description, Genre[] genre, int duree, Date dateSortie, Plateforme[] plateforme, boolean dejaVu, Utilisateur addBy) {
+	public Movie(String titre, String realistateur, String description, Genre[] genre, int duree, Date dateSortie, Platform[] plateforme, boolean dejaVu, User addBy) {
 		this.titre = titre;
 		this.realistateur = realistateur;
 		this.description = description;
@@ -55,7 +56,7 @@ public class Movie implements Serializable {
 		return dateSortie;
 	}
 
-	public Plateforme[] getPlateforme() {
+	public Platform[] getPlateforme() {
 		return plateforme;
 	}
 
@@ -63,7 +64,7 @@ public class Movie implements Serializable {
 		return dejaVu;
 	}
 
-	public Utilisateur getAddBy() {
+	public User getAddBy() {
 		return addBy;
 	}
 
@@ -91,7 +92,7 @@ public class Movie implements Serializable {
 		this.dateSortie = dateSortie;
 	}
 
-	public void setPlateforme(Plateforme[] plateforme) {
+	public void setPlateforme(Platform[] plateforme) {
 		this.plateforme = plateforme;
 	}
 
@@ -99,7 +100,7 @@ public class Movie implements Serializable {
 		this.dejaVu = dejaVu;
 	}
 
-	public void setAddBy(Utilisateur addBy) {
+	public void setAddBy(User addBy) {
 		this.addBy = addBy;
 	}
 }

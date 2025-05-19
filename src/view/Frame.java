@@ -1,6 +1,7 @@
 package view;
 
 import view.movie.MovieFrame;
+import view.parameter.ParameterFrame;
 import view.saga.SagaFrame;
 import view.serie.SerieFrame;
 import view.serie_courte.SerieCourteFrame;
@@ -22,6 +23,7 @@ public class Frame extends JFrame {
 		JButton btnSaga = createButton("SAGAS", new Color(70, 130, 180));
 		JButton btnSerie = createButton("SERIES", new Color(70, 130, 180));
 		JButton btnSerieCourte = createButton("SERIES COURTE", new Color(70, 130, 180));
+		JButton btnParameter = createButton("PARAMETRES", new Color(220, 20, 60));
 		JButton btnQuitter = createButton("QUITTER", new Color(220, 20, 60));
 
 
@@ -34,12 +36,14 @@ public class Frame extends JFrame {
 		add(btnSaga, gbc);
 		add(btnSerie, gbc);
 		add(btnSerieCourte, gbc);
+		add(btnParameter, gbc);
 		add(btnQuitter, gbc);
 
 		btnMovie.addActionListener(e -> movieFunction());
 		btnSaga.addActionListener(e -> sagaFunction());
 		btnSerie.addActionListener(e -> serieFunction());
 		btnSerieCourte.addActionListener(e -> serieCourteFunction());
+		btnParameter.addActionListener(e -> parameterFunction());
 		btnQuitter.addActionListener(e -> quitter());
 
 		this.setVisible(true);
@@ -63,6 +67,11 @@ public class Frame extends JFrame {
 	private void serieCourteFunction() {
 		dispose();
 		new SerieCourteFrame();
+	}
+
+	private void parameterFunction() {
+		dispose();
+		new ParameterFrame();
 	}
 
 	private void quitter() {

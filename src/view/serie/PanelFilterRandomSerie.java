@@ -1,11 +1,10 @@
 package view.serie;
 
-import model.Genre;
-import model.Plateforme;
-import model.Utilisateur;
+import model.DataManager;
+import model.genre.Genre;
+import model.genre.Platform;
+import model.genre.User;
 import model.serie.GestionnaireSerie;
-import view.serie.PanelRandomSerie;
-import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 public class PanelFilterRandomSerie extends JPanel {
+
+	DataManager dataManager = new DataManager();
 
 	private GestionnaireSerie gestionnaireSerie;
 	private SerieFrame serieFrame;
@@ -55,11 +56,11 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelGenre.setForeground(Color.WHITE);
 		centerPanel.add(labelGenre);
 
-		Genre[] genres = Genre.values();
+		ArrayList<Genre> genres = dataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
-			JCheckBox checkBox = new JCheckBox(genre.name());
+			JCheckBox checkBox = new JCheckBox(genre.getName());
 			checkBox.setBackground(new Color(50, 50, 50));
 			checkBox.setForeground(Color.WHITE);
 			genreCheckBoxes.add(checkBox);
@@ -119,11 +120,11 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelPlateforme.setForeground(Color.WHITE);
 		centerPanel.add(labelPlateforme);
 
-		Plateforme[] platforms = Plateforme.values();
+		ArrayList<Platform> platforms = dataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		platformCheckBoxes = new ArrayList<>();
-		for (Plateforme platform : platforms) {
-			JCheckBox checkBox = new JCheckBox(platform.name());
+		for (Platform platform : platforms) {
+			JCheckBox checkBox = new JCheckBox(platform.getName());
 			checkBox.setBackground(new Color(50, 50, 50));
 			checkBox.setForeground(Color.WHITE);
 			platformCheckBoxes.add(checkBox);
@@ -158,8 +159,12 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
-		Utilisateur[] users = Utilisateur.values();
-		userComboBox = new JComboBox<>(new Object[]{"Ignorer", users[0], users[1], users[2]});
+		ArrayList<User> users = dataManager.loadUser();
+		DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>();
+		comboBoxModel.addElement("Ignorer");
+		for (User user : users) {
+			comboBoxModel.addElement(user);
+		}
 		userComboBox.setSelectedItem("Ignorer"); // Default value
 		userComboBox.setBackground(Color.LIGHT_GRAY);
 		userComboBox.setForeground(Color.BLACK);
@@ -194,7 +199,7 @@ public class PanelFilterRandomSerie extends JPanel {
 		List<Genre> selectedGenres = new ArrayList<>();
 		for (JCheckBox checkBox : genreCheckBoxes) {
 			if (checkBox.isSelected()) {
-				selectedGenres.add(Genre.valueOf(checkBox.getText()));
+				selectedGenres.add(new Genre(checkBox.getText()));
 			}
 		}
 		Genre[] genresArray = selectedGenres.isEmpty() ? null : selectedGenres.toArray(new Genre[0]);
@@ -237,13 +242,13 @@ public class PanelFilterRandomSerie extends JPanel {
 		}
 
 		// Get platforms
-		List<Plateforme> selectedPlatforms = new ArrayList<>();
+		List<Platform> selectedPlatforms = new ArrayList<>();
 		for (JCheckBox checkBox : platformCheckBoxes) {
 			if (checkBox.isSelected()) {
-				selectedPlatforms.add(Plateforme.valueOf(checkBox.getText()));
+				selectedPlatforms.add(new Platform(checkBox.getText()));
 			}
 		}
-		Plateforme[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Plateforme[0]);
+		Platform[] platformsArray = selectedPlatforms.isEmpty() ? null : selectedPlatforms.toArray(new Platform[0]);
 
 		// Get "Déjà vu" status
 		int dejaVu;
@@ -258,10 +263,10 @@ public class PanelFilterRandomSerie extends JPanel {
 		}
 
 		// Get user
-		Utilisateur addBy = null;
+		User addBy = null;
 		Object selectedUser = userComboBox.getSelectedItem();
-		if (selectedUser instanceof Utilisateur) {
-			addBy = (Utilisateur) selectedUser;
+		if (selectedUser instanceof User) {
+			addBy = (User)selectedUser;
 		}
 
 		// Create PanelRandomSerie
