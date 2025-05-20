@@ -9,6 +9,7 @@ import model.serie_courte.SerieCourte;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GestionnaireGenre {
@@ -70,41 +71,49 @@ public class GestionnaireGenre {
 	public void editGenre(String titre, Genre newGenre) {
 		Genre genre = findGenreByTitle(titre);
 
-		Boolean utilise = true;
+		Boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();
 		ArrayList<SerieCourte> serieCourteUtilise = new ArrayList<>();
 
 		for (Movie movie : movies) {
-			for(Genre genreMovie : movie.getGenre()) {
-				if(genreMovie.equals(genre)) {
-					utilise = false;
-					movieUtilise.add(movie);
+			if(movie.getGenre() != null) {
+				for (Genre genreMovie : movie.getGenre()) {
+					if (Objects.equals(genreMovie.getName(), genre.getName())) {
+						utilise = true;
+						movieUtilise.add(movie);
+					}
 				}
 			}
 		}
 		for (Saga saga : sagas) {
-			for(Genre genreSaga : saga.getGenre()) {
-				if(genreSaga.equals(genre)) {
-					utilise = false;
-					sagaUtilise.add(saga);
+			if(saga.getGenre() != null) {
+				for (Genre genreSaga : saga.getGenre()) {
+					if (Objects.equals(genreSaga.getName(), genre.getName())) {
+						utilise = true;
+						sagaUtilise.add(saga);
+					}
 				}
 			}
 		}
 		for (Serie serie : series) {
-			for(Genre genreSerie : serie.getGenre()) {
-				if(genreSerie.equals(genre)) {
-					utilise = false;
-					serieUtilise.add(serie);
+			if(serie.getGenre() != null) {
+				for (Genre genreSerie : serie.getGenre()) {
+					if (Objects.equals(genreSerie.getName(), genre.getName())) {
+						utilise = true;
+						serieUtilise.add(serie);
+					}
 				}
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			for(Genre genreSerieCourte : serieCourte.getGenre()) {
-				if(genreSerieCourte.equals(genre)) {
-					utilise = false;
-					serieCourteUtilise.add(serieCourte);
+			if(serieCourte.getGenre() != null) {
+				for (Genre genreSerieCourte : serieCourte.getGenre()) {
+					if (Objects.equals(genreSerieCourte.getName(), genre.getName())) {
+						utilise = true;
+						serieCourteUtilise.add(serieCourte);
+					}
 				}
 			}
 		}
@@ -114,11 +123,11 @@ public class GestionnaireGenre {
 				for(Movie movie : movieUtilise) {
 					ArrayList<Genre> genres = new ArrayList<>();
 					for(Genre genreMovie : movie.getGenre()) {
-						if(!genreMovie.equals(genre)) {
+						if(!genreMovie.getName().equals(genre.getName())) {
 							genres.add(genreMovie);
 						}
 					}
-					genres.add(genre);
+					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
 					Movie newMovie = movie;
 					newMovie.setGenre(genreArray);
@@ -131,11 +140,11 @@ public class GestionnaireGenre {
 				for(Saga saga : sagaUtilise) {
 					ArrayList<Genre> genres = new ArrayList<>();
 					for(Genre genreSaga : saga.getGenre()) {
-						if(!genreSaga.equals(genre)) {
+						if(!genreSaga.getName().equals(genre.getName())) {
 							genres.add(genreSaga);
 						}
 					}
-					genres.add(genre);
+					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
 					Saga newSaga = saga;
 					newSaga.setGenre(genreArray);
@@ -148,11 +157,11 @@ public class GestionnaireGenre {
 				for(Serie serie : serieUtilise) {
 					ArrayList<Genre> genres = new ArrayList<>();
 					for(Genre genreSerie : serie.getGenre()) {
-						if(!genreSerie.equals(genre)) {
+						if(!genreSerie.getName().equals(genre.getName())) {
 							genres.add(genreSerie);
 						}
 					}
-					genres.add(genre);
+					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
 					Serie newSerie = serie;
 					newSerie.setGenre(genreArray);
@@ -165,11 +174,11 @@ public class GestionnaireGenre {
 				for(SerieCourte serieCourte : serieCourteUtilise) {
 					ArrayList<Genre> genres = new ArrayList<>();
 					for(Genre genreSerieCourte : serieCourte.getGenre()) {
-						if(!genreSerieCourte.equals(genre)) {
+						if(!genreSerieCourte.getName().equals(genre.getName())) {
 							genres.add(genreSerieCourte);
 						}
 					}
-					genres.add(genre);
+					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
 					SerieCourte newSerieCourte = serieCourte;
 					newSerieCourte.setGenre(genreArray);
@@ -203,34 +212,42 @@ public class GestionnaireGenre {
 		String utilise = "";
 
 		for (Movie movie : movies) {
-			for(Genre genreMovie : movie.getGenre()) {
-				if(genreMovie.equals(genre)) {
-					peutSupprimer = false;
-					utilise = "un ou plusieurs films";
+			if(movie.getGenre() != null) {
+				for (Genre genreMovie : movie.getGenre()) {
+					if (genreMovie.getName().equals(genre.getName())) {
+						peutSupprimer = false;
+						utilise = "un ou plusieurs films";
+					}
 				}
 			}
 		}
 		for (Saga saga : sagas) {
-			for(Genre genreSaga : saga.getGenre()) {
-				if(genreSaga.equals(genre)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs sagas";
+			if(saga.getGenre() != null) {
+				for (Genre genreSaga : saga.getGenre()) {
+					if (genreSaga.getName().equals(genre.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs sagas";
+					}
 				}
 			}
 		}
 		for (Serie serie : series) {
-			for(Genre genreSerie : serie.getGenre()) {
-				if(genreSerie.equals(genre)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs séries";
+			if(serie.getGenre() != null) {
+				for (Genre genreSerie : serie.getGenre()) {
+					if (genreSerie.getName().equals(genre.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs séries";
+					}
 				}
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			for(Genre genreSerieCourte : serieCourte.getGenre()) {
-				if(genreSerieCourte.equals(genre)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs séries courtes";
+			if(serieCourte.getGenre() != null) {
+				for (Genre genreSerieCourte : serieCourte.getGenre()) {
+					if (genreSerieCourte.getName().equals(genre.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs séries courtes";
+					}
 				}
 			}
 		}

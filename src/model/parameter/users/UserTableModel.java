@@ -58,9 +58,17 @@ public class UserTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 1:
-				return "Modifier";
+				if (!user.getName().equals("Tous")) {
+					return "Modifier";
+				} else {
+					return "";
+				}
 			case 2:
-				return "Supprimer";
+				if (!user.getName().equals("Tous")) {
+					return "Supprimer";
+				} else {
+					return "";
+				}
 			default:
 				return null;
 		}

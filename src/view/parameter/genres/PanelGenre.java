@@ -166,7 +166,6 @@ public class PanelGenre extends JPanel {
 
 	public void editGenre(Genre genre) {
 
-		String oldTitle = genre.getName();
 		JTextField oldTitleField = new JTextField(genre.getName());
 		oldTitleField.setEnabled(false);
 
@@ -189,7 +188,7 @@ public class PanelGenre extends JPanel {
 				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 			} else {
 				Genre newGenre = new Genre(titre);
-				gestionnaireGenre.editGenre(oldTitle, newGenre); // Ajouter le genre à votre gestionnaire de genre
+				gestionnaireGenre.editGenre(oldTitleField.getText(), newGenre); // Ajouter le genre à votre gestionnaire de genre
 			}
 
 			// Mettre à jour le modèle de tableau après l'ajout du genre

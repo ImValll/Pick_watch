@@ -19,6 +19,8 @@ public class GestionnaireUser {
 	private List<Serie> series;
 	private List<SerieCourte> seriesCourtes;
 
+	private String[] message = new String[3];
+
 	public GestionnaireUser() {
 		users = DataManager.loadUser();
 		if (users == null) {
@@ -67,33 +69,33 @@ public class GestionnaireUser {
 	public void editUser(String titre, User newUser) {
 		User user = findUserByTitle(titre);
 
-		Boolean utilise = true;
+		Boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();
 		ArrayList<SerieCourte> serieCourteUtilise = new ArrayList<>();
 
 		for (Movie movie : movies) {
-			if(user.equals(movie.getAddBy())) {
-				utilise = false;
+			if(user.getName().equals(movie.getAddBy().getName())) {
+				utilise = true;
 				movieUtilise.add(movie);
 			}
 		}
 		for (Saga saga : sagas) {
-			if(user.equals(saga.getAddBy())) {
-				utilise = false;
+			if(user.getName().equals(saga.getAddBy().getName())) {
+				utilise = true;
 				sagaUtilise.add(saga);
 			}
 		}
 		for (Serie serie : series) {
-			if(user.equals(serie.getAddBy())) {
-				utilise = false;
+			if(user.getName().equals(serie.getAddBy().getName())) {
+				utilise = true;
 				serieUtilise.add(serie);
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			if(user.equals(serieCourte.getAddBy())) {
-				utilise = false;
+			if(user.getName().equals(serieCourte.getAddBy().getName())) {
+				utilise = true;
 				serieCourteUtilise.add(serieCourte);
 			}
 		}
@@ -101,7 +103,7 @@ public class GestionnaireUser {
 		if(utilise) {
 			if(!movieUtilise.isEmpty()) {
 				for(Movie movie : movieUtilise) {
-					User userMovie = user;
+					User userMovie = newUser;
 					Movie newMovie = movie;
 					newMovie.setAddBy(userMovie);
 					movies.remove(movie);
@@ -111,7 +113,7 @@ public class GestionnaireUser {
 			}
 			if(!sagaUtilise.isEmpty()) {
 				for(Saga saga : sagaUtilise) {
-					User userSaga = user;
+					User userSaga = newUser;
 					Saga newSaga = saga;
 					newSaga.setAddBy(userSaga);
 					sagas.remove(saga);
@@ -121,7 +123,7 @@ public class GestionnaireUser {
 			}
 			if(!serieUtilise.isEmpty()) {
 				for(Serie serie : serieUtilise) {
-					User userSerie = user;
+					User userSerie = newUser;
 					Serie newSerie = serie;
 					newSerie.setAddBy(userSerie);
 					series.remove(serie);
@@ -131,7 +133,7 @@ public class GestionnaireUser {
 			}
 			if(!serieCourteUtilise.isEmpty()) {
 				for(SerieCourte serieCourte : serieCourteUtilise) {
-					User userSerieCourte = user;
+					User userSerieCourte = newUser;
 					SerieCourte newSerieCourte = serieCourte;
 					newSerieCourte.setAddBy(userSerieCourte);
 					seriesCourtes.remove(serieCourte);
@@ -144,8 +146,13 @@ public class GestionnaireUser {
 		if (user != null) {
 			user.setName(newUser.getName());
 			DataManager.saveUser(users);
-			System.out.println("Utilisateur modifié : " + user.getName());
+			message[0] = "i";
+			message[1] = "Utilisateur modifié";
+			message[2] = "L'utilisateur " + user.getName() + " a été modifié avec succès.";
 		} else {
+			message[0] = "e";
+			message[1] = "Utilisateur non trouvé";
+			message[2] = "Erreur, l'utilisateur n'a pas été trouvé.";
 			System.out.println("Utilisateur non trouvé.");
 		}
 	}
@@ -159,25 +166,25 @@ public class GestionnaireUser {
 		String utilise = "";
 
 		for (Movie movie : movies) {
-			if(user.equals(movie.getAddBy())) {
+			if(user.getName().equals(movie.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "un ou plusieurs films";
 			}
 		}
 		for (Saga saga : sagas) {
-			if(user.equals(saga.getAddBy())) {
+			if(user.getName().equals(saga.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs sagas";
 			}
 		}
 		for (Serie serie : series) {
-			if(user.equals(serie.getAddBy())) {
+			if(user.getName().equals(serie.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs séries";
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			if(user.equals(serieCourte.getAddBy())) {
+			if(user.getName().equals(serieCourte.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs séries courtes";
 			}
@@ -188,10 +195,18 @@ public class GestionnaireUser {
 				users.remove(user);
 				DataManager.saveUser(users); // Mettre à jour la liste des users
 				System.out.println("Utilisateur supprimé : " + user.getName());
+				message[0] = "i";
+				message[1] = "Utilisateur supprimé";
+				message[2] = "L'utilisateur " + user.getName() + " a été supprimé avec succès.";
 			} else {
-				System.out.println("Impossible de supprimer l'utilisateur " + user.getName() + ", il est utilisé dans " + utilise + ".");
+				message[0] = "e";
+				message[1] = "Erreur utilisateur utilisé";
+				message[2] = "Impossible de supprimer l'utilisateur " + user.getName() + ", il est utilisé dans " + utilise + ".";
 			}
 		} else {
+			message[0] = "e";
+			message[1] = "Utilisateur non trouvé";
+			message[2] = "Erreur, l'utilisateur n'a pas été trouvé.";
 			System.out.println("Utilisateur non trouvé.");
 		}
 	}
@@ -201,5 +216,11 @@ public class GestionnaireUser {
 				.filter(user -> user.getName().equals(titre))
 				.findFirst()
 				.orElse(null);
+	}
+
+	public String[] getMessage() {
+		String[] tempMessage = message;
+		message = new String[3];
+		return tempMessage;
 	}
 }

@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
 
 public class PanelUser extends JPanel {
 
@@ -157,6 +158,7 @@ public class PanelUser extends JPanel {
 
 	public void deleteUser(User user) {
 		gestionnaireUser.deleteUser(user);
+		afficheMessage();
 
 		java.util.List<User> updatedUser = gestionnaireUser.getUser(); // Récupérer la liste mise à jour des utilisateurs
 		tableModel.setUser(updatedUser); // Mettre à jour le modèle du tableau
@@ -164,7 +166,6 @@ public class PanelUser extends JPanel {
 
 	public void editUser(User user) {
 
-		String oldTitle = user.getName();
 		JTextField oldTitleField = new JTextField(user.getName());
 		oldTitleField.setEnabled(false);
 
@@ -187,14 +188,14 @@ public class PanelUser extends JPanel {
 				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 			} else {
 				User newUser = new User(titre);
-				gestionnaireUser.editUser(oldTitle, newUser); // Ajouter l'utilisateur à votre gestionnaire d'utilisateur
+				gestionnaireUser.editUser(oldTitleField.getText(), newUser); // Ajouter l'utilisateur à votre gestionnaire d'utilisateur
 			}
 
 			// Mettre à jour le modèle de tableau après l'ajout de l'utilisateur
 			List<User> updatedUser = gestionnaireUser.getUser(); // Récupérer la liste mise à jour des utilisateurs
 			tableModel.setUser(updatedUser); // Mettre à jour le modèle du tableau
 
-			JOptionPane.showMessageDialog(this, "Utilisateur modifié avec succès: " + titre, "Utilisateur modifié", JOptionPane.INFORMATION_MESSAGE);
+			afficheMessage();
 		}
 
 	}
@@ -231,5 +232,17 @@ public class PanelUser extends JPanel {
 
 	public GestionnaireUser getGestionnaire() {
 		return gestionnaireUser;
+	}
+
+	public void afficheMessage() {
+		String[] message = gestionnaireUser.getMessage();
+
+		if(message[0] != null) {
+			if(Objects.equals(message[0], "e")) {
+				JOptionPane.showMessageDialog(this, message[2], message[1], JOptionPane.ERROR_MESSAGE);
+			} else if(Objects.equals(message[0], "i")) {
+				JOptionPane.showMessageDialog(this, message[2], message[1], JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
 	}
 }

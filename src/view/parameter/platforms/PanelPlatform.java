@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
 
 public class PanelPlatform extends JPanel {
 
@@ -157,6 +158,7 @@ public class PanelPlatform extends JPanel {
 
 	public void deletePlatform(Platform platform) {
 		gestionnairePlatform.deletePlatform(platform);
+		afficheMessage();
 
 		java.util.List<Platform> updatedPlatform = gestionnairePlatform.getPlatform(); // Récupérer la liste mise à jour des series
 		tableModel.setPlatform(updatedPlatform); // Mettre à jour le modèle du tableau
@@ -164,7 +166,6 @@ public class PanelPlatform extends JPanel {
 
 	public void editPlatform(Platform platform) {
 
-		String oldTitle = platform.getName();
 		JTextField oldTitleField = new JTextField(platform.getName());
 		oldTitleField.setEnabled(false);
 
@@ -187,14 +188,14 @@ public class PanelPlatform extends JPanel {
 				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 			} else {
 				Platform newPlatform = new Platform(titre);
-				gestionnairePlatform.editPlatform(oldTitle, newPlatform); // Ajouter la plateforme à votre gestionnaire de plateforme
+				gestionnairePlatform.editPlatform(oldTitleField.getText(), newPlatform); // Ajouter la plateforme à votre gestionnaire de plateforme
 			}
 
 			// Mettre à jour le modèle de tableau après l'ajout du platform
 			List<Platform> updatedPlatform = gestionnairePlatform.getPlatform(); // Récupérer la liste mise à jour des plateformes
 			tableModel.setPlatform(updatedPlatform); // Mettre à jour le modèle du tableau
 
-			JOptionPane.showMessageDialog(this, "Plateforme modifiée avec succès: " + titre, "Plateforme modifiée", JOptionPane.INFORMATION_MESSAGE);
+			afficheMessage();
 		}
 
 	}
@@ -231,5 +232,17 @@ public class PanelPlatform extends JPanel {
 
 	public GestionnairePlatform getGestionnaire() {
 		return gestionnairePlatform;
+	}
+
+	public void afficheMessage() {
+		String[] message = gestionnairePlatform.getMessage();
+
+		if(message[0] != null) {
+			if(Objects.equals(message[0], "e")) {
+				JOptionPane.showMessageDialog(this, message[2], message[1], JOptionPane.ERROR_MESSAGE);
+			} else if(Objects.equals(message[0], "i")) {
+				JOptionPane.showMessageDialog(this, message[2], message[1], JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
 	}
 }

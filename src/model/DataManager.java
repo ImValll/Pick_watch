@@ -22,7 +22,7 @@ public class DataManager {
 	private static final String SERIE_COURTE_FILE = "shortSeries.ser";
 
 	public static void saveGenre(ArrayList<Genre> genres) {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GENRES_FILE))) {
 			oos.writeObject(genres);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class DataManager {
 	}
 
 	public static void savePlatform(ArrayList<Platform> platforms) {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PLATFORMS_FILE))) {
 			oos.writeObject(platforms);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,7 +62,7 @@ public class DataManager {
 	}
 
 	public static void saveUser(ArrayList<User> users) {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("genres.ser"))) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(USERS_FILE))) {
 			oos.writeObject(users);
 		} catch (IOException e) {
 			e.printStackTrace();

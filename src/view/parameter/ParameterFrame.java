@@ -1,8 +1,12 @@
 package view.parameter;
 
 import model.parameter.genres.GestionnaireGenre;
+import model.parameter.platforms.GestionnairePlatform;
+import model.parameter.users.GestionnaireUser;
 import view.Frame;
 import view.parameter.genres.PanelGenre;
+import view.parameter.platforms.PanelPlatform;
+import view.parameter.users.PanelUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,9 +48,9 @@ public class ParameterFrame extends JFrame {
 
 	private void manageUser() {
 		// Initialisation du Panel utilisateur
-//		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(new GestionnaireMovie(), this);
-//		setContentPane(panelRandomMovie);
-//		validate();
+		PanelUser panelUser = new PanelUser(new GestionnaireUser(), this);
+		setContentPane(panelUser);
+		validate();
 	}
 
 	private void manageGenre() {
@@ -57,10 +61,10 @@ public class ParameterFrame extends JFrame {
 	}
 
 	private void managePlatform() {
-		// Initialisation du Panel utilisateur
-//		PanelMovies panelMovies = new PanelMovies(new GestionnaireMovie(), this);
-//		setContentPane(panelMovies);
-//		validate();
+		// Initialisation du Panel plateforme
+		PanelPlatform panelPlatform = new PanelPlatform(new GestionnairePlatform(), this);
+		setContentPane(panelPlatform);
+		validate();
 	}
 
 	private void backToMenu() {

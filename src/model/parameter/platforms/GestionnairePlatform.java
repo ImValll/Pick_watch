@@ -18,6 +18,8 @@ public class GestionnairePlatform {
 	private List<Saga> sagas;
 	private List<Serie> series;
 	private List<SerieCourte> seriesCourtes;
+
+	private String[] message = new String[3];
 	
 	public GestionnairePlatform() {
 		platforms = DataManager.loadPlatform();
@@ -67,41 +69,49 @@ public class GestionnairePlatform {
 	public void editPlatform(String titre, Platform newPlatform) {
 		Platform platform = findPlatformByTitle(titre);
 	
-		Boolean utilise = true;
+		Boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();
 		ArrayList<SerieCourte> serieCourteUtilise = new ArrayList<>();
 	
 		for (Movie movie : movies) {
-			for(Platform platformMovie : movie.getPlateforme()) {
-				if(platformMovie.equals(platform)) {
-					utilise = false;
-					movieUtilise.add(movie);
+			if(movie.getPlateforme() != null) {
+				for (Platform platformMovie : movie.getPlateforme()) {
+					if (platformMovie.getName().equals(platform.getName())) {
+						utilise = true;
+						movieUtilise.add(movie);
+					}
 				}
 			}
 		}
 		for (Saga saga : sagas) {
-			for(Platform platformSaga : saga.getPlateforme()) {
-				if(platformSaga.equals(platform)) {
-					utilise = false;
-					sagaUtilise.add(saga);
+			if(saga.getPlateforme() != null) {
+				for (Platform platformSaga : saga.getPlateforme()) {
+					if (platformSaga.getName().equals(platform.getName())) {
+						utilise = true;
+						sagaUtilise.add(saga);
+					}
 				}
 			}
 		}
 		for (Serie serie : series) {
-			for(Platform platformSerie : serie.getPlateforme()) {
-				if(platformSerie.equals(platform)) {
-					utilise = false;
-					serieUtilise.add(serie);
+			if(serie.getPlateforme() != null) {
+				for (Platform platformSerie : serie.getPlateforme()) {
+					if (platformSerie.getName().equals(platform.getName())) {
+						utilise = true;
+						serieUtilise.add(serie);
+					}
 				}
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			for(Platform platformSerieCourte : serieCourte.getPlateforme()) {
-				if(platformSerieCourte.equals(platform)) {
-					utilise = false;
-					serieCourteUtilise.add(serieCourte);
+			if(serieCourte.getPlateforme() != null) {
+				for (Platform platformSerieCourte : serieCourte.getPlateforme()) {
+					if (platformSerieCourte.getName().equals(platform.getName())) {
+						utilise = true;
+						serieCourteUtilise.add(serieCourte);
+					}
 				}
 			}
 		}
@@ -111,11 +121,11 @@ public class GestionnairePlatform {
 				for(Movie movie : movieUtilise) {
 					ArrayList<Platform> platforms = new ArrayList<>();
 					for(Platform platformMovie : movie.getPlateforme()) {
-						if(!platformMovie.equals(platform)) {
+						if(!platformMovie.getName().equals(platform.getName())) {
 							platforms.add(platformMovie);
 						}
 					}
-					platforms.add(platform);
+					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
 					Movie newMovie = movie;
 					newMovie.setPlateforme(platformArray);
@@ -128,11 +138,11 @@ public class GestionnairePlatform {
 				for(Saga saga : sagaUtilise) {
 					ArrayList<Platform> platforms = new ArrayList<>();
 					for(Platform platformSaga : saga.getPlateforme()) {
-						if(!platformSaga.equals(platform)) {
+						if(!platformSaga.getName().equals(platform.getName())) {
 							platforms.add(platformSaga);
 						}
 					}
-					platforms.add(platform);
+					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
 					Saga newSaga = saga;
 					newSaga.setPlateforme(platformArray);
@@ -145,11 +155,11 @@ public class GestionnairePlatform {
 				for(Serie serie : serieUtilise) {
 					ArrayList<Platform> platforms = new ArrayList<>();
 					for(Platform platformSerie : serie.getPlateforme()) {
-						if(!platformSerie.equals(platform)) {
+						if(!platformSerie.getName().equals(platform.getName())) {
 							platforms.add(platformSerie);
 						}
 					}
-					platforms.add(platform);
+					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
 					Serie newSerie = serie;
 					newSerie.setPlateforme(platformArray);
@@ -162,11 +172,11 @@ public class GestionnairePlatform {
 				for(SerieCourte serieCourte : serieCourteUtilise) {
 					ArrayList<Platform> platforms = new ArrayList<>();
 					for(Platform platformSerieCourte : serieCourte.getPlateforme()) {
-						if(!platformSerieCourte.equals(platform)) {
+						if(!platformSerieCourte.getName().equals(platform.getName())) {
 							platforms.add(platformSerieCourte);
 						}
 					}
-					platforms.add(platform);
+					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
 					SerieCourte newSerieCourte = serieCourte;
 					newSerieCourte.setPlateforme(platformArray);
@@ -180,8 +190,13 @@ public class GestionnairePlatform {
 		if (platform != null) {
 			platform.setName(newPlatform.getName());
 			DataManager.savePlatform(platforms);
-			System.out.println("Plateforme modifiée : " + platform.getName());
+			message[0] = "i";
+			message[1] = "Plateforme modifiée";
+			message[2] = "La plateforme " + platform.getName() + " a été modifiée avec succès.";
 		} else {
+			message[0] = "e";
+			message[1] = "Plateforme non trouvée";
+			message[2] = "Erreur, la plateforme n'a pas été trouvée.";
 			System.out.println("Plateforme non trouvée.");
 		}
 	}
@@ -195,34 +210,42 @@ public class GestionnairePlatform {
 		String utilise = "";
 	
 		for (Movie movie : movies) {
-			for(Platform platformMovie : movie.getPlateforme()) {
-				if(platformMovie.equals(platform)) {
-					peutSupprimer = false;
-					utilise = "un ou plusieurs films";
+			if(movie.getPlateforme() != null) {
+				for (Platform platformMovie : movie.getPlateforme()) {
+					if (platformMovie.getName().equals(platform.getName())) {
+						peutSupprimer = false;
+						utilise = "un ou plusieurs films";
+					}
 				}
 			}
 		}
 		for (Saga saga : sagas) {
-			for(Platform platformSaga : saga.getPlateforme()) {
-				if(platformSaga.equals(platform)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs sagas";
+			if(saga.getPlateforme() != null) {
+				for (Platform platformSaga : saga.getPlateforme()) {
+					if (platformSaga.getName().equals(platform.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs sagas";
+					}
 				}
 			}
 		}
 		for (Serie serie : series) {
-			for(Platform platformSerie : serie.getPlateforme()) {
-				if(platformSerie.equals(platform)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs séries";
+			if(serie.getPlateforme() != null) {
+				for (Platform platformSerie : serie.getPlateforme()) {
+					if (platformSerie.getName().equals(platform.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs séries";
+					}
 				}
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			for(Platform platformSerieCourte : serieCourte.getPlateforme()) {
-				if(platformSerieCourte.equals(platform)) {
-					peutSupprimer = false;
-					utilise = "une ou plusieurs séries courtes";
+			if(serieCourte.getPlateforme() != null) {
+				for (Platform platformSerieCourte : serieCourte.getPlateforme()) {
+					if (platformSerieCourte.getName().equals(platform.getName())) {
+						peutSupprimer = false;
+						utilise = "une ou plusieurs séries courtes";
+					}
 				}
 			}
 		}
@@ -231,11 +254,18 @@ public class GestionnairePlatform {
 			if(peutSupprimer) {
 				platforms.remove(platform);
 				DataManager.savePlatform(platforms); // Mettre à jour la liste des platforms
-				System.out.println("Plateforme supprimée : " + platform.getName());
+				message[0] = "i";
+				message[1] = "Plateforme supprimée";
+				message[2] = "La plateforme " + platform.getName() + " a été supprimée avec succès.";
 			} else {
-				System.out.println("Impossible de supprimer le plateforme " + platform.getName() + ", elle est utilisée dans " + utilise + ".");
+				message[0] = "e";
+				message[1] = "Erreur genre utilisé";
+				message[2] = "Impossible de supprimer le plateforme " + platform.getName() + ", elle est utilisée dans " + utilise + ".";
 			}
 		} else {
+			message[0] = "e";
+			message[1] = "Plateforme non trouvée";
+			message[2] = "Erreur, la plateforme n'a pas été trouvée.";
 			System.out.println("Plateforme non trouvée.");
 		}
 	}
@@ -245,5 +275,11 @@ public class GestionnairePlatform {
 				.filter(platform -> platform.getName().equals(titre))
 				.findFirst()
 				.orElse(null);
+	}
+
+	public String[] getMessage() {
+		String[] tempMessage = message;
+		message = new String[3];
+		return tempMessage;
 	}
 }
