@@ -394,7 +394,11 @@ public class PanelSaga extends JPanel{
 		ArrayList<User> users = dataManager.loadUser();
 		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
 		for (User user : users) {
-			addByModel.addElement(user);
+			if(Objects.equals(user.getName(), saga.getAddBy().getName())) {
+				addByModel.addElement(saga.getAddBy());
+			} else {
+				addByModel.addElement(user);
+			}
 		}
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(saga.getAddBy());

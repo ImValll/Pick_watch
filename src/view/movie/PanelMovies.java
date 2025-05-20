@@ -364,11 +364,15 @@ public class PanelMovies extends JPanel {
 		vuPanel.add(pasEncoreVuButton);
 
 		ArrayList<User> users = dataManager.loadUser();
-		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
+		DefaultComboBoxModel<User> addByModel = new DefaultComboBoxModel<>();
 		for (User user : users) {
-			addByModel.addElement(user);
+			if(Objects.equals(user.getName(), movie.getAddBy().getName())) {
+				addByModel.addElement(movie.getAddBy());
+			} else {
+				addByModel.addElement(user);
+			}
 		}
-		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
+		JComboBox<User> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(movie.getAddBy());
 
 		final JComponent[] inputs = new JComponent[] {

@@ -411,7 +411,11 @@ public class PanelSerieCourte extends JPanel {
 		ArrayList<User> users = dataManager.loadUser();
 		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
 		for (User user : users) {
-			addByModel.addElement(user);
+			if(Objects.equals(user.getName(), serieCourte.getAddBy().getName())) {
+				addByModel.addElement(serieCourte.getAddBy());
+			} else {
+				addByModel.addElement(user);
+			}
 		}
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(serieCourte.getAddBy());
