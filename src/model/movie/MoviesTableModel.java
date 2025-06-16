@@ -101,7 +101,7 @@ public class MoviesTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 7:
-				if(movie.getDejaVu() == false) {
+				if(!movie.getDejaVu()) {
 					return "NON";
 				}
 				else {
@@ -121,10 +121,5 @@ public class MoviesTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addMovie(Movie movie) {
-		movies.add(movie);
-		fireTableRowsInserted(movies.size() - 1, movies.size() - 1);
 	}
 }

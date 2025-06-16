@@ -1,9 +1,9 @@
 package view.movie;
 
-import model.*;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.ButtonEditor;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.movie.GestionnaireMovie;
 import model.movie.Movie;
 
@@ -15,8 +15,8 @@ import java.util.Date;
 
 public class PanelRandomMovie extends JPanel {
 
-	private GestionnaireMovie gestionnaireMovie;
-	private MovieFrame movieFrame;
+	private final GestionnaireMovie gestionnaireMovie;
+	private final MovieFrame movieFrame;
 
 	private String rea;
 	private Genre[] genres;
@@ -78,13 +78,13 @@ public class PanelRandomMovie extends JPanel {
 			updateMovieInfo(movieSelected);
 		}
 
-		JButton btnBack = createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = createButton("Supprimer le film de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton("Supprimer le film de la liste", new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteMovie());
 
 		JPanel bottomPanel = new JPanel();
@@ -141,17 +141,5 @@ public class PanelRandomMovie extends JPanel {
 		gestionnaireMovie.deleteMovie(movie);
 
 		backMenu();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

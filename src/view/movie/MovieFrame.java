@@ -1,5 +1,6 @@
 package view.movie;
 
+import model.ButtonEditor;
 import model.movie.GestionnaireMovie;
 import view.Frame;
 
@@ -17,10 +18,10 @@ public class MovieFrame extends JFrame {
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
 
-		JButton btnTotalRandom = createButton("Choisir un film aléatoire", new Color(70, 130, 180));
-		JButton btnFilterRandom = createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
-		JButton btnShowMovie = createButton("Consulter la liste des films", new Color(220, 20, 60));
-		JButton btnMenu = createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnTotalRandom = ButtonEditor.createButton("Choisir un film aléatoire", new Color(70, 130, 180));
+		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
+		JButton btnShowMovie = ButtonEditor.createButton("Consulter la liste des films", new Color(220, 20, 60));
+		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -65,17 +66,5 @@ public class MovieFrame extends JFrame {
 	private void backToMenu() {
 		this.dispose();
 		new Frame();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

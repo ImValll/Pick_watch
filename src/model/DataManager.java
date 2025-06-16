@@ -1,8 +1,8 @@
 package model;
 
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
-	private static final String GENRES_FILE = "genres.ser";
-	private static final String PLATFORMS_FILE = "platforms.ser";
-	private static final String USERS_FILE = "users.ser";
-	private static final String MOVIE_FILE = "movies.ser";
-	private static final String SAGA_FILE = "sagas.ser";
-	private static final String SERIE_FILE = "series.ser";
-	private static final String SERIE_COURTE_FILE = "shortSeries.ser";
+	private static final String GENRES_FILE = "DATA/genres.ser";
+	private static final String PLATFORMS_FILE = "DATA/platforms.ser";
+	private static final String USERS_FILE = "DATA/users.ser";
+	private static final String MOVIE_FILE = "DATA/movies.ser";
+	private static final String SAGA_FILE = "DATA/sagas.ser";
+	private static final String SERIE_FILE = "DATA/series.ser";
+	private static final String SERIE_COURTE_FILE = "DATA/shortSeries.ser";
 
 	public static void saveGenre(ArrayList<Genre> genres) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GENRES_FILE))) {

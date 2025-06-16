@@ -1,11 +1,13 @@
-package model.genre;
+package model.parameter.users;
+
+import model.parameter.Enum;
 
 import java.io.Serializable;
 
-public class Platform implements Enum, Serializable {
+public class User implements Enum, Serializable {
 	private String name;
 
-	public Platform(String name) {
+	public User(String name) {
 		this.name = name;
 	}
 

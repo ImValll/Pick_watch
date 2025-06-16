@@ -1,9 +1,9 @@
 package model.serie;
 
 import model.DataManager;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,12 +33,6 @@ public class GestionnaireSerie {
 				.collect(Collectors.toList());
 	}
 
-	public void showSerie() {
-		for (Serie serie : series) {
-			System.out.println(serie.getTitre() + " avec " + serie.getNombreSaison() + " saisons");
-		}
-	}
-
 	public void editSerie(String titre, Serie newSerie) {
 		Serie serie = findSerieByTitle(titre);
 		if (serie != null) {
@@ -49,7 +43,7 @@ public class GestionnaireSerie {
 			serie.setNombreEpisode(newSerie.getNombreEpisode());
 			serie.setDureeMoyenne(newSerie.getDureeMoyenne());
 			serie.setDateSortiePremiereSaison(newSerie.getDateSortiePremiereSaison());
-			serie.setDateSortiePremiereSaison(newSerie.getDateSortiePremiereSaison());
+			serie.setDateSortieDerniereSaison(newSerie.getDateSortieDerniereSaison());
 			serie.setPlateforme(newSerie.getPlateforme());
 			serie.setAddBy(newSerie.getAddBy());
 			DataManager.saveSerie(series);
@@ -66,11 +60,6 @@ public class GestionnaireSerie {
 	public List<Serie> getSerie() {
 		return series;
 	}
-
-//	public void sauvegarderModifications() {
-//		DataManager.sauvegarderLivres(livres);
-//		DataManager.sauvegarderUtilisateurs(utilisateurs);
-//	}
 
 	public void deleteSerie(Serie serie) {
 		if (serie != null) {

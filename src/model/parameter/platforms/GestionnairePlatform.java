@@ -1,7 +1,6 @@
 package model.parameter.platforms;
 
 import model.DataManager;
-import model.genre.Platform;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -60,16 +59,10 @@ public class GestionnairePlatform {
 				.collect(Collectors.toList());
 	}
 	
-	public void showPlatform() {
-		for (Platform platform : platforms) {
-			System.out.println(platform.getName());
-		}
-	}
-	
 	public void editPlatform(String titre, Platform newPlatform) {
 		Platform platform = findPlatformByTitle(titre);
 	
-		Boolean utilise = false;
+		boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();
@@ -206,7 +199,7 @@ public class GestionnairePlatform {
 	}
 	
 	public void deletePlatform(Platform platform) {
-		Boolean peutSupprimer = true;
+		boolean peutSupprimer = true;
 		String utilise = "";
 	
 		for (Movie movie : movies) {
@@ -215,6 +208,7 @@ public class GestionnairePlatform {
 					if (platformMovie.getName().equals(platform.getName())) {
 						peutSupprimer = false;
 						utilise = "un ou plusieurs films";
+						break;
 					}
 				}
 			}
@@ -225,6 +219,7 @@ public class GestionnairePlatform {
 					if (platformSaga.getName().equals(platform.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs sagas";
+						break;
 					}
 				}
 			}
@@ -235,6 +230,7 @@ public class GestionnairePlatform {
 					if (platformSerie.getName().equals(platform.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries";
+						break;
 					}
 				}
 			}
@@ -245,6 +241,7 @@ public class GestionnairePlatform {
 					if (platformSerieCourte.getName().equals(platform.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries courtes";
+						break;
 					}
 				}
 			}

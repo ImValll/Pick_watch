@@ -1,7 +1,6 @@
 package model.parameter.users;
 
 import model.DataManager;
-import model.genre.User;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -60,16 +59,10 @@ public class GestionnaireUser {
 				.collect(Collectors.toList());
 	}
 
-	public void showUser() {
-		for (User user : users) {
-			System.out.println(user.getName());
-		}
-	}
-
 	public void editUser(String titre, User newUser) {
 		User user = findUserByTitle(titre);
 
-		Boolean utilise = false;
+		boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();
@@ -103,9 +96,8 @@ public class GestionnaireUser {
 		if(utilise) {
 			if(!movieUtilise.isEmpty()) {
 				for(Movie movie : movieUtilise) {
-					User userMovie = newUser;
 					Movie newMovie = movie;
-					newMovie.setAddBy(userMovie);
+					newMovie.setAddBy(newUser);
 					movies.remove(movie);
 					movies.add(newMovie);
 				}
@@ -113,9 +105,8 @@ public class GestionnaireUser {
 			}
 			if(!sagaUtilise.isEmpty()) {
 				for(Saga saga : sagaUtilise) {
-					User userSaga = newUser;
 					Saga newSaga = saga;
-					newSaga.setAddBy(userSaga);
+					newSaga.setAddBy(newUser);
 					sagas.remove(saga);
 					sagas.add(newSaga);
 				}
@@ -123,9 +114,8 @@ public class GestionnaireUser {
 			}
 			if(!serieUtilise.isEmpty()) {
 				for(Serie serie : serieUtilise) {
-					User userSerie = newUser;
 					Serie newSerie = serie;
-					newSerie.setAddBy(userSerie);
+					newSerie.setAddBy(newUser);
 					series.remove(serie);
 					series.add(newSerie);
 				}
@@ -133,9 +123,8 @@ public class GestionnaireUser {
 			}
 			if(!serieCourteUtilise.isEmpty()) {
 				for(SerieCourte serieCourte : serieCourteUtilise) {
-					User userSerieCourte = newUser;
 					SerieCourte newSerieCourte = serieCourte;
-					newSerieCourte.setAddBy(userSerieCourte);
+					newSerieCourte.setAddBy(newUser);
 					seriesCourtes.remove(serieCourte);
 					seriesCourtes.add(newSerieCourte);
 				}

@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="movie_selector:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/movie_selector_jar</output-path>
+    <root id="archive" name="movie_selector.jar">
+      <element id="module-output" name="movie_selector" />
+      <element id="library" level="project" name="api" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/jdatepicker-1.3.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

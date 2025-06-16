@@ -1,4 +1,6 @@
-package model.genre;
+package model.parameter.genres;
+
+import model.parameter.Enum;
 
 import java.io.Serializable;
 

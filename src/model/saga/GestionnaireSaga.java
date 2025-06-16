@@ -1,9 +1,9 @@
 package model.saga;
 
 import model.DataManager;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,12 +33,6 @@ public class GestionnaireSaga {
 				.collect(Collectors.toList());
 	}
 
-	public void showSaga() {
-		for (Saga saga : sagas) {
-			System.out.println(saga.getTitre() + " par " + saga.getRealistateur());
-		}
-	}
-
 	public void editSaga(String titre, Saga newSaga) {
 		Saga saga = findSagaByTitle(titre);
 		if (saga != null) {
@@ -48,7 +42,7 @@ public class GestionnaireSaga {
 			saga.setGenre(newSaga.getGenre());
 			saga.setNombreFilms(newSaga.getNombreFilms());
 			saga.setDateSortiePremier(newSaga.getDateSortiePremier());
-			saga.setDateSortiePremier(newSaga.getDateSortiePremier());
+			saga.setDateSortieDernier(newSaga.getDateSortieDernier());
 			saga.setPlateforme(newSaga.getPlateforme());
 			saga.setAddBy(newSaga.getAddBy());
 			DataManager.saveSaga(sagas);
@@ -65,11 +59,6 @@ public class GestionnaireSaga {
 	public List<Saga> getSaga() {
 		return sagas;
 	}
-
-//	public void sauvegarderModifications() {
-//		DataManager.sauvegarderLivres(livres);
-//		DataManager.sauvegarderUtilisateurs(utilisateurs);
-//	}
 
 	public void deleteSaga(Saga saga) {
 		if (saga != null) {
@@ -97,7 +86,7 @@ public class GestionnaireSaga {
 			if (rea != null && !saga.getRealistateur().equalsIgnoreCase(rea)) {
 				matches = false;
 			}
-			if (genres != null && genres.length > 0) {
+			else if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {
 					for (Genre movieGenre : saga.getGenre()) {
@@ -115,13 +104,13 @@ public class GestionnaireSaga {
 			if (nbFilm != 0 && saga.getNombreFilms() == nbFilm) {
 				matches = false;
 			}
-			if (dateSortie != null && saga.getDateSortiePremier() == null || dateSortie != null && saga.getDateSortiePremier().getYear() != dateSortie.getYear()) {
+			else if (dateSortie != null && saga.getDateSortiePremier() == null || dateSortie != null && saga.getDateSortiePremier().getYear() != dateSortie.getYear()) {
 				matches = false;
 			}
-			if (dateSortie2 != null && saga.getDateSortieDernier() == null || dateSortie2 != null && saga.getDateSortieDernier().getYear() != dateSortie2.getYear()) {
+			else if (dateSortie2 != null && saga.getDateSortieDernier() == null || dateSortie2 != null && saga.getDateSortieDernier().getYear() != dateSortie2.getYear()) {
 				matches = false;
 			}
-			if (plateformes != null && plateformes.length > 0) {
+			else if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
 				for (Platform plateforme : plateformes) {
 					for (Platform moviePlateforme : saga.getPlateforme()) {

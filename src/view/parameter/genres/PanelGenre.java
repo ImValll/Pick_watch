@@ -2,8 +2,7 @@ package view.parameter.genres;
 
 import model.ButtonEditor;
 import model.ButtonRenderer;
-import model.DataManager;
-import model.genre.Genre;
+import model.parameter.genres.Genre;
 import model.parameter.genres.GenreTableModel;
 import model.parameter.genres.GestionnaireGenre;
 import view.parameter.ParameterFrame;
@@ -16,12 +15,10 @@ import java.util.Objects;
 
 public class PanelGenre extends JPanel {
 
-	DataManager dataManager = new DataManager();
-
 	ParameterFrame genreFrame;
 
-	private CardLayout cardLayout = new CardLayout();
-	private JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
+	private final CardLayout cardLayout = new CardLayout();
+	private final JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
 	private JTable tableArea; // Display book information
 	private GenreTableModel tableModel;
 	GestionnaireGenre gestionnaireGenre;
@@ -49,10 +46,10 @@ public class PanelGenre extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher un genre", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton("Rechercher un genre", new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchGenre);
 
-		JButton addGenreButton = createButton("Ajouter un genre", new Color(70, 130, 180));
+		JButton addGenreButton = ButtonEditor.createButton("Ajouter un genre", new Color(70, 130, 180));
 
 		JLabel titleLabel = new JLabel("Titre : ");
 		titleLabel.setForeground(Color.WHITE);
@@ -72,7 +69,7 @@ public class PanelGenre extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -129,8 +126,7 @@ public class PanelGenre extends JPanel {
 				boolean canBeAdd = true;
 
 				java.util.List<Genre> listGenre = gestionnaireGenre.getGenre();
-				for (int i = 0; i < listGenre.size(); i++) {
-					Genre genre = listGenre.get(i);
+				for (Genre genre : listGenre) {
 					if (genre.getName().equalsIgnoreCase(titre)) {
 						canBeAdd = false;
 						JOptionPane.showMessageDialog(this, "Erreur: Le genre " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
@@ -198,32 +194,6 @@ public class PanelGenre extends JPanel {
 			afficheMessage();
 		}
 
-	}
-
-
-
-	public static boolean check(Object[] tab, Object val) {
-		boolean b = false;
-
-		for(Object i : tab){
-			if(i.toString().equals(val.toString())){
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 
 	public JTable getTableArea() {

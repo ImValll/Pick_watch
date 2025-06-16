@@ -1,9 +1,9 @@
 package model.serie_courte;
 
 import model.DataManager;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,12 +33,6 @@ public class GestionnaireSerieCourte {
 				.collect(Collectors.toList());
 	}
 
-	public void showSerieCourte() {
-		for (SerieCourte serieCourte : seriesCourte) {
-			System.out.println(serieCourte.getTitre() + " avec " + serieCourte.getNombreSaison() + " saisons");
-		}
-	}
-
 	public void editSerieCourte(String titre, SerieCourte newSerieCourte) {
 		SerieCourte serieCourte = findSerieCourteByTitle(titre);
 		if (serieCourte != null) {
@@ -49,7 +43,7 @@ public class GestionnaireSerieCourte {
 			serieCourte.setNombreEpisode(newSerieCourte.getNombreEpisode());
 			serieCourte.setDureeMoyenne(newSerieCourte.getDureeMoyenne());
 			serieCourte.setDateSortiePremiereSaison(newSerieCourte.getDateSortiePremiereSaison());
-			serieCourte.setDateSortiePremiereSaison(newSerieCourte.getDateSortiePremiereSaison());
+			serieCourte.setDateSortieDerniereSaison(newSerieCourte.getDateSortieDerniereSaison());
 			serieCourte.setPlateforme(newSerieCourte.getPlateforme());
 			serieCourte.setAddBy(newSerieCourte.getAddBy());
 			DataManager.saveSerieCourte(seriesCourte);
@@ -66,11 +60,6 @@ public class GestionnaireSerieCourte {
 	public List<SerieCourte> getSerieCourte() {
 		return seriesCourte;
 	}
-
-//	public void sauvegarderModifications() {
-//		DataManager.sauvegarderLivres(livres);
-//		DataManager.sauvegarderUtilisateurs(utilisateurs);
-//	}
 
 	public void deleteSerieCourte(SerieCourte serieCourte) {
 		if (serieCourte != null) {

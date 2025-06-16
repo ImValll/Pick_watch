@@ -1,7 +1,5 @@
 package model.parameter.platforms;
 
-import model.genre.Platform;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -64,10 +62,5 @@ public class PlatformTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addPlatform(Platform platform) {
-		platforms.add(platform);
-		fireTableRowsInserted(platforms.size() - 1, platforms.size() - 1);
 	}
 }

@@ -1,7 +1,5 @@
 package model.saga;
 
-import model.movie.Movie;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
@@ -120,10 +118,5 @@ public class SagaTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addSaga(Saga saga) {
-		sagas.add(saga);
-		fireTableRowsInserted(sagas.size() - 1, sagas.size() - 1);
 	}
 }

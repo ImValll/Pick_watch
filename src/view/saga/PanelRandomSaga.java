@@ -1,8 +1,9 @@
 package view.saga;
 
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.ButtonEditor;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.saga.GestionnaireSaga;
 import model.saga.Saga;
 
@@ -14,8 +15,8 @@ import java.util.Date;
 
 public class PanelRandomSaga extends JPanel {
 
-	private GestionnaireSaga gestionnaireSaga;
-	private SagaFrame sagaFrame;
+	private final GestionnaireSaga gestionnaireSaga;
+	private final SagaFrame sagaFrame;
 
 	private String rea;
 	private Genre[] genres;
@@ -79,13 +80,13 @@ public class PanelRandomSaga extends JPanel {
 			updateSagaInfo(sagaSelected);
 		}
 
-		JButton btnBack = createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = createButton("Supprimer la saga de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton("Supprimer la saga de la liste", new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteSaga());
 
 		JPanel bottomPanel = new JPanel();
@@ -151,17 +152,5 @@ public class PanelRandomSaga extends JPanel {
 		gestionnaireSaga.deleteSaga(saga);
 
 		backMenu();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

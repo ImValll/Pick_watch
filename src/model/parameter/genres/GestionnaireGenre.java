@@ -1,7 +1,6 @@
 package model.parameter.genres;
 
 import model.DataManager;
-import model.genre.Genre;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -62,16 +61,10 @@ public class GestionnaireGenre {
 				.collect(Collectors.toList());
 	}
 
-	public void showGenre() {
-		for (Genre genre : genres) {
-			System.out.println(genre.getName());
-		}
-	}
-
 	public void editGenre(String titre, Genre newGenre) {
 		Genre genre = findGenreByTitle(titre);
 
-		Boolean utilise = false;
+		boolean utilise = false;
 		ArrayList<Movie> movieUtilise = new ArrayList<>();
 		ArrayList<Saga> sagaUtilise = new ArrayList<>();
 		ArrayList<Serie> serieUtilise = new ArrayList<>();

@@ -1,5 +1,6 @@
 package view.parameter;
 
+import model.ButtonEditor;
 import model.parameter.genres.GestionnaireGenre;
 import model.parameter.platforms.GestionnairePlatform;
 import model.parameter.users.GestionnaireUser;
@@ -22,10 +23,10 @@ public class ParameterFrame extends JFrame {
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
 
-		JButton btnManageUser = createButton("Gérer les utilisateurs", new Color(70, 130, 180));
-		JButton btnManageGenre = createButton("Gérer les genres", new Color(70, 130, 180));
-		JButton btnManagePlatform = createButton("Gérer les plateformes", new Color(70, 130, 180));
-		JButton btnMenu = createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnManageUser = ButtonEditor.createButton("Gérer les utilisateurs", new Color(70, 130, 180));
+		JButton btnManageGenre = ButtonEditor.createButton("Gérer les genres", new Color(70, 130, 180));
+		JButton btnManagePlatform = ButtonEditor.createButton("Gérer les plateformes", new Color(70, 130, 180));
+		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -70,17 +71,5 @@ public class ParameterFrame extends JFrame {
 	private void backToMenu() {
 		this.dispose();
 		new Frame();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

@@ -1,8 +1,8 @@
 package model;
 
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -23,11 +23,11 @@ import java.awt.event.ActionListener;
 
 public class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
-	private JButton button;
+	private final JButton button;
 	private String label;
 	private boolean isClicked;
 	private int row;
-	private JPanel panel;
+	private final JPanel panel;
 
 	public ButtonEditor(PanelMovies panel) {
 		super();
@@ -187,5 +187,17 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 	public boolean stopCellEditing() {
 		isClicked = false;
 		return super.stopCellEditing();
+	}
+
+	public static JButton createButton(String title, Color color) {
+		JButton button = new JButton(title);
+
+		button.setBackground(color); // Bleu foncé
+		button.setForeground(Color.WHITE);
+		button.setFont(new Font("Arial", Font.BOLD, 18));
+		button.setFocusPainted(false);
+		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
+
+		return button;
 	}
 }

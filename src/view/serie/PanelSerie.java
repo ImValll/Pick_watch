@@ -1,9 +1,9 @@
 package view.serie;
 
 import model.*;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.serie.GestionnaireSerie;
 import model.serie.Serie;
 import model.serie.SerieTableModel;
@@ -14,23 +14,19 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
 public class PanelSerie extends JPanel {
 
-	DataManager dataManager = new DataManager();
-
 	SerieFrame serieFrame;
 
-	private CardLayout cardLayout = new CardLayout();
-	private JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
+	private final CardLayout cardLayout = new CardLayout();
+	private final JPanel cards = new JPanel(cardLayout); // Panel that uses CardLayout
 	private JTable tableArea; // Display book information
 	private SerieTableModel tableModel;
 	GestionnaireSerie gestionnaireSerie;
 	private JTextField searchTitleField;
-	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	public PanelSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame) {
 		this.gestionnaireSerie = gestionnaireSerie;
@@ -54,10 +50,10 @@ public class PanelSerie extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = createButton("Rechercher une série", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton("Rechercher une série", new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchSerie);
 
-		JButton addSerieButton = createButton("Ajouter une série", new Color(70, 130, 180));
+		JButton addSerieButton = ButtonEditor.createButton("Ajouter une série", new Color(70, 130, 180));
 
 		JLabel titleLabel = new JLabel("Titre : ");
 		titleLabel.setForeground(Color.WHITE);
@@ -77,7 +73,7 @@ public class PanelSerie extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -118,7 +114,7 @@ public class PanelSerie extends JPanel {
 		JTextField titleField = new JTextField();
 		JTextField descriptionField = new JTextField();
 
-		ArrayList<Genre> genres = dataManager.loadGenre();
+		ArrayList<Genre> genres = DataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
@@ -151,7 +147,7 @@ public class PanelSerie extends JPanel {
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 
 
-		ArrayList<Platform> platforms = dataManager.loadPlatform();
+		ArrayList<Platform> platforms = DataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
@@ -173,7 +169,7 @@ public class PanelSerie extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		ArrayList<User> users = dataManager.loadUser();
+		ArrayList<User> users = DataManager.loadUser();
 		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
 		for (User user : users) {
 			addByModel.addElement(user);
@@ -274,8 +270,7 @@ public class PanelSerie extends JPanel {
 					boolean canBeAdd = true;
 
 					java.util.List<Serie> listSerie = gestionnaireSerie.getSerie();
-					for (int i = 0; i < listSerie.size(); i++) {
-						Serie serie = listSerie.get(i);
+					for (Serie serie : listSerie) {
 						if (serie.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
 							if (Objects.equals(serie.getAddBy().getName(), "Tous") || serie.getAddBy() == addBy) {
@@ -325,7 +320,7 @@ public class PanelSerie extends JPanel {
 		titleField.setEnabled(false);
 		JTextField descriptionField = new JTextField(serie.getDescription());
 
-		ArrayList<Genre> genres = dataManager.loadGenre();
+		ArrayList<Genre> genres = DataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
@@ -376,7 +371,7 @@ public class PanelSerie extends JPanel {
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 
-		ArrayList<Platform> platforms = dataManager.loadPlatform();
+		ArrayList<Platform> platforms = DataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
@@ -408,7 +403,7 @@ public class PanelSerie extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 
-		ArrayList<User> users = dataManager.loadUser();
+		ArrayList<User> users = DataManager.loadUser();
 		DefaultComboBoxModel<Object> addByModel = new DefaultComboBoxModel<>();
 		for (User user : users) {
 			if(Objects.equals(user.getName(), serie.getAddBy().getName())) {
@@ -541,18 +536,6 @@ public class PanelSerie extends JPanel {
 			}
 		}
 		return b;
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 
 	public JTable getTableArea() {

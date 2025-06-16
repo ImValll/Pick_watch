@@ -1,5 +1,6 @@
 package view;
 
+import model.ButtonEditor;
 import view.movie.MovieFrame;
 import view.parameter.ParameterFrame;
 import view.saga.SagaFrame;
@@ -19,12 +20,12 @@ public class Frame extends JFrame {
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
 
-		JButton btnMovie = createButton("FILMS", new Color(70, 130, 180));
-		JButton btnSaga = createButton("SAGAS", new Color(70, 130, 180));
-		JButton btnSerie = createButton("SERIES", new Color(70, 130, 180));
-		JButton btnSerieCourte = createButton("SERIES COURTE", new Color(70, 130, 180));
-		JButton btnParameter = createButton("PARAMETRES", new Color(220, 20, 60));
-		JButton btnQuitter = createButton("QUITTER", new Color(220, 20, 60));
+		JButton btnMovie = ButtonEditor.createButton("FILMS", new Color(70, 130, 180));
+		JButton btnSaga = ButtonEditor.createButton("SAGAS", new Color(70, 130, 180));
+		JButton btnSerie = ButtonEditor.createButton("SERIES", new Color(70, 130, 180));
+		JButton btnSerieCourte = ButtonEditor.createButton("SERIES COURTE", new Color(70, 130, 180));
+		JButton btnParameter = ButtonEditor.createButton("PARAMETRES", new Color(220, 20, 60));
+		JButton btnQuitter = ButtonEditor.createButton("QUITTER", new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -76,17 +77,5 @@ public class Frame extends JFrame {
 
 	private void quitter() {
 		dispose();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

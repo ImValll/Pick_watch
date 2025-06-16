@@ -1,9 +1,10 @@
 package view.serie;
 
+import model.ButtonEditor;
 import model.DataManager;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.serie.GestionnaireSerie;
 
 import javax.swing.*;
@@ -14,10 +15,8 @@ import java.util.List;
 
 public class PanelFilterRandomSerie extends JPanel {
 
-	DataManager dataManager = new DataManager();
-
-	private GestionnaireSerie gestionnaireSerie;
-	private SerieFrame serieFrame;
+	private final GestionnaireSerie gestionnaireSerie;
+	private final SerieFrame serieFrame;
 	private List<JCheckBox> genreCheckBoxes;
 	private JTextField nbSeasonField;
 	private JTextField nbEpisodeField;
@@ -56,7 +55,7 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelGenre.setForeground(Color.WHITE);
 		centerPanel.add(labelGenre);
 
-		ArrayList<Genre> genres = dataManager.loadGenre();
+		ArrayList<Genre> genres = DataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
@@ -120,7 +119,7 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelPlateforme.setForeground(Color.WHITE);
 		centerPanel.add(labelPlateforme);
 
-		ArrayList<Platform> platforms = dataManager.loadPlatform();
+		ArrayList<Platform> platforms = DataManager.loadPlatform();
 		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
@@ -159,7 +158,7 @@ public class PanelFilterRandomSerie extends JPanel {
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
-		ArrayList<User> users = dataManager.loadUser();
+		ArrayList<User> users = DataManager.loadUser();
 		DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>();
 		comboBoxModel.addElement("Ignorer");
 		for (User user : users) {
@@ -172,9 +171,9 @@ public class PanelFilterRandomSerie extends JPanel {
 
 		// Bottom panel with buttons
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton backButton = createButton("Retour au menu", Color.BLUE);
+		JButton backButton = ButtonEditor.createButton("Retour au menu", Color.BLUE);
 		backButton.addActionListener(e -> backMenu());
-		JButton submitButton = createButton("Envoyer", Color.GREEN);
+		JButton submitButton = ButtonEditor.createButton("Envoyer", Color.GREEN);
 		submitButton.addActionListener(e -> askRandomSerie());
 		bottomPanel.add(backButton);
 		bottomPanel.add(submitButton);
@@ -277,16 +276,5 @@ public class PanelFilterRandomSerie extends JPanel {
 		serieFrame.add(panelRandomSerie);
 		serieFrame.revalidate();
 		serieFrame.repaint();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-		button.setBackground(color); // Set the button color
-		button.setForeground(Color.WHITE); // Set the text color to white
-		button.setFont(new Font("Arial", Font.BOLD, 18)); // Set font style and size
-		button.setFocusPainted(false); // Remove focus painting
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30)); // Add padding
-
-		return button;
 	}
 }

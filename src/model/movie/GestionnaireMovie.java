@@ -1,9 +1,9 @@
 package model.movie;
 
 import model.*;
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,12 +33,6 @@ public class GestionnaireMovie {
 				.collect(Collectors.toList());
 	}
 
-	public void showMovie() {
-		for (Movie movie : movies) {
-			System.out.println(movie.getTitre() + " par " + movie.getRealistateur());
-		}
-	}
-
 	public void editMovie(String titre, Movie newMovie) {
 		Movie movie = findMovieByTitle(titre);
 		if (movie != null) {
@@ -64,11 +58,6 @@ public class GestionnaireMovie {
 	public List<Movie> getMovies() {
 		return movies;
 	}
-
-//	public void sauvegarderModifications() {
-//		DataManager.sauvegarderLivres(livres);
-//		DataManager.sauvegarderUtilisateurs(utilisateurs);
-//	}
 
 	public void deleteMovie(Movie movie) {
 		if (movie != null) {
@@ -96,7 +85,7 @@ public class GestionnaireMovie {
 			if (rea != null && !movie.getRealistateur().equalsIgnoreCase(rea)) {
 				matches = false;
 			}
-			if (genres != null && genres.length > 0) {
+			else if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {
 					for (Genre movieGenre : movie.getGenre()) {
@@ -114,10 +103,10 @@ public class GestionnaireMovie {
 			if (duree != 0 && movie.getDuree() > duree) {
 				matches = false;
 			}
-			if (dateSortie != null && movie.getDateSortie() == null || dateSortie != null && movie.getDateSortie().getYear() != dateSortie.getYear()) {
+			else if (dateSortie != null && movie.getDateSortie() == null || dateSortie != null && movie.getDateSortie().getYear() != dateSortie.getYear()) {
 				matches = false;
 			}
-			if (plateformes != null && plateformes.length > 0) {
+			else if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
 				for (Platform plateforme : plateformes) {
 					for (Platform moviePlateforme : movie.getPlateforme()) {
@@ -137,7 +126,7 @@ public class GestionnaireMovie {
 					matches = false;
 				}
 			}
-			if (addBy != null && !movie.getAddBy().equals(addBy.getName())) {
+			if (addBy != null && !movie.getAddBy().getName().equals(addBy.getName())) {
 				matches = false;
 			}
 

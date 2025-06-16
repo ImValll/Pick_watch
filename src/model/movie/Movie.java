@@ -1,14 +1,16 @@
 package model.movie;
 
 
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 public class Movie implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private String titre;
 	private String realistateur;

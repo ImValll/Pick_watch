@@ -1,7 +1,5 @@
 package model.parameter.users;
 
-import model.genre.User;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -72,10 +70,5 @@ public class UserTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addUser(User user) {
-		users.add(user);
-		fireTableRowsInserted(users.size() - 1, users.size() - 1);
 	}
 }

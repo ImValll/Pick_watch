@@ -1,7 +1,5 @@
 package model.serie_courte;
 
-import model.serie.Serie;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
@@ -126,10 +124,5 @@ public class SerieCourteTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addSerieCourte(SerieCourte serieCourte) {
-		seriesCourte.add(serieCourte);
-		fireTableRowsInserted(seriesCourte.size() - 1, seriesCourte.size() - 1);
 	}
 }

@@ -1,8 +1,9 @@
 package view.serie_courte;
 
-import model.genre.Genre;
-import model.genre.Platform;
-import model.genre.User;
+import model.ButtonEditor;
+import model.parameter.genres.Genre;
+import model.parameter.platforms.Platform;
+import model.parameter.users.User;
 import model.serie_courte.GestionnaireSerieCourte;
 import model.serie_courte.SerieCourte;
 import view.serie.SerieFrame;
@@ -15,8 +16,8 @@ import java.util.Date;
 
 public class PanelRandomSerieCourte extends JPanel {
 
-	private GestionnaireSerieCourte gestionnaireSerieCourte;
-	private SerieCourteFrame serieCourteFrame;
+	private final GestionnaireSerieCourte gestionnaireSerieCourte;
+	private final SerieCourteFrame serieCourteFrame;
 
 	private Genre[] genres;
 	private int nbSaison;
@@ -82,13 +83,13 @@ public class PanelRandomSerieCourte extends JPanel {
 			updateSerieCourteInfo(serieCourteSelected);
 		}
 
-		JButton btnBack = createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = createButton("Supprimer la série courte de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton("Supprimer la série courte de la liste", new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteSerieCourte());
 
 		JPanel bottomPanel = new JPanel();
@@ -154,17 +155,5 @@ public class PanelRandomSerieCourte extends JPanel {
 		gestionnaireSerieCourte.deleteSerieCourte(serieCourte);
 
 		backMenu();
-	}
-
-	public JButton createButton(String title, Color color) {
-		JButton button = new JButton(title);
-
-		button.setBackground(color); // Bleu foncé
-		button.setForeground(Color.WHITE);
-		button.setFont(new Font("Arial", Font.BOLD, 18));
-		button.setFocusPainted(false);
-		button.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
-		return button;
 	}
 }

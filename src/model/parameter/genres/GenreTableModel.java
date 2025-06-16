@@ -1,7 +1,5 @@
 package model.parameter.genres;
 
-import model.genre.Genre;
-
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -64,10 +62,5 @@ public class GenreTableModel extends AbstractTableModel {
 			default:
 				return null;
 		}
-	}
-
-	public void addGenre(Genre genre) {
-		genres.add(genre);
-		fireTableRowsInserted(genres.size() - 1, genres.size() - 1);
 	}
 }
