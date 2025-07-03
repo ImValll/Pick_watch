@@ -1,6 +1,7 @@
 package model.serie;
 
 import model.DataManager;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -37,6 +38,7 @@ public class GestionnaireSerie {
 		Serie serie = findSerieByTitle(titre);
 		if (serie != null) {
 			serie.setTitre(newSerie.getTitre());
+			serie.setActeur(newSerie.getActeur());
 			serie.setDescription(newSerie.getDescription());
 			serie.setGenre(newSerie.getGenre());
 			serie.setNombreSaison(newSerie.getNombreSaison());
@@ -78,12 +80,30 @@ public class GestionnaireSerie {
 				.orElse(null);
 	}
 
-	public Serie pickRandomSerie(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
+	public Serie pickRandomSerie(Actor[] acteurs, Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Serie> filteredSerie = new ArrayList<>();
 
 		for (Serie serie : series) {
 			boolean matches = true;
 
+			if (acteurs != null && acteurs.length > 0) {
+				boolean acteurMatch = false;
+				for (Actor acteur : acteurs) {
+					Actor[] actorSerie = serie.getActeur();
+					if(actorSerie != null) {
+						for (Actor serieActeur : serie.getActeur()) {
+							if (serieActeur.getName().equals(acteur.getName())) {
+								acteurMatch = true;
+								break;
+							}
+						}
+					}
+					if (acteurMatch) break;
+				}
+				if (!acteurMatch) {
+					matches = false;
+				}
+			}
 			if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {

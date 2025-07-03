@@ -1,6 +1,7 @@
 package model.saga;
 
 import model.DataManager;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -38,6 +39,7 @@ public class GestionnaireSaga {
 		if (saga != null) {
 			saga.setTitre(newSaga.getTitre());
 			saga.setRealistateur(newSaga.getRealistateur());
+			saga.setActeur(newSaga.getActeur());
 			saga.setDescription(newSaga.getDescription());
 			saga.setGenre(newSaga.getGenre());
 			saga.setNombreFilms(newSaga.getNombreFilms());
@@ -77,7 +79,7 @@ public class GestionnaireSaga {
 				.orElse(null);
 	}
 
-	public Saga pickRandomSaga(String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
+	public Saga pickRandomSaga(String rea, Actor[] acteurs, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Saga> filteredSaga = new ArrayList<>();
 
 		for (Saga saga : sagas) {
@@ -86,11 +88,29 @@ public class GestionnaireSaga {
 			if (rea != null && !saga.getRealistateur().equalsIgnoreCase(rea)) {
 				matches = false;
 			}
-			else if (genres != null && genres.length > 0) {
+			else if (acteurs != null && acteurs.length > 0) {
+				boolean acteurMatch = false;
+				for (Actor acteur : acteurs) {
+					Actor[] actorSaga = saga.getActeur();
+					if(actorSaga != null) {
+						for (Actor sagaActeur : saga.getActeur()) {
+							if (sagaActeur.getName().equals(acteur.getName())) {
+								acteurMatch = true;
+								break;
+							}
+						}
+					}
+					if (acteurMatch) break;
+				}
+				if (!acteurMatch) {
+					matches = false;
+				}
+			}
+			if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {
-					for (Genre movieGenre : saga.getGenre()) {
-						if (movieGenre.equals(genre)) {
+					for (Genre sagaGenre : saga.getGenre()) {
+						if (sagaGenre.equals(genre)) {
 							genreMatch = true;
 							break;
 						}
@@ -113,8 +133,8 @@ public class GestionnaireSaga {
 			else if (plateformes != null && plateformes.length > 0) {
 				boolean plateformeMatch = false;
 				for (Platform plateforme : plateformes) {
-					for (Platform moviePlateforme : saga.getPlateforme()) {
-						if (moviePlateforme.equals(plateforme)) {
+					for (Platform sagaPlateforme : saga.getPlateforme()) {
+						if (sagaPlateforme.equals(plateforme)) {
 							plateformeMatch = true;
 							break;
 						}

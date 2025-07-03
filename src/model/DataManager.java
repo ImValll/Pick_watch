@@ -1,5 +1,6 @@
 package model;
 
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -15,6 +16,7 @@ import java.util.List;
 public class DataManager {
 	private static final String GENRES_FILE = "DATA/genres.ser";
 	private static final String PLATFORMS_FILE = "DATA/platforms.ser";
+	private static final String ACTORS_FILE = "DATA/actors.ser";
 	private static final String USERS_FILE = "DATA/users.ser";
 	private static final String MOVIE_FILE = "DATA/movies.ser";
 	private static final String SAGA_FILE = "DATA/sagas.ser";
@@ -59,6 +61,26 @@ public class DataManager {
 		}
 
 		return platforms;
+	}
+
+	public static void saveActor(ArrayList<Actor> actors) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ACTORS_FILE))) {
+			oos.writeObject(actors);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static ArrayList<Actor> loadActor() {
+		ArrayList<Actor> actors = new ArrayList<>();
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ACTORS_FILE))) {
+			actors = (ArrayList<Actor>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return actors;
 	}
 
 	public static void saveUser(ArrayList<User> users) {

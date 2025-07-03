@@ -15,8 +15,10 @@ public class SagaFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
-		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
-		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
+
+		JPanel contentPanel = new JPanel();
+		contentPanel.setBackground(new Color(50, 50, 50));
+		contentPanel.setLayout(new GridBagLayout());
 
 		JButton btnTotalRandom = ButtonEditor.createButton("Choisir une saga aléatoire", new Color(70, 130, 180));
 		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
@@ -29,15 +31,22 @@ public class SagaFrame extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(15, 30, 15, 30);
 
-		add(btnTotalRandom, gbc);
-		add(btnFilterRandom, gbc);
-		add(btnShowSaga, gbc);
-		add(btnMenu, gbc);
+		contentPanel.add(btnTotalRandom, gbc);
+		contentPanel.add(btnFilterRandom, gbc);
+		contentPanel.add(btnShowSaga, gbc);
+		contentPanel.add(btnMenu, gbc);
 
 		btnTotalRandom.addActionListener(e -> chooseSaga());
 		btnFilterRandom.addActionListener(e -> selectFilter());
 		btnShowSaga.addActionListener(e -> showSaga());
 		btnMenu.addActionListener(e -> backToMenu());
+
+		JScrollPane scrollPane = new JScrollPane(contentPanel);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+		setContentPane(scrollPane);
 
 		this.setVisible(true);
 	}

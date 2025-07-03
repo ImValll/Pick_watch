@@ -1,6 +1,7 @@
 package view.serie;
 
 import model.*;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -90,7 +91,10 @@ public class PanelSerie extends JPanel {
 		tableArea = new JTable(tableModel);
 		tableArea.setBackground(Color.LIGHT_GRAY);
 
-		// Ajout de rendus personnalisés pour les colonnes "Modifier" et "Supprimer"
+		// Ajout de rendus personnalisés pour les colonnes "Visualiser", "Modifier" et "Supprimer"
+		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
+
 		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
 
@@ -112,6 +116,46 @@ public class PanelSerie extends JPanel {
 
 	private void addSerie() {
 		JTextField titleField = new JTextField();
+
+		ArrayList<Actor> actors = DataManager.loadActor();
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : actors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		List<Actor> selectedActors = new ArrayList<>();
+
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField();
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
@@ -179,6 +223,9 @@ public class PanelSerie extends JPanel {
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
+				new JLabel("Acteurs"),
+				actorComboBox,
+				selectedActorsPanel,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
@@ -201,7 +248,32 @@ public class PanelSerie extends JPanel {
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle série", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier une série",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -210,6 +282,9 @@ public class PanelSerie extends JPanel {
 					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -284,7 +359,7 @@ public class PanelSerie extends JPanel {
 					}
 
 					if (canBeAdd) {
-						Serie newSerie = new Serie(titre, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+						Serie newSerie = new Serie(titre, actorsArray, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 						gestionnaireSerie.addSerie(newSerie); // Ajouter la serie à votre gestionnaire de series
 						JOptionPane.showMessageDialog(this, "Série ajoutée avec succès: " + titre, "Série Ajoutée", JOptionPane.INFORMATION_MESSAGE);
 					}
@@ -318,6 +393,73 @@ public class PanelSerie extends JPanel {
 
 		JTextField titleField = new JTextField(serie.getTitre());
 		titleField.setEnabled(false);
+
+		ArrayList<Actor> allActors = DataManager.loadActor(); // Tous les acteurs
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : allActors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		Actor[] actorSerie = serie.getActeur();
+		List<Actor> selectedActors;
+		if (actorSerie != null) {
+			selectedActors = new ArrayList<>(List.of(actorSerie));
+		} else {
+			selectedActors = new ArrayList<>();
+		}
+
+		for (Actor selected : selectedActors) {
+			JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+			JLabel nameLabel = new JLabel(selected.getName());
+			JButton removeButton = new JButton("x");
+			removeButton.setMargin(new Insets(0, 2, 0, 2));
+			removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+			removeButton.addActionListener(ev -> {
+				selectedActors.remove(selected);
+				selectedActorsPanel.remove(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			});
+
+			tagPanel.add(nameLabel);
+			tagPanel.add(removeButton);
+			selectedActorsPanel.add(tagPanel);
+		}
+
+// Logique de sélection manuelle depuis le combo
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField(serie.getDescription());
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
@@ -391,7 +533,7 @@ public class PanelSerie extends JPanel {
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
 
-		// Sélectionner le bouton approprié en fonction de l'état actuel du film
+		// Sélectionner le bouton approprié en fonction de l'état actuel de la série
 		if (serie.getDejaVu()) {
 			dejaVuButton.setSelected(true);
 		} else {
@@ -418,6 +560,9 @@ public class PanelSerie extends JPanel {
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
+				new JLabel("Acteurs"),
+				actorComboBox,
+				selectedActorsPanel,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
@@ -440,7 +585,30 @@ public class PanelSerie extends JPanel {
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une série", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier une série",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -449,6 +617,9 @@ public class PanelSerie extends JPanel {
 					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
 				}
 				else {
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -508,7 +679,7 @@ public class PanelSerie extends JPanel {
 						addBy = new User(addByComboBox.getSelectedItem().toString());
 					}
 
-					Serie newSerie = new Serie(titre, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+					Serie newSerie = new Serie(titre, actorsArray, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 					gestionnaireSerie.editSerie(oldTitle, newSerie); // Ajouter la serie à votre gestionnaire de séries
 				}
 
@@ -522,6 +693,83 @@ public class PanelSerie extends JPanel {
 			}
 		}
 
+	}
+
+	public void detailsSerie(Serie serie) {
+		String acteurs = "";
+		if(serie.getActeur() != null && serie.getActeur().length != 0) {
+			for(Actor actor : serie.getActeur()) {
+				acteurs += actor.getName() + ", ";
+			}
+		}
+
+		String genres = "";
+		if(serie.getGenre() != null && serie.getGenre().length != 0) {
+			for (Genre genre : serie.getGenre()) {
+				genres += genre.getName() + ", ";
+			}
+		}
+
+		String plateforme = "";
+		if(serie.getPlateforme() != null && serie.getPlateforme().length != 0) {
+			for (Platform platform : serie.getPlateforme()) {
+				plateforme += platform.getName() + ", ";
+			}
+		}
+
+// Style HTML pour les titres
+		String titreStyle = "<html><span style='font-family:Arial; font-size:14pt; font-weight:bold; text-decoration: underline;'>";
+
+		final JComponent[] inputs = new JComponent[] {
+				new JLabel(titreStyle + "Titre :</span></html>"),
+				new JLabel(serie.getTitre()),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Acteurs :</span></html>"),
+				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Description :</span></html>"),
+				new JLabel("<html><div style='width:300px'>" + serie.getDescription() + "</div></html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Genres :</span></html>"),
+				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Nombre de saisons :</span></html>"),
+				new JLabel(serie.getNombreSaison() + " min"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Nombre d'épisodes par saison :</span></html>"),
+				new JLabel(serie.getNombreEpisode() + " min"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Durée moyenne des épisodes :</span></html>"),
+				new JLabel(serie.getDureeMoyenne() + " min"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Date de sortie de la première saison :</span></html>"),
+				new JLabel(String.valueOf(serie.getDateSortiePremiereSaison())),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Date de sortie de la dernière saison :</span></html>"),
+				new JLabel(String.valueOf(serie.getDateSortieDerniereSaison())),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Plateforme :</span></html>"),
+				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Déjà vu :</span></html>"),
+				new JLabel(serie.getDejaVu() ? "Oui" : "Non"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Ajouté par :</span></html>"),
+				new JLabel(serie.getAddBy().getName())
+		};
+
+		JOptionPane.showMessageDialog(this, inputs, "Détails de la série", JOptionPane.PLAIN_MESSAGE);
 	}
 
 

@@ -1,12 +1,12 @@
 package view.serie_courte;
 
 import model.ButtonEditor;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
 import model.serie_courte.GestionnaireSerieCourte;
 import model.serie_courte.SerieCourte;
-import view.serie.SerieFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +19,7 @@ public class PanelRandomSerieCourte extends JPanel {
 	private final GestionnaireSerieCourte gestionnaireSerieCourte;
 	private final SerieCourteFrame serieCourteFrame;
 
+	private Actor[] actors;
 	private Genre[] genres;
 	private int nbSaison;
 	private int nbEpisode;
@@ -39,9 +40,10 @@ public class PanelRandomSerieCourte extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
+	public PanelRandomSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame, Actor[] actors, Genre[] genres, int nbSaison, int nbEpisode, int dureeMoyenne, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireSerieCourte = gestionnaireSerieCourte;
 		this.serieCourteFrame = serieCourteFrame;
+		this.actors = actors;
 		this.genres = genres;
 		this.nbSaison = nbSaison;
 		this.nbEpisode = nbEpisode;
@@ -73,10 +75,10 @@ public class PanelRandomSerieCourte extends JPanel {
 		serieCourtePanel.setBackground(new Color(50, 50, 50));
 		panel.add(serieCourtePanel, BorderLayout.CENTER);
 
-		SerieCourte serieCourteSelected = gestionnaireSerieCourte.pickRandomSerieCourte(genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
+		SerieCourte serieCourteSelected = gestionnaireSerieCourte.pickRandomSerieCourte(actors, genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 
 		if (serieCourteSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune série dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune série dans la base de données ou aucune série courte ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.serieCourte = serieCourteSelected;
@@ -120,7 +122,8 @@ public class PanelRandomSerieCourte extends JPanel {
 			date2 = "";
 		}
 
-		String serieCourteInfo = "<html>La série courte choisie est : " + serieCourteSelected.getTitre() + ".<br>La serie appartient à/aux genre(s) " +
+		String serieCourteInfo = "<html>La série courte choisie est : " + serieCourteSelected.getTitre() + ".<br>" + Arrays.toString(serieCourteSelected.getActeur()) +
+				" a/ont joué dedans.<br>La serie appartient à/aux genre(s) " +
 				Arrays.toString(serieCourteSelected.getGenre()) + ".<br>Elle possède " + serieCourteSelected.getNombreSaison() +
 				" saisons avec " + serieCourteSelected.getNombreEpisode() + "épisodes.<br>Les épisodes durent en moyenne " +
 				serieCourteSelected.getDureeMoyenne() + " minutes.<br>La première saison est sorti en " + date + " et la dernière en " +
@@ -136,11 +139,11 @@ public class PanelRandomSerieCourte extends JPanel {
 
 	public void backMenu() {
 		serieCourteFrame.dispose();
-		new SerieFrame();
+		new SerieCourteFrame();
 	}
 
 	public void generateAgain() {
-		SerieCourte newSerieCourte = gestionnaireSerieCourte.pickRandomSerieCourte(genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
+		SerieCourte newSerieCourte = gestionnaireSerieCourte.pickRandomSerieCourte(actors, genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 		if (newSerieCourte == null) {
 			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune série dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();

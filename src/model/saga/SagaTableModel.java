@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SagaTableModel extends AbstractTableModel {
 	private List<Saga> sagas;
-	private final String[] columnNames = {"Titre", "Réalisateur", "Description", "Genre", "Nombre de films", "Date de sortie du premier", "Date de sortie du dernier", "Plateforme", "Déjà vu", "Ajouté par", "Modifier", "Supprimer"};
+	private final String[] columnNames = {"Titre", "Réalisateur", "Description", "Visualiser", "Modifier", "Supprimer"};
 
 	public SagaTableModel(List<Saga> sagas) {
 		this.sagas = sagas;
@@ -36,7 +36,7 @@ public class SagaTableModel extends AbstractTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if (columnIndex == 10 || columnIndex == 11) { // colonnes "Modifier" et "Supprimer"
+		if (columnIndex == 3 || columnIndex == 4 || columnIndex == 5) { // colonnes "Visualiser", "Modifier" et "Supprimer"
 			return JButton.class;
 		}
 		return super.getColumnClass(columnIndex);
@@ -44,7 +44,7 @@ public class SagaTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex == 10 || columnIndex == 11; // rend les colonnes "Modifier" et "Supprimer" éditables
+		return columnIndex == 3 || columnIndex == 4 || columnIndex == 5; // rend les colonnes "Visualiser", "Modifier" et "Supprimer" éditables
 	}
 
 	@Override
@@ -70,50 +70,10 @@ public class SagaTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 3:
-				if (saga.getGenre() != null) {
-					return Arrays.toString(saga.getGenre());
-				} else {
-					return "";
-				}
+				return "Visualiser";
 			case 4:
-				if (saga.getNombreFilms() != 0) {
-					return saga.getNombreFilms();
-				} else {
-					return "";
-				}
-			case 5:
-				if (saga.getDateSortiePremier() != null) {
-					return new SimpleDateFormat("dd/MM/yyyy").format(saga.getDateSortiePremier());
-				} else {
-					return "";
-				}
-			case 6:
-				if (saga.getDateSortieDernier() != null) {
-					return new SimpleDateFormat("dd/MM/yyyy").format(saga.getDateSortieDernier());
-				} else {
-					return "";
-				}
-			case 7:
-				if (saga.getPlateforme() != null) {
-					return Arrays.toString(saga.getPlateforme());
-				} else {
-					return "";
-				}
-			case 8:
-				if (saga.getDejaVu() == false) {
-					return "NON";
-				} else {
-					return "OUI";
-				}
-			case 9:
-				if (saga.getAddBy() != null) {
-					return saga.getAddBy();
-				} else {
-					return "";
-				}
-			case 10:
 				return "Modifier";
-			case 11:
+			case 5:
 				return "Supprimer";
 			default:
 				return null;

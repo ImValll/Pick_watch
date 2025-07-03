@@ -1,5 +1,6 @@
 package model.serie_courte;
 
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -12,6 +13,7 @@ public class SerieCourte implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	private String titre;
+	private Actor[] acteur;
 	private String description;
 	private Genre[] genre;
 	private int nombreSaison;
@@ -23,8 +25,9 @@ public class SerieCourte implements Serializable {
 	private Boolean dejaVu;
 	private User addBy;
 
-	public SerieCourte(String titre, String description, Genre[] genre, int nombreSaison, int nombreEpisode, int dureeMoyenne, Date dateSortiePremiereSaison, Date dateSortieDerniereSaison, Platform[] plateforme, Boolean dejaVu, User addBy) {
+	public SerieCourte(String titre, Actor[] acteur, String description, Genre[] genre, int nombreSaison, int nombreEpisode, int dureeMoyenne, Date dateSortiePremiereSaison, Date dateSortieDerniereSaison, Platform[] plateforme, Boolean dejaVu, User addBy) {
 		this.titre = titre;
+		this.acteur = acteur;
 		this.description = description;
 		this.genre = genre;
 		this.nombreSaison = nombreSaison;
@@ -43,6 +46,14 @@ public class SerieCourte implements Serializable {
 
 	public void setTitre(String titre) {
 		this.titre = titre;
+	}
+
+	public Actor[] getActeur() {
+		return acteur;
+	}
+
+	public void setActeur(Actor[] acteur) {
+		this.acteur = acteur;
 	}
 
 	public String getDescription() {

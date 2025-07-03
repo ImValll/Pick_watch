@@ -1,6 +1,7 @@
 package view.saga;
 
 import model.ButtonEditor;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -19,6 +20,7 @@ public class PanelRandomSaga extends JPanel {
 	private final SagaFrame sagaFrame;
 
 	private String rea;
+	private Actor[] actors;
 	private Genre[] genres;
 	private int nbFilm;
 	private Date dateSortie;
@@ -37,10 +39,11 @@ public class PanelRandomSaga extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame, String rea, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
+	public PanelRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame, String rea, Actor[] actors, Genre[] genres, int nbFilm, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireSaga = gestionnaireSaga;
 		this.sagaFrame = sagaFrame;
 		this.rea = rea;
+		this.actors = actors;
 		this.genres = genres;
 		this.nbFilm = nbFilm;
 		this.dateSortie = dateSortie;
@@ -70,10 +73,10 @@ public class PanelRandomSaga extends JPanel {
 		sagaPanel.setBackground(new Color(50, 50, 50));
 		panel.add(sagaPanel, BorderLayout.CENTER);
 
-		Saga sagaSelected = gestionnaireSaga.pickRandomSaga(rea, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
+		Saga sagaSelected = gestionnaireSaga.pickRandomSaga(rea, actors, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 
 		if (sagaSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune saga dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune saga dans la base de données ou aucune saga ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.saga = sagaSelected;
@@ -118,7 +121,8 @@ public class PanelRandomSaga extends JPanel {
 		}
 
 		String sagaInfo = "<html>La saga choisie est : " + sagaSelected.getTitre() + " réalisée par " +
-				sagaSelected.getRealistateur() + ".<br>La saga appartient à/aux genre(s) " +
+				sagaSelected.getRealistateur() + ".<br>" + Arrays.toString(sagaSelected.getActeur()) +
+				" a/ont joué dedans.<br>La saga appartient à/aux genre(s) " +
 				Arrays.toString(sagaSelected.getGenre()) + ".<br>Elle possède " + sagaSelected.getNombreFilms() +
 				" films.<br>Le premier film est sorti en " + date + " et le dernier en " + date2 +
 				".<br>Ils sont disponible sur " + Arrays.toString(sagaSelected.getPlateforme()) +
@@ -137,7 +141,7 @@ public class PanelRandomSaga extends JPanel {
 	}
 
 	public void generateAgain() {
-		Saga newSaga = gestionnaireSaga.pickRandomSaga(rea, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
+		Saga newSaga = gestionnaireSaga.pickRandomSaga(rea, actors, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 		if (newSaga == null) {
 			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune saga dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();

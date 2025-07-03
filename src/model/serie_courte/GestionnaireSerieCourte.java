@@ -1,6 +1,7 @@
 package model.serie_courte;
 
 import model.DataManager;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -37,6 +38,7 @@ public class GestionnaireSerieCourte {
 		SerieCourte serieCourte = findSerieCourteByTitle(titre);
 		if (serieCourte != null) {
 			serieCourte.setTitre(newSerieCourte.getTitre());
+			serieCourte.setActeur(newSerieCourte.getActeur());
 			serieCourte.setDescription(newSerieCourte.getDescription());
 			serieCourte.setGenre(newSerieCourte.getGenre());
 			serieCourte.setNombreSaison(newSerieCourte.getNombreSaison());
@@ -78,12 +80,30 @@ public class GestionnaireSerieCourte {
 				.orElse(null);
 	}
 
-	public SerieCourte pickRandomSerieCourte(Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
+	public SerieCourte pickRandomSerieCourte(Actor[] acteurs, Genre[] genres, int nbSaison, int nbEpidose, int dureeMoyene, Date dateSortie, Date dateSortie2, Platform[] plateformes, int dejaVu, User addBy) {
 		List<SerieCourte> filteredSerieCourte = new ArrayList<>();
 
 		for (SerieCourte serieCourte : seriesCourte) {
 			boolean matches = true;
 
+			if (acteurs != null && acteurs.length > 0) {
+				boolean acteurMatch = false;
+				for (Actor acteur : acteurs) {
+					Actor[] actorSerieCourte = serieCourte.getActeur();
+					if(actorSerieCourte != null) {
+						for (Actor serieCourteActeur : serieCourte.getActeur()) {
+							if (serieCourteActeur.getName().equals(acteur.getName())) {
+								acteurMatch = true;
+								break;
+							}
+						}
+					}
+					if (acteurMatch) break;
+				}
+				if (!acteurMatch) {
+					matches = false;
+				}
+			}
 			if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {

@@ -1,6 +1,7 @@
 package model.movie;
 
 import model.*;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -38,6 +39,7 @@ public class GestionnaireMovie {
 		if (movie != null) {
 			movie.setTitre(newMovie.getTitre());
 			movie.setRealistateur(newMovie.getRealistateur());
+			movie.setActeur(newMovie.getActeur());
 			movie.setDescription(newMovie.getDescription());
 			movie.setGenre(newMovie.getGenre());
 			movie.setDuree(newMovie.getDuree());
@@ -76,7 +78,7 @@ public class GestionnaireMovie {
 				.orElse(null);
 	}
 
-	public Movie pickRandomMovie(String rea, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
+	public Movie pickRandomMovie(String rea, Actor[] acteurs, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
 		List<Movie> filteredMovies = new ArrayList<>();
 
 		for (Movie movie : movies) {
@@ -85,7 +87,25 @@ public class GestionnaireMovie {
 			if (rea != null && !movie.getRealistateur().equalsIgnoreCase(rea)) {
 				matches = false;
 			}
-			else if (genres != null && genres.length > 0) {
+			else if (acteurs != null && acteurs.length > 0) {
+				boolean acteurMatch = false;
+				for (Actor acteur : acteurs) {
+					Actor[] actorMovie = movie.getActeur();
+					if(actorMovie != null) {
+						for (Actor movieActeur : movie.getActeur()) {
+							if (movieActeur.getName().equals(acteur.getName())) {
+								acteurMatch = true;
+								break;
+							}
+						}
+					}
+					if (acteurMatch) break;
+				}
+				if (!acteurMatch) {
+					matches = false;
+				}
+			}
+			if (genres != null && genres.length > 0) {
 				boolean genreMatch = false;
 				for (Genre genre : genres) {
 					for (Genre movieGenre : movie.getGenre()) {

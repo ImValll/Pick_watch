@@ -1,5 +1,6 @@
 package model;
 
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -8,6 +9,7 @@ import model.saga.Saga;
 import model.serie.Serie;
 import model.serie_courte.SerieCourte;
 import view.movie.PanelMovies;
+import view.parameter.actors.PanelActor;
 import view.parameter.genres.PanelGenre;
 import view.parameter.platforms.PanelPlatform;
 import view.parameter.users.PanelUser;
@@ -40,7 +42,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 				fireEditingStopped();
 				// Get the movie from the table model using the row index
 				Movie movie = panel.getGestionnaire().findMovieByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Movie objects
-				if ("Modifier".equals(label)) {
+				if ("Visualiser".equals(label)) {
+					panel.detailsMovie(movie);
+				} else if ("Modifier".equals(label)) {
 					panel.editMovie(movie);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteMovie(movie);
@@ -60,7 +64,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 				fireEditingStopped();
 				// Get the saga from the table model using the row index
 				Saga saga = panel.getGestionnaire().findSagaByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Saga objects
-				if ("Modifier".equals(label)) {
+				if ("Visualiser".equals(label)) {
+					panel.detailsSaga(saga);
+				} else if ("Modifier".equals(label)) {
 					panel.editSaga(saga);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSaga(saga);
@@ -80,7 +86,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 				fireEditingStopped();
 				// Get the serie from the table model using the row index
 				Serie serie = panel.getGestionnaire().findSerieByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
-				if ("Modifier".equals(label)) {
+				if ("Visualiser".equals(label)) {
+					panel.detailsSerie(serie);
+				} else if ("Modifier".equals(label)) {
 					panel.editSerie(serie);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSerie(serie);
@@ -100,7 +108,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 				fireEditingStopped();
 				// Get the serie from the table model using the row index
 				SerieCourte serieCourte = panel.getGestionnaire().findSerieCourteByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
-				if ("Modifier".equals(label)) {
+				if ("Visualiser".equals(label)) {
+					panel.detailsSerieCourte(serieCourte);
+				} else if ("Modifier".equals(label)) {
 					panel.editSerieCourte(serieCourte);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteSerieCourte(serieCourte);
@@ -164,6 +174,26 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 					panel.editUser(user);
 				} else if ("Supprimer".equals(label)) {
 					panel.deleteUser(user);
+				}
+			}
+		});
+	}
+
+	public ButtonEditor(PanelActor panel) {
+		super();
+		this.panel = panel;
+		button = new JButton();
+		button.setOpaque(true);
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fireEditingStopped();
+				// Get the actor from the table model using the row index
+					Actor actor = panel.getGestionnaire().findActorByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds User objects
+				if ("Modifier".equals(label)) {
+					panel.editActor(actor);
+				} else if ("Supprimer".equals(label)) {
+					panel.deleteActor(actor);
 				}
 			}
 		});

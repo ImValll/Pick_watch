@@ -1,10 +1,12 @@
 package view.parameter;
 
 import model.ButtonEditor;
+import model.parameter.actors.GestionnaireActor;
 import model.parameter.genres.GestionnaireGenre;
 import model.parameter.platforms.GestionnairePlatform;
 import model.parameter.users.GestionnaireUser;
 import view.Frame;
+import view.parameter.actors.PanelActor;
 import view.parameter.genres.PanelGenre;
 import view.parameter.platforms.PanelPlatform;
 import view.parameter.users.PanelUser;
@@ -26,6 +28,7 @@ public class ParameterFrame extends JFrame {
 		JButton btnManageUser = ButtonEditor.createButton("Gérer les utilisateurs", new Color(70, 130, 180));
 		JButton btnManageGenre = ButtonEditor.createButton("Gérer les genres", new Color(70, 130, 180));
 		JButton btnManagePlatform = ButtonEditor.createButton("Gérer les plateformes", new Color(70, 130, 180));
+		JButton btnManageActor = ButtonEditor.createButton("Gérer les acteurs", new Color(70, 130, 180));
 		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
 
 
@@ -37,11 +40,13 @@ public class ParameterFrame extends JFrame {
 		add(btnManageUser, gbc);
 		add(btnManageGenre, gbc);
 		add(btnManagePlatform, gbc);
+		add(btnManageActor, gbc);
 		add(btnMenu, gbc);
 
 		btnManageUser.addActionListener(e -> manageUser());
 		btnManageGenre.addActionListener(e -> manageGenre());
 		btnManagePlatform.addActionListener(e -> managePlatform());
+		btnManageActor.addActionListener(e -> manageActor());
 		btnMenu.addActionListener(e -> backToMenu());
 
 		this.setVisible(true);
@@ -65,6 +70,13 @@ public class ParameterFrame extends JFrame {
 		// Initialisation du Panel plateforme
 		PanelPlatform panelPlatform = new PanelPlatform(new GestionnairePlatform(), this);
 		setContentPane(panelPlatform);
+		validate();
+	}
+
+	private void manageActor() {
+		// Initialisation du Panel actor
+		PanelActor panelActor = new PanelActor(new GestionnaireActor(), this);
+		setContentPane(panelActor);
 		validate();
 	}
 

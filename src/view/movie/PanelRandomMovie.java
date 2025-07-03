@@ -1,6 +1,7 @@
 package view.movie;
 
 import model.ButtonEditor;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -19,6 +20,7 @@ public class PanelRandomMovie extends JPanel {
 	private final MovieFrame movieFrame;
 
 	private String rea;
+	private Actor[] actors;
 	private Genre[] genres;
 	private int duree;
 	private Date dateSortie;
@@ -36,10 +38,11 @@ public class PanelRandomMovie extends JPanel {
 		initializeUI();
 	}
 
-	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame, String rea, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
+	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame, String rea, Actor[] actors, Genre[] genres, int duree, Date dateSortie, Platform[] plateformes, int dejaVu, User addBy) {
 		this.gestionnaireMovie = gestionnaireMovie;
 		this.movieFrame = movieFrame;
 		this.rea = rea;
+		this.actors = actors;
 		this.genres = genres;
 		this.duree = duree;
 		this.dateSortie = dateSortie;
@@ -68,10 +71,10 @@ public class PanelRandomMovie extends JPanel {
 		moviePanel.setBackground(new Color(50, 50, 50));
 		panel.add(moviePanel, BorderLayout.CENTER);
 
-		Movie movieSelected = gestionnaireMovie.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, dejaVu, addBy);
+		Movie movieSelected = gestionnaireMovie.pickRandomMovie(rea, actors, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 
 		if (movieSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données ou aucun film ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.movie = movieSelected;
@@ -108,7 +111,8 @@ public class PanelRandomMovie extends JPanel {
 		}
 
 		String movieInfo = "<html>Le film choisi est : " + movieSelected.getTitre() + " réalisé par " +
-				movieSelected.getRealistateur() + ".<br>Le film appartient à/aux genre(s) " +
+				movieSelected.getRealistateur() + ".<br>" + Arrays.toString(movieSelected.getActeur()) +
+				" a/ont joué dedans.<br>Le film appartient à/aux genre(s) " +
 				Arrays.toString(movieSelected.getGenre()) + ".<br>Il dure " + movieSelected.getDuree() +
 				" et est sorti en " + date + ".<br>Il est disponible sur " + Arrays.toString(movieSelected.getPlateforme()) +
 				".<br>Il a été ajouté par " + movieSelected.getAddBy() + "</html>";
@@ -126,7 +130,7 @@ public class PanelRandomMovie extends JPanel {
 	}
 
 	public void generateAgain() {
-		Movie newMovie = gestionnaireMovie.pickRandomMovie(rea, genres, duree, dateSortie, plateformes, dejaVu, addBy);
+		Movie newMovie = gestionnaireMovie.pickRandomMovie(rea, actors, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 		if (newMovie == null) {
 			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
 			backMenu();

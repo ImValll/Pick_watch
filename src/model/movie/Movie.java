@@ -1,6 +1,7 @@
 package model.movie;
 
 
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -14,6 +15,7 @@ public class Movie implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String titre;
 	private String realistateur;
+	private Actor[] acteur;
 	private String description;
 	private Genre[] genre;
 	private int duree;
@@ -22,9 +24,10 @@ public class Movie implements Serializable {
 	private boolean dejaVu;
 	private User addBy;
 
-	public Movie(String titre, String realistateur, String description, Genre[] genre, int duree, Date dateSortie, Platform[] plateforme, boolean dejaVu, User addBy) {
+	public Movie(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int duree, Date dateSortie, Platform[] plateforme, boolean dejaVu, User addBy) {
 		this.titre = titre;
 		this.realistateur = realistateur;
+		this.acteur = acteur;
 		this.description = description;
 		this.genre = genre;
 		this.duree = duree;
@@ -41,6 +44,8 @@ public class Movie implements Serializable {
 	public String getRealistateur() {
 		return realistateur;
 	}
+
+	public Actor[] getActeur() {return acteur;}
 
 	public String getDescription() {
 		return description;
@@ -77,6 +82,8 @@ public class Movie implements Serializable {
 	public void setRealistateur(String realistateur) {
 		this.realistateur = realistateur;
 	}
+
+	public void setActeur(Actor[] acteur) {this.acteur = acteur;}
 
 	public void setDescription(String description) {
 		this.description = description;

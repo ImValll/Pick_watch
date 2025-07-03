@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MoviesTableModel extends AbstractTableModel {
 	private List<Movie> movies;
-	private final String[] columnNames = {"Titre", "Réalisateur", "Description", "Genre", "Durée", "Date de sortie", "Plateforme", "Déjà vu", "Ajouté par", "Modifier", "Supprimer"};
+	private final String[] columnNames = {"Titre", "Réalisateur", "Description", "Visualiser", "Modifier", "Supprimer"};
 
 	public MoviesTableModel(List<Movie> movies) {
 		this.movies = movies;
@@ -36,7 +36,7 @@ public class MoviesTableModel extends AbstractTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if (columnIndex == 9 || columnIndex == 10) { // colonnes "Modifier" et "Supprimer"
+		if (columnIndex == 3 || columnIndex == 4 || columnIndex == 5) { // colonnes "Visualiser", "Modifier" et "Supprimer"
 			return JButton.class;
 		}
 		return super.getColumnClass(columnIndex);
@@ -44,7 +44,7 @@ public class MoviesTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex == 9 || columnIndex == 10; // rend les colonnes "Modifier" et "Supprimer" éditables
+		return columnIndex == 3 || columnIndex == 4 || columnIndex == 5; // rend les colonnes "Visualiser", "Modifier" et "Supprimer" éditables
 	}
 
 	@Override
@@ -73,50 +73,10 @@ public class MoviesTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 3:
-				if (movie.getGenre() != null) {
-					return Arrays.toString(movie.getGenre());
-				}
-				else {
-					return "";
-				}
+				return "Visualiser";
 			case 4:
-				if (movie.getDuree() != 0) {
-					return movie.getDuree();
-				}
-				else {
-					return "";
-				}
-			case 5:
-				if (movie.getDateSortie() != null) {
-					return new SimpleDateFormat("dd/MM/yyyy").format(movie.getDateSortie());
-				}
-				else {
-					return "";
-				}
-			case 6:
-				if (movie.getPlateforme() != null) {
-					return Arrays.toString(movie.getPlateforme());
-				}
-				else {
-					return "";
-				}
-			case 7:
-				if(!movie.getDejaVu()) {
-					return "NON";
-				}
-				else {
-					return "OUI";
-				}
-			case 8:
-				if (movie.getAddBy() != null) {
-					return movie.getAddBy();
-				}
-				else {
-					return "";
-				}
-			case 9:
 				return "Modifier";
-			case 10:
+			case 5:
 				return "Supprimer";
 			default:
 				return null;

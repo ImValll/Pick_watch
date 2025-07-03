@@ -2,6 +2,7 @@ package view.movie;
 
 import model.ButtonEditor;
 import model.DataManager;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -18,6 +19,7 @@ public class PanelFilterRandomMovie extends JPanel {
 	private final GestionnaireMovie gestionnaireMovie;
 	private final MovieFrame movieFrame;
 	private JTextField directorField;
+	private List<Actor> selectedActors;
 	private List<JCheckBox> genreCheckBoxes;
 	private JTextField durationField;
 	private JTextField yearField;
@@ -46,19 +48,70 @@ public class PanelFilterRandomMovie extends JPanel {
 
 		// Center panel with filters
 		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new GridLayout(0, 1)); // One column layout
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
 		// Director filter
-		JLabel labelRea = new JLabel("Réalisateur:");
+		JLabel labelRea = new JLabel("Réalisateur :");
 		labelRea.setForeground(Color.WHITE);
 		centerPanel.add(labelRea);
 
 		directorField = new JTextField();
 		directorField.setBackground(Color.LIGHT_GRAY);
+		directorField.setMaximumSize(new Dimension(500, 30));
 		centerPanel.add(directorField);
 
+		// Acteur filter
+		centerPanel.add(new JLabel(" "));
+		JLabel labelActeur = new JLabel("Acteur :");
+		labelActeur.setForeground(Color.WHITE);
+		centerPanel.add(labelActeur);
+
+		ArrayList<Actor> actors = DataManager.loadActor();
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : actors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		selectedActors = new ArrayList<>();
+
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+		actorComboBox.setMaximumSize(new Dimension(600, 30));
+		selectedActorsPanel.setMaximumSize(new Dimension(600, 30));
+		centerPanel.add(actorComboBox);
+		centerPanel.add(selectedActorsPanel);
+
 		// Genre filter
-		JLabel labelGenre = new JLabel("Genres:");
+		centerPanel.add(new JLabel(" "));
+		JLabel labelGenre = new JLabel("Genres :");
 		labelGenre.setForeground(Color.WHITE);
 		centerPanel.add(labelGenre);
 
@@ -74,28 +127,34 @@ public class PanelFilterRandomMovie extends JPanel {
 		}
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		genrePanel.setBackground(new Color(50, 50, 50));
+		scrollPaneGenre.setMaximumSize(new Dimension(600, 50));
 		centerPanel.add(scrollPaneGenre);
 
 		// Duration filter
-		JLabel labelDuree = new JLabel("Durée maximale (minutes):");
+		centerPanel.add(new JLabel(" "));
+		JLabel labelDuree = new JLabel("Durée maximale (minutes) :");
 		labelDuree.setForeground(Color.WHITE);
 		centerPanel.add(labelDuree);
 
 		durationField = new JTextField();
 		durationField.setBackground(Color.LIGHT_GRAY);
+		durationField.setMaximumSize(new Dimension(500, 30));
 		centerPanel.add(durationField);
 
 		// Year filter
-		JLabel labelYear = new JLabel("Année de sortie:");
+		centerPanel.add(new JLabel(" "));
+		JLabel labelYear = new JLabel("Année de sortie :");
 		labelYear.setForeground(Color.WHITE);
 		centerPanel.add(labelYear);
 
 		yearField = new JTextField();
 		yearField.setBackground(Color.LIGHT_GRAY);
+		yearField.setMaximumSize(new Dimension(500, 30));
 		centerPanel.add(yearField);
 
 		// Platform filter
-		JLabel labelPlateforme = new JLabel("Plateformes:");
+		centerPanel.add(new JLabel(" "));
+		JLabel labelPlateforme = new JLabel("Plateformes :");
 		labelPlateforme.setForeground(Color.WHITE);
 		centerPanel.add(labelPlateforme);
 
@@ -111,12 +170,18 @@ public class PanelFilterRandomMovie extends JPanel {
 		}
 		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		platformPanel.setBackground(new Color(50, 50, 50));
+		scrollPanePlatform.setMaximumSize(new Dimension(600, 50));
 		centerPanel.add(scrollPanePlatform);
 
 		//dejaVu filter
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
+		centerPanel.add(new JLabel(" "));
 		dejaVuButton = new JRadioButton("Déjà vu");
+		dejaVuButton.setBackground(new Color(50, 50, 50));
+		dejaVuButton.setForeground(Color.WHITE);
 		pasEncoreVuButton = new JRadioButton("Pas encore vu");
+		pasEncoreVuButton.setBackground(new Color(50, 50, 50));
+		pasEncoreVuButton.setForeground(Color.WHITE);
 		ButtonGroup vuGroup = new ButtonGroup();
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
@@ -130,11 +195,14 @@ public class PanelFilterRandomMovie extends JPanel {
 		vuPanel.add(dejaVuButton);
 		vuPanel.add(pasEncoreVuButton);
 		vuPanel.add(clearVuButton);
+		vuPanel.setBackground(new Color(50, 50, 50));
+		vuPanel.setMaximumSize(new Dimension(500, 30));
 		centerPanel.add(vuPanel);
 
 
 		// User filter
-		JLabel labelUtilisateur = new JLabel("Utilisateur:");
+		centerPanel.add(new JLabel(" "));
+		JLabel labelUtilisateur = new JLabel("Utilisateur :");
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
@@ -148,6 +216,7 @@ public class PanelFilterRandomMovie extends JPanel {
 		userComboBox.setSelectedItem("Ignorer"); // Default value
 		userComboBox.setBackground(Color.LIGHT_GRAY);
 		userComboBox.setForeground(Color.BLACK);
+		userComboBox.setMaximumSize(new Dimension(500, 30));
 		centerPanel.add(userComboBox);
 
 		// Bottom panel with buttons
@@ -179,6 +248,10 @@ public class PanelFilterRandomMovie extends JPanel {
 		if (director.isEmpty()) {
 			director = null;
 		}
+
+		// Get actor
+		List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+		Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
 
 		// Get genres
 		List<Genre> selectedGenres = new ArrayList<>();
@@ -233,7 +306,7 @@ public class PanelFilterRandomMovie extends JPanel {
 		}
 
 		// Create PanelRandomMovie
-		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(gestionnaireMovie, movieFrame, director, genresArray, duration, dateSortie, platformsArray, dejaVu, addBy);
+		PanelRandomMovie panelRandomMovie = new PanelRandomMovie(gestionnaireMovie, movieFrame, director, actorsArray, genresArray, duration, dateSortie, platformsArray, dejaVu, addBy);
 
 		// Replace current panel with PanelRandomMovie
 		movieFrame.getContentPane().removeAll();

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SerieCourteTableModel extends AbstractTableModel {
 	private List<SerieCourte> seriesCourte;
-	private final String[] columnNames = {"Titre", "Description", "Genre", "Nombre de saisons", "Nombre d'épisode par saison", "Durée moyenne d'épisode", "Date de sortie de de première saison", "Date de sortie de la dernière saison", "Plateforme", "Déjà vu", "Ajouté par", "Modifier", "Supprimer"};
+	private final String[] columnNames = {"Titre", "Description", "Visualiser", "Modifier", "Supprimer"};
 
 	public SerieCourteTableModel(List<SerieCourte> seriesCourte) {
 		this.seriesCourte = seriesCourte;
@@ -36,7 +36,7 @@ public class SerieCourteTableModel extends AbstractTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if (columnIndex == 11 || columnIndex == 12) { // colonnes "Modifier" et "Supprimer"
+		if (columnIndex == 2 || columnIndex == 3 || columnIndex == 4) { // colonnes "Visualiser", "Modifier" et "Supprimer"
 			return JButton.class;
 		}
 		return super.getColumnClass(columnIndex);
@@ -44,7 +44,7 @@ public class SerieCourteTableModel extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return columnIndex == 11 || columnIndex == 12; // rend les colonnes "Modifier" et "Supprimer" éditables
+		return columnIndex == 2 || columnIndex == 3 || columnIndex == 4; // rend les colonnes "Visualiser", "Modifier" et "Supprimer" éditables
 	}
 
 	@Override
@@ -64,62 +64,10 @@ public class SerieCourteTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 2:
-				if (serieCourte.getGenre() != null) {
-					return Arrays.toString(serieCourte.getGenre());
-				} else {
-					return "";
-				}
+				return "Visualiser";
 			case 3:
-				if (serieCourte.getNombreSaison() != 0) {
-					return serieCourte.getNombreSaison();
-				} else {
-					return "";
-				}
-			case 4:
-				if (serieCourte.getNombreEpisode() != 0) {
-					return serieCourte.getNombreEpisode();
-				} else {
-					return "";
-				}
-			case 5:
-				if (serieCourte.getDureeMoyenne() != 0) {
-					return serieCourte.getDureeMoyenne();
-				} else {
-					return "";
-				}
-			case 6:
-				if (serieCourte.getDateSortiePremiereSaison() != null) {
-					return new SimpleDateFormat("dd/MM/yyyy").format(serieCourte.getDateSortiePremiereSaison());
-				} else {
-					return "";
-				}
-			case 7:
-				if (serieCourte.getDateSortieDerniereSaison() != null) {
-					return new SimpleDateFormat("dd/MM/yyyy").format(serieCourte.getDateSortieDerniereSaison());
-				} else {
-					return "";
-				}
-			case 8:
-				if (serieCourte.getPlateforme() != null) {
-					return Arrays.toString(serieCourte.getPlateforme());
-				} else {
-					return "";
-				}
-			case 9:
-				if (serieCourte.getDejaVu() == false) {
-					return "NON";
-				} else {
-					return "OUI";
-				}
-			case 10:
-				if (serieCourte.getAddBy() != null) {
-					return serieCourte.getAddBy();
-				} else {
-					return "";
-				}
-			case 11:
 				return "Modifier";
-			case 12:
+			case 4:
 				return "Supprimer";
 			default:
 				return null;

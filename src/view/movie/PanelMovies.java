@@ -1,6 +1,7 @@
 package view.movie;
 
 import model.*;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -90,7 +91,10 @@ public class PanelMovies extends JPanel {
 		tableArea = new JTable(tableModel);
 		tableArea.setBackground(Color.LIGHT_GRAY);
 
-		// Ajout de rendus personnalisés pour les colonnes "Modifier" et "Supprimer"
+		// Ajout de rendus personnalisés pour les colonnes "Visualiser", "Modifier" et "Supprimer"
+		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
+
 		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
 
@@ -113,9 +117,47 @@ public class PanelMovies extends JPanel {
 	private void addMovie() {
 		JTextField titleField = new JTextField();
 		JTextField reaField = new JTextField();
+
+		ArrayList<Actor> actors = DataManager.loadActor();
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : actors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		List<Actor> selectedActors = new ArrayList<>();
+
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField();
-
-
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
 		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -173,6 +215,9 @@ public class PanelMovies extends JPanel {
 			titleField,
 			new JLabel("Réalisateur"),
 			reaField,
+			new JLabel("Acteurs"),
+			actorComboBox,
+			selectedActorsPanel,
 			new JLabel("Description"),
 			descriptionField,
 			new JLabel("Genres"),
@@ -189,7 +234,32 @@ public class PanelMovies extends JPanel {
 			addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter un nouveau film", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier un film",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -199,6 +269,10 @@ public class PanelMovies extends JPanel {
 				}
 				else {
 					String rea = reaField.getText();
+
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -257,7 +331,7 @@ public class PanelMovies extends JPanel {
 					}
 
 					if (canBeAdd) {
-						Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
+						Movie newMovie = new Movie(titre, rea, actorsArray, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
 						gestionnaireMovie.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
 						JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
 					}
@@ -292,6 +366,73 @@ public class PanelMovies extends JPanel {
 		JTextField titleField = new JTextField(movie.getTitre());
 		titleField.setEnabled(false);
 		JTextField reaField = new JTextField(movie.getRealistateur());
+
+		ArrayList<Actor> allActors = DataManager.loadActor(); // Tous les acteurs
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : allActors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		Actor[] actorMovie = movie.getActeur();
+		List<Actor> selectedActors;
+		if (actorMovie != null) {
+			selectedActors = new ArrayList<>(List.of(actorMovie));
+		} else {
+			selectedActors = new ArrayList<>();
+		}
+
+		for (Actor selected : selectedActors) {
+			JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+			JLabel nameLabel = new JLabel(selected.getName());
+			JButton removeButton = new JButton("x");
+			removeButton.setMargin(new Insets(0, 2, 0, 2));
+			removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+			removeButton.addActionListener(ev -> {
+				selectedActors.remove(selected);
+				selectedActorsPanel.remove(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			});
+
+			tagPanel.add(nameLabel);
+			tagPanel.add(removeButton);
+			selectedActorsPanel.add(tagPanel);
+		}
+
+// Logique de sélection manuelle depuis le combo
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField(movie.getDescription());
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
@@ -375,6 +516,9 @@ public class PanelMovies extends JPanel {
 				titleField,
 				new JLabel("Réalisateur"),
 				reaField,
+				new JLabel("Acteurs"),
+				actorComboBox,
+				selectedActorsPanel,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
@@ -391,7 +535,30 @@ public class PanelMovies extends JPanel {
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier un film", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier un film",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+		
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -401,6 +568,10 @@ public class PanelMovies extends JPanel {
 				}
 				else {
 					String rea = reaField.getText();
+
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -442,7 +613,7 @@ public class PanelMovies extends JPanel {
 						addBy = new User(addByComboBox.getSelectedItem().toString());
 					}
 
-					Movie newMovie = new Movie(titre, rea, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
+					Movie newMovie = new Movie(titre, rea, actorsArray, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy);
 					gestionnaireMovie.editMovie(oldTitle, newMovie); // Ajouter le film à votre gestionnaire de films
 				}
 
@@ -456,6 +627,75 @@ public class PanelMovies extends JPanel {
 			}
 		}
 
+	}
+
+	public void detailsMovie(Movie movie) {
+		String acteurs = "";
+		if(movie.getActeur() != null && movie.getActeur().length != 0) {
+		for(Actor actor : movie.getActeur()) {
+			acteurs += actor.getName() + ", ";
+		}
+		}
+
+		String genres = "";
+		if(movie.getGenre() != null && movie.getGenre().length != 0) {
+			for (Genre genre : movie.getGenre()) {
+				genres += genre.getName() + ", ";
+			}
+		}
+
+		String plateforme = "";
+		if(movie.getPlateforme() != null && movie.getPlateforme().length != 0) {
+			for (Platform platform : movie.getPlateforme()) {
+				plateforme += platform.getName() + ", ";
+			}
+		}
+
+// Style HTML pour les titres
+		String titreStyle = "<html><span style='font-family:Arial; font-size:14pt; font-weight:bold; text-decoration: underline;'>";
+
+		final JComponent[] inputs = new JComponent[] {
+				new JLabel(titreStyle + "Titre :</span></html>"),
+				new JLabel(movie.getTitre()),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Réalisateur :</span></html>"),
+				new JLabel(movie.getRealistateur()),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Acteurs :</span></html>"),
+				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Description :</span></html>"),
+				new JLabel("<html><div style='width:300px'>" + movie.getDescription() + "</div></html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Genres :</span></html>"),
+				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Durée :</span></html>"),
+				new JLabel(movie.getDuree() + " min"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Date de sortie :</span></html>"),
+				new JLabel(String.valueOf(movie.getDateSortie())),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Plateforme :</span></html>"),
+				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Déjà vu :</span></html>"),
+				new JLabel(movie.getDejaVu() ? "Oui" : "Non"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Ajouté par :</span></html>"),
+				new JLabel(movie.getAddBy().getName())
+		};
+
+		JOptionPane.showMessageDialog(this, inputs, "Détails du film", JOptionPane.PLAIN_MESSAGE);
 	}
 
 

@@ -1,5 +1,6 @@
 package model.saga;
 
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -13,6 +14,7 @@ public class Saga implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String titre;
 	private String realistateur;
+	private Actor[] acteur;
 	private String description;
 	private Genre[] genre;
 	private int nombreFilms;
@@ -22,9 +24,10 @@ public class Saga implements Serializable {
 	private Boolean dejaVu;
 	private User addBy;
 
-	public Saga(String titre, String realistateur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Platform[] plateforme, Boolean dejaVu, User addBy) {
+	public Saga(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Platform[] plateforme, Boolean dejaVu, User addBy) {
 		this.titre = titre;
 		this.realistateur = realistateur;
+		this.acteur = acteur;
 		this.description = description;
 		this.genre = genre;
 		this.nombreFilms = nombreFilms;
@@ -49,6 +52,14 @@ public class Saga implements Serializable {
 
 	public void setRealistateur(String realistateur) {
 		this.realistateur = realistateur;
+	}
+
+	public Actor[] getActeur() {
+		return acteur;
+	}
+
+	public void setActeur(Actor[] acteur) {
+		this.acteur = acteur;
 	}
 
 	public Genre[] getGenre() {

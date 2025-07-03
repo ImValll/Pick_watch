@@ -1,6 +1,7 @@
 package view.saga;
 
 import model.*;
+import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
@@ -90,7 +91,10 @@ public class PanelSaga extends JPanel{
 		tableArea = new JTable(tableModel);
 		tableArea.setBackground(Color.LIGHT_GRAY);
 
-		// Ajout de rendus personnalisés pour les colonnes "Modifier" et "Supprimer"
+		// Ajout de rendus personnalisés pour les colonnes "Visualiser", "Modifier" et "Supprimer"
+		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
+
 		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
 
@@ -113,6 +117,46 @@ public class PanelSaga extends JPanel{
 	private void addSaga() {
 		JTextField titleField = new JTextField();
 		JTextField reaField = new JTextField();
+
+		ArrayList<Actor> actors = DataManager.loadActor();
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : actors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		List<Actor> selectedActors = new ArrayList<>();
+
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField();
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
@@ -180,6 +224,9 @@ public class PanelSaga extends JPanel{
 				titleField,
 				new JLabel("Réalisateur"),
 				reaField,
+				new JLabel("Acteurs"),
+				actorComboBox,
+				selectedActorsPanel,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
@@ -198,7 +245,32 @@ public class PanelSaga extends JPanel{
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier une saga",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -208,6 +280,10 @@ public class PanelSaga extends JPanel{
 				}
 				else {
 					String rea = reaField.getText();
+
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -272,7 +348,7 @@ public class PanelSaga extends JPanel{
 					}
 
 					if (canBeAdd) {
-						Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+						Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 						gestionnaireSaga.addSaga(newSaga); // Ajouter la saga à votre gestionnaire de sagas
 						JOptionPane.showMessageDialog(this, "Saga ajoutée avec succès: " + titre, "Saga Ajoutée", JOptionPane.INFORMATION_MESSAGE);
 					}
@@ -307,6 +383,73 @@ public class PanelSaga extends JPanel{
 		JTextField titleField = new JTextField(saga.getTitre());
 		titleField.setEnabled(false);
 		JTextField reaField = new JTextField(saga.getRealistateur());
+
+		ArrayList<Actor> allActors = DataManager.loadActor(); // Tous les acteurs
+		DefaultComboBoxModel<Actor> actorComboModel = new DefaultComboBoxModel<>();
+		for (Actor actor : allActors) {
+			actorComboModel.addElement(actor);
+		}
+		JComboBox<Actor> actorComboBox = new JComboBox<>(actorComboModel);
+
+		JPanel selectedActorsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		selectedActorsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		Actor[] actorSaga = saga.getActeur();
+		List<Actor> selectedActors;
+		if (actorSaga != null) {
+			selectedActors = new ArrayList<>(List.of(actorSaga));
+		} else {
+			selectedActors = new ArrayList<>();
+		}
+
+		for (Actor selected : selectedActors) {
+			JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+			tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+			JLabel nameLabel = new JLabel(selected.getName());
+			JButton removeButton = new JButton("x");
+			removeButton.setMargin(new Insets(0, 2, 0, 2));
+			removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+			removeButton.addActionListener(ev -> {
+				selectedActors.remove(selected);
+				selectedActorsPanel.remove(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			});
+
+			tagPanel.add(nameLabel);
+			tagPanel.add(removeButton);
+			selectedActorsPanel.add(tagPanel);
+		}
+
+// Logique de sélection manuelle depuis le combo
+		actorComboBox.addActionListener(e -> {
+			Actor selected = (Actor) actorComboBox.getSelectedItem();
+			if (selected != null && !selectedActors.contains(selected)) {
+				selectedActors.add(selected);
+
+				JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+				tagPanel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				JLabel nameLabel = new JLabel(selected.getName());
+				JButton removeButton = new JButton("x");
+				removeButton.setMargin(new Insets(0, 2, 0, 2));
+				removeButton.setFont(new Font("Arial", Font.BOLD, 10));
+
+				removeButton.addActionListener(ev -> {
+					selectedActors.remove(selected);
+					selectedActorsPanel.remove(tagPanel);
+					selectedActorsPanel.revalidate();
+					selectedActorsPanel.repaint();
+				});
+
+				tagPanel.add(nameLabel);
+				tagPanel.add(removeButton);
+				selectedActorsPanel.add(tagPanel);
+				selectedActorsPanel.revalidate();
+				selectedActorsPanel.repaint();
+			}
+		});
+
 		JTextField descriptionField = new JTextField(saga.getDescription());
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
@@ -374,7 +517,7 @@ public class PanelSaga extends JPanel{
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
 
-		// Sélectionner le bouton approprié en fonction de l'état actuel du film
+		// Sélectionner le bouton approprié en fonction de l'état actuel de la saga
 		if (saga.getDejaVu()) {
 			dejaVuButton.setSelected(true);
 		} else {
@@ -403,6 +546,9 @@ public class PanelSaga extends JPanel{
 				titleField,
 				new JLabel("Réalisateur"),
 				reaField,
+				new JLabel("Acteurs"),
+				actorComboBox,
+				selectedActorsPanel,
 				new JLabel("Description"),
 				descriptionField,
 				new JLabel("Genres"),
@@ -421,7 +567,30 @@ public class PanelSaga extends JPanel{
 				addByComboBox
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une saga", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		// Crée un panel vertical pour empiler les composants
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+		for (JComponent comp : inputs) {
+			comp.setAlignmentX(Component.LEFT_ALIGNMENT); // meilleur alignement visuel
+			inputPanel.add(comp);
+			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
+		}
+
+// Ajoute le panel dans un JScrollPane avec taille fixe
+		JScrollPane scrollPane = new JScrollPane(inputPanel);
+		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
+
+// Affiche la boîte de dialogue avec défilement
+		int result = JOptionPane.showConfirmDialog(
+				this,
+				scrollPane,
+				"Modifier une saga",
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE
+		);
+
 		if (result == JOptionPane.OK_OPTION) {
 			try {
 				String titre = titleField.getText();
@@ -431,6 +600,10 @@ public class PanelSaga extends JPanel{
 				}
 				else {
 					String rea = reaField.getText();
+
+					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
+					Actor[] actorsArray = selectedActorsCopy.isEmpty() ? null : selectedActorsCopy.toArray(new Actor[0]);
+
 					String desc = descriptionField.getText();
 
 					// Get genres
@@ -478,7 +651,7 @@ public class PanelSaga extends JPanel{
 						addBy = new User(addByComboBox.getSelectedItem().toString());
 					}
 
-					Saga newSaga = new Saga(titre, rea, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+					Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
 					gestionnaireSaga.editSaga(oldTitle, newSaga); // Ajouter la saga à votre gestionnaire de sagas
 				}
 
@@ -492,6 +665,79 @@ public class PanelSaga extends JPanel{
 			}
 		}
 
+	}
+
+	public void detailsSaga(Saga saga) {
+		String acteurs = "";
+		if(saga.getActeur() != null && saga.getActeur().length != 0) {
+			for(Actor actor : saga.getActeur()) {
+				acteurs += actor.getName() + ", ";
+			}
+		}
+
+		String genres = "";
+		if(saga.getGenre() != null && saga.getGenre().length != 0) {
+			for (Genre genre : saga.getGenre()) {
+				genres += genre.getName() + ", ";
+			}
+		}
+
+		String plateforme = "";
+		if(saga.getPlateforme() != null && saga.getPlateforme().length != 0) {
+			for (Platform platform : saga.getPlateforme()) {
+				plateforme += platform.getName() + ", ";
+			}
+		}
+
+// Style HTML pour les titres
+		String titreStyle = "<html><span style='font-family:Arial; font-size:14pt; font-weight:bold; text-decoration: underline;'>";
+
+		final JComponent[] inputs = new JComponent[] {
+				new JLabel(titreStyle + "Titre :</span></html>"),
+				new JLabel(saga.getTitre()),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Réalisateur :</span></html>"),
+				new JLabel(saga.getRealistateur()),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Acteurs :</span></html>"),
+				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Description :</span></html>"),
+				new JLabel("<html><div style='width:300px'>" + saga.getDescription() + "</div></html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Genres :</span></html>"),
+				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Nombre de films :</span></html>"),
+				new JLabel(saga.getNombreFilms() + " min"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Date de sortie du premier film :</span></html>"),
+				new JLabel(String.valueOf(saga.getDateSortiePremier())),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Date de sortie du dernier film :</span></html>"),
+				new JLabel(String.valueOf(saga.getDateSortieDernier())),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Plateforme :</span></html>"),
+				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Déjà vu :</span></html>"),
+				new JLabel(saga.getDejaVu() ? "Oui" : "Non"),
+				new JSeparator(SwingConstants.HORIZONTAL),
+
+				new JLabel(titreStyle + "Ajouté par :</span></html>"),
+				new JLabel(saga.getAddBy().getName())
+		};
+
+		JOptionPane.showMessageDialog(this, inputs, "Détails de la saga", JOptionPane.PLAIN_MESSAGE);
 	}
 
 
