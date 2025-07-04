@@ -6,6 +6,7 @@ import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,7 @@ public class GestionnaireSerie {
 			serie.setDateSortieDerniereSaison(newSerie.getDateSortieDerniereSaison());
 			serie.setPlateforme(newSerie.getPlateforme());
 			serie.setAddBy(newSerie.getAddBy());
+			serie.setImagePath(newSerie.getImagePath());
 			DataManager.saveSerie(series);
 			System.out.println("Série modifiée: " + serie.getTitre());
 		} else {
@@ -65,6 +67,21 @@ public class GestionnaireSerie {
 
 	public void deleteSerie(Serie serie) {
 		if (serie != null) {
+			// Supprimer l'image si elle existe
+			String imagePath = serie.getImagePath();
+			if (imagePath != null) {
+				File imageFile = new File(imagePath);
+				if (imageFile.exists()) {
+					boolean deleted = imageFile.delete();
+					if (deleted) {
+						System.out.println("Affiche supprimée : " + imagePath);
+					} else {
+						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+					}
+				}
+			}
+
+			// Supprimer la série de la liste
 			series.remove(serie);
 			DataManager.saveSerie(series); // Mettre à jour la liste des séries
 			System.out.println("Série supprimée: " + serie.getTitre());

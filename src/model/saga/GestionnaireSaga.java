@@ -6,6 +6,7 @@ import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +48,7 @@ public class GestionnaireSaga {
 			saga.setDateSortieDernier(newSaga.getDateSortieDernier());
 			saga.setPlateforme(newSaga.getPlateforme());
 			saga.setAddBy(newSaga.getAddBy());
+			saga.setImagePath(newSaga.getImagePath());
 			DataManager.saveSaga(sagas);
 			System.out.println("Saga modifiée: " + saga.getTitre());
 		} else {
@@ -64,6 +66,21 @@ public class GestionnaireSaga {
 
 	public void deleteSaga(Saga saga) {
 		if (saga != null) {
+			// Supprimer l'image si elle existe
+			String imagePath = saga.getImagePath();
+			if (imagePath != null) {
+				File imageFile = new File(imagePath);
+				if (imageFile.exists()) {
+					boolean deleted = imageFile.delete();
+					if (deleted) {
+						System.out.println("Affiche supprimée : " + imagePath);
+					} else {
+						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+					}
+				}
+			}
+
+			// Supprimer la saga de la liste
 			sagas.remove(saga);
 			DataManager.saveSaga(sagas); // Mettre à jour la liste des sagas
 			System.out.println("Saga supprimée: " + saga.getTitre());

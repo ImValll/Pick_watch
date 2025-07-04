@@ -10,6 +10,7 @@ import model.serie.Serie;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -128,11 +129,33 @@ public class PanelRandomSerie extends JPanel {
 				" saisons avec " + serieSelected.getNombreEpisode() + "épisodes.<br>Les épisodes durent en moyenne " +
 				serieSelected.getDureeMoyenne() + " minutes.<br>La première saison est sorti en " + date + " et la dernière en " +
 				date2 + ".<br>Elle est disponible sur " + Arrays.toString(serieSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + serieSelected.getAddBy() + "</html>";
+				".<br>Elle a été ajoutée par " + serieSelected.getAddBy() + ".<br></html>";
 
-		serieLabel.setForeground(Color.WHITE);
+		// Création du label texte
+		JLabel textLabel = new JLabel(serieInfo);
+		textLabel.setForeground(Color.WHITE);
 
-		serieLabel.setText(serieInfo);
+		// Création du label image
+		JLabel imageLabel = new JLabel();
+		String imagePath = serieSelected.getImagePath();
+		if (imagePath != null && new File(imagePath).exists()) {
+			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
+		} else {
+			imageLabel.setText("Aucune affiche");
+			imageLabel.setForeground(Color.GRAY);
+			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imageLabel.setPreferredSize(new Dimension(240, 360));
+		}
+
+		// Création du panel d'affichage combiné
+		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
+		combinedPanel.setBackground(seriePanel.getBackground()); // pour garder le même fond
+		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
+		combinedPanel.add(textLabel, BorderLayout.NORTH);
+
+		// Remplacement dans le panel principal
+		seriePanel.removeAll();
+		seriePanel.add(combinedPanel);
 		seriePanel.revalidate();
 		seriePanel.repaint();
 	}
@@ -158,5 +181,12 @@ public class PanelRandomSerie extends JPanel {
 		gestionnaireSerie.deleteSerie(serie);
 
 		backMenu();
+	}
+
+	private ImageIcon resizeImage(String path, int width, int height) {
+		ImageIcon icon = new ImageIcon(path);
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(newImg);
 	}
 }

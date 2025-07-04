@@ -13,8 +13,13 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
 
@@ -115,6 +120,8 @@ public class PanelSaga extends JPanel{
 	}
 
 	private void addSaga() {
+		final File[] selectedPosterFile = {null}; // Pour stocker temporairement le fichier choisi
+
 		JTextField titleField = new JTextField();
 		JTextField reaField = new JTextField();
 
@@ -219,6 +226,39 @@ public class PanelSaga extends JPanel{
 		}
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 
+		JButton chooseImageButton = new JButton("Choisir une affiche");
+		JLabel imagePathLabel = new JLabel("Aucune image sélectionnée");
+
+		chooseImageButton.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+
+			// ✅ Filtrer les fichiers pour n'afficher que les images
+			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
+					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+			);
+			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
+			fileChooser.setFileFilter(imageFilter);
+
+			int resultImg = fileChooser.showOpenDialog(null);
+			if (resultImg == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				selectedPosterFile[0] = selectedFile;
+
+				// ✅ Vérifier l'extension sélectionnée (sécurité supplémentaire)
+				String name = selectedFile.getName().toLowerCase();
+				if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) {
+					imagePathLabel.setText(selectedFile.getName());
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
+							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+					selectedPosterFile[0] = null;
+					imagePathLabel.setText("Aucune image sélectionnée");
+				}
+			}
+		});
+
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
@@ -242,7 +282,10 @@ public class PanelSaga extends JPanel{
 				new JLabel("Déjà vu"),
 				vuPanel,
 				new JLabel("Ajouté par"),
-				addByComboBox
+				addByComboBox,
+				new JLabel("Affiche de la saga"),
+				chooseImageButton,
+				imagePathLabel,
 		};
 
 
@@ -257,16 +300,16 @@ public class PanelSaga extends JPanel{
 			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
 		}
 
-// Ajoute le panel dans un JScrollPane avec taille fixe
+		// Ajoute le panel dans un JScrollPane avec taille fixe
 		JScrollPane scrollPane = new JScrollPane(inputPanel);
 		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
 
-// Affiche la boîte de dialogue avec défilement
+		// Affiche la boîte de dialogue avec défilement
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
-				"Modifier une saga",
+				"Ajouter une saga",
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE
 		);
@@ -331,6 +374,23 @@ public class PanelSaga extends JPanel{
 						addBy = new User(addByComboBox.getSelectedItem().toString());
 					}
 
+					String imagePath = null;
+					if (selectedPosterFile[0] != null) {
+						File destinationDir = new File("DATA/posters/saga");
+						if (!destinationDir.exists()) destinationDir.mkdirs();
+
+						// Pour éviter les doublons, tu peux renommer selon le titre du film
+						String fileExtension = selectedPosterFile[0].getName().substring(selectedPosterFile[0].getName().lastIndexOf('.'));
+						File destinationFile = new File(destinationDir, titre.replaceAll("\\s+", "_") + fileExtension);
+
+						try {
+							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+							imagePath = destinationFile.getPath();
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+
 					boolean canBeAdd = true;
 
 					java.util.List<Saga> listSaga = gestionnaireSaga.getSaga();
@@ -348,7 +408,7 @@ public class PanelSaga extends JPanel{
 					}
 
 					if (canBeAdd) {
-						Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+						Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy, imagePath);
 						gestionnaireSaga.addSaga(newSaga); // Ajouter la saga à votre gestionnaire de sagas
 						JOptionPane.showMessageDialog(this, "Saga ajoutée avec succès: " + titre, "Saga Ajoutée", JOptionPane.INFORMATION_MESSAGE);
 					}
@@ -377,6 +437,8 @@ public class PanelSaga extends JPanel{
 	}
 
 	public void editSaga(Saga saga) {
+		final File[] selectedPosterFile = {null};
+		String oldImagePath = saga.getImagePath();
 
 		String oldTitle = saga.getTitre();
 
@@ -422,7 +484,7 @@ public class PanelSaga extends JPanel{
 			selectedActorsPanel.add(tagPanel);
 		}
 
-// Logique de sélection manuelle depuis le combo
+		// Logique de sélection manuelle depuis le combo
 		actorComboBox.addActionListener(e -> {
 			Actor selected = (Actor) actorComboBox.getSelectedItem();
 			if (selected != null && !selectedActors.contains(selected)) {
@@ -541,6 +603,39 @@ public class PanelSaga extends JPanel{
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(saga.getAddBy());
 
+		JButton chooseImageButton = new JButton("Changer l'affiche");
+		JLabel imagePathLabel = new JLabel((oldImagePath != null) ? new File(oldImagePath).getName() : "Aucune image sélectionnée");
+
+		chooseImageButton.addActionListener(e -> {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+
+			// ✅ Filtrer les fichiers pour n'afficher que les images
+			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
+					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+			);
+			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
+			fileChooser.setFileFilter(imageFilter);
+
+			int resultImg = fileChooser.showOpenDialog(null);
+			if (resultImg == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileChooser.getSelectedFile();
+				selectedPosterFile[0] = selectedFile;
+
+				// ✅ Vérifier l'extension sélectionnée (sécurité supplémentaire)
+				String name = selectedFile.getName().toLowerCase();
+				if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) {
+					imagePathLabel.setText(selectedFile.getName());
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
+							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+					selectedPosterFile[0] = null;
+					imagePathLabel.setText("Aucune image sélectionnée");
+				}
+			}
+		});
+
 		final JComponent[] inputs = new JComponent[] {
 				new JLabel("Titre*"),
 				titleField,
@@ -564,7 +659,10 @@ public class PanelSaga extends JPanel{
 				new JLabel("Déjà vu"),
 				vuPanel,
 				new JLabel("Ajouté par"),
-				addByComboBox
+				addByComboBox,
+				new JLabel("Affiche"),
+				chooseImageButton,
+				imagePathLabel,
 		};
 
 		// Crée un panel vertical pour empiler les composants
@@ -577,12 +675,12 @@ public class PanelSaga extends JPanel{
 			inputPanel.add(Box.createVerticalStrut(8)); // espacement vertical entre champs
 		}
 
-// Ajoute le panel dans un JScrollPane avec taille fixe
+		// Ajoute le panel dans un JScrollPane avec taille fixe
 		JScrollPane scrollPane = new JScrollPane(inputPanel);
 		scrollPane.setPreferredSize(new Dimension(500, 600)); // Ajuste comme tu veux
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16); // défilement fluide
 
-// Affiche la boîte de dialogue avec défilement
+		// Affiche la boîte de dialogue avec défilement
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
@@ -651,7 +749,33 @@ public class PanelSaga extends JPanel{
 						addBy = new User(addByComboBox.getSelectedItem().toString());
 					}
 
-					Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy);
+					String imagePath = oldImagePath; // par défaut, conserver l'ancienne
+
+					if (selectedPosterFile[0] != null) {
+						File destinationDir = new File("DATA/posters/saga");
+						if (!destinationDir.exists()) destinationDir.mkdirs();
+
+						String newExtension = selectedPosterFile[0].getName().substring(selectedPosterFile[0].getName().lastIndexOf('.'));
+						String baseFileName = titre.replaceAll("\\s+", "_");
+						File destinationFile = new File(destinationDir, baseFileName + newExtension);
+
+						// Supprimer l'ancien fichier si l'extension a changé
+						if (oldImagePath != null && !oldImagePath.endsWith(newExtension)) {
+							File oldFile = new File(oldImagePath);
+							if (oldFile.exists()) {
+								oldFile.delete(); // ⚠️ silencieux
+							}
+						}
+
+						try {
+							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+							imagePath = destinationFile.getPath();
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+
+					Saga newSaga = new Saga(titre, rea, actorsArray, desc, genresArray, nbFilm, dateSortie, dateSortie2, platformsArray, dejaVu, addBy, imagePath);
 					gestionnaireSaga.editSaga(oldTitle, newSaga); // Ajouter la saga à votre gestionnaire de sagas
 				}
 
@@ -689,10 +813,23 @@ public class PanelSaga extends JPanel{
 			}
 		}
 
-// Style HTML pour les titres
+		// Affiche ou texte de remplacement
+		JLabel imageLabel = new JLabel();
+		String imagePath = saga.getImagePath();
+
+		if (imagePath != null && new File(imagePath).exists()) {
+			imageLabel.setIcon(resizeImage(imagePath, 150, 200));
+		} else {
+			imageLabel.setText("Aucune affiche disponible");
+			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+
+		// Style HTML pour les titres
 		String titreStyle = "<html><span style='font-family:Arial; font-size:14pt; font-weight:bold; text-decoration: underline;'>";
 
 		final JComponent[] inputs = new JComponent[] {
+				imageLabel,
+
 				new JLabel(titreStyle + "Titre :</span></html>"),
 				new JLabel(saga.getTitre()),
 				new JSeparator(SwingConstants.HORIZONTAL),
@@ -760,5 +897,12 @@ public class PanelSaga extends JPanel{
 
 	public GestionnaireSaga getGestionnaire() {
 		return gestionnaireSaga;
+	}
+
+	private ImageIcon resizeImage(String path, int width, int height) {
+		ImageIcon icon = new ImageIcon(path);
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(newImg);
 	}
 }

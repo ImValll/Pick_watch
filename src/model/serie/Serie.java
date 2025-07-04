@@ -24,8 +24,9 @@ public class Serie implements Serializable {
 	private Platform[] plateforme;
 	private Boolean dejaVu;
 	private User addBy;
+	private String imagePath;
 
-	public Serie(String titre, Actor[] acteur, String description, Genre[] genre, int nombreSaison, int nombreEpisode, int dureeMoyenne, Date dateSortiePremiereSaison, Date dateSortieDerniereSaison, Platform[] plateforme, Boolean dejaVu, User addBy) {
+	public Serie(String titre, Actor[] acteur, String description, Genre[] genre, int nombreSaison, int nombreEpisode, int dureeMoyenne, Date dateSortiePremiereSaison, Date dateSortieDerniereSaison, Platform[] plateforme, Boolean dejaVu, User addBy, String imagePath) {
 		this.titre = titre;
 		this.acteur = acteur;
 		this.description = description;
@@ -38,6 +39,7 @@ public class Serie implements Serializable {
 		this.plateforme = plateforme;
 		this.dejaVu = dejaVu;
 		this.addBy = addBy;
+		this.imagePath = imagePath;
 	}
 
 	public String getTitre() {
@@ -134,5 +136,13 @@ public class Serie implements Serializable {
 
 	public void setAddBy(User addBy) {
 		this.addBy = addBy;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 }

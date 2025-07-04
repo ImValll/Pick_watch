@@ -10,6 +10,7 @@ import model.serie_courte.SerieCourte;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -128,11 +129,33 @@ public class PanelRandomSerieCourte extends JPanel {
 				" saisons avec " + serieCourteSelected.getNombreEpisode() + "épisodes.<br>Les épisodes durent en moyenne " +
 				serieCourteSelected.getDureeMoyenne() + " minutes.<br>La première saison est sorti en " + date + " et la dernière en " +
 				date2 + ".<br>Elle est disponible sur " + Arrays.toString(serieCourteSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + serieCourteSelected.getAddBy() + "</html>";
+				".<br>Elle a été ajoutée par " + serieCourteSelected.getAddBy() + ".<br></html>";
 
-		serieCourteLabel.setForeground(Color.WHITE);
+		// Création du label texte
+		JLabel textLabel = new JLabel(serieCourteInfo);
+		textLabel.setForeground(Color.WHITE);
 
-		serieCourteLabel.setText(serieCourteInfo);
+		// Création du label image
+		JLabel imageLabel = new JLabel();
+		String imagePath = serieCourteSelected.getImagePath();
+		if (imagePath != null && new File(imagePath).exists()) {
+			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
+		} else {
+			imageLabel.setText("Aucune affiche");
+			imageLabel.setForeground(Color.GRAY);
+			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imageLabel.setPreferredSize(new Dimension(240, 360));
+		}
+
+		// Création du panel d'affichage combiné
+		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
+		combinedPanel.setBackground(serieCourtePanel.getBackground()); // pour garder le même fond
+		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
+		combinedPanel.add(textLabel, BorderLayout.NORTH);
+
+		// Remplacement dans le panel principal
+		serieCourtePanel.removeAll();
+		serieCourtePanel.add(combinedPanel);
 		serieCourtePanel.revalidate();
 		serieCourtePanel.repaint();
 	}
@@ -158,5 +181,12 @@ public class PanelRandomSerieCourte extends JPanel {
 		gestionnaireSerieCourte.deleteSerieCourte(serieCourte);
 
 		backMenu();
+	}
+
+	private ImageIcon resizeImage(String path, int width, int height) {
+		ImageIcon icon = new ImageIcon(path);
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(newImg);
 	}
 }

@@ -23,8 +23,9 @@ public class Saga implements Serializable {
 	private Platform[] plateforme;
 	private Boolean dejaVu;
 	private User addBy;
+	private String imagePath;
 
-	public Saga(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Platform[] plateforme, Boolean dejaVu, User addBy) {
+	public Saga(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int nombreFilms, Date dateSortiePremier, Date dateSortieDernier, Platform[] plateforme, Boolean dejaVu, User addBy, String imagePath) {
 		this.titre = titre;
 		this.realistateur = realistateur;
 		this.acteur = acteur;
@@ -36,6 +37,7 @@ public class Saga implements Serializable {
 		this.plateforme = plateforme;
 		this.dejaVu = dejaVu;
 		this.addBy = addBy;
+		this.imagePath = imagePath;
 	}
 
 	public String getTitre() {
@@ -124,5 +126,13 @@ public class Saga implements Serializable {
 
 	public void setAddBy(User addBy) {
 		this.addBy = addBy;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 }

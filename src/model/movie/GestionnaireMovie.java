@@ -6,6 +6,7 @@ import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,7 @@ public class GestionnaireMovie {
 			movie.setDateSortie(newMovie.getDateSortie());
 			movie.setPlateforme(newMovie.getPlateforme());
 			movie.setAddBy(newMovie.getAddBy());
+			movie.setImagePath(newMovie.getImagePath());
 			DataManager.saveMovie(movies);
 			System.out.println("Film modifié: " + movie.getTitre());
 		} else {
@@ -63,6 +65,21 @@ public class GestionnaireMovie {
 
 	public void deleteMovie(Movie movie) {
 		if (movie != null) {
+			// Supprimer l'image si elle existe
+			String imagePath = movie.getImagePath();
+			if (imagePath != null) {
+				File imageFile = new File(imagePath);
+				if (imageFile.exists()) {
+					boolean deleted = imageFile.delete();
+					if (deleted) {
+						System.out.println("Affiche supprimée : " + imagePath);
+					} else {
+						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+					}
+				}
+			}
+
+			// Supprimer le film de la liste
 			movies.remove(movie);
 			DataManager.saveMovie(movies); // Mettre à jour la liste des films
 			System.out.println("Film supprimé: " + movie.getTitre());

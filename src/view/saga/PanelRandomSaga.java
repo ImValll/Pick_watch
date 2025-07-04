@@ -10,6 +10,7 @@ import model.saga.Saga;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -126,11 +127,33 @@ public class PanelRandomSaga extends JPanel {
 				Arrays.toString(sagaSelected.getGenre()) + ".<br>Elle possède " + sagaSelected.getNombreFilms() +
 				" films.<br>Le premier film est sorti en " + date + " et le dernier en " + date2 +
 				".<br>Ils sont disponible sur " + Arrays.toString(sagaSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + sagaSelected.getAddBy() + "</html>";
+				".<br>Elle a été ajoutée par " + sagaSelected.getAddBy() + ".<br></html>";
 
-		sagaLabel.setForeground(Color.WHITE);
+		// Création du label texte
+		JLabel textLabel = new JLabel(sagaInfo);
+		textLabel.setForeground(Color.WHITE);
 
-		sagaLabel.setText(sagaInfo);
+		// Création du label image
+		JLabel imageLabel = new JLabel();
+		String imagePath = sagaSelected.getImagePath();
+		if (imagePath != null && new File(imagePath).exists()) {
+			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
+		} else {
+			imageLabel.setText("Aucune affiche");
+			imageLabel.setForeground(Color.GRAY);
+			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			imageLabel.setPreferredSize(new Dimension(240, 360));
+		}
+
+		// Création du panel d'affichage combiné
+		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
+		combinedPanel.setBackground(sagaPanel.getBackground()); // pour garder le même fond
+		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
+		combinedPanel.add(textLabel, BorderLayout.NORTH);
+
+		// Remplacement dans le panel principal
+		sagaPanel.removeAll();
+		sagaPanel.add(combinedPanel);
 		sagaPanel.revalidate();
 		sagaPanel.repaint();
 	}
@@ -156,5 +179,12 @@ public class PanelRandomSaga extends JPanel {
 		gestionnaireSaga.deleteSaga(saga);
 
 		backMenu();
+	}
+
+	private ImageIcon resizeImage(String path, int width, int height) {
+		ImageIcon icon = new ImageIcon(path);
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(newImg);
 	}
 }

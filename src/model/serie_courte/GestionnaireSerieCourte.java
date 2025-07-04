@@ -6,6 +6,7 @@ import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
 import model.parameter.users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,7 @@ public class GestionnaireSerieCourte {
 			serieCourte.setDateSortieDerniereSaison(newSerieCourte.getDateSortieDerniereSaison());
 			serieCourte.setPlateforme(newSerieCourte.getPlateforme());
 			serieCourte.setAddBy(newSerieCourte.getAddBy());
+			serieCourte.setImagePath(newSerieCourte.getImagePath());
 			DataManager.saveSerieCourte(seriesCourte);
 			System.out.println("Série modifiée: " + serieCourte.getTitre());
 		} else {
@@ -65,6 +67,21 @@ public class GestionnaireSerieCourte {
 
 	public void deleteSerieCourte(SerieCourte serieCourte) {
 		if (serieCourte != null) {
+			// Supprimer l'image si elle existe
+			String imagePath = serieCourte.getImagePath();
+			if (imagePath != null) {
+				File imageFile = new File(imagePath);
+				if (imageFile.exists()) {
+					boolean deleted = imageFile.delete();
+					if (deleted) {
+						System.out.println("Affiche supprimée : " + imagePath);
+					} else {
+						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+					}
+				}
+			}
+
+			// Supprimer la série de la liste
 			seriesCourte.remove(serieCourte);
 			DataManager.saveSerieCourte(seriesCourte); // Mettre à jour la liste des séries courtes
 			System.out.println("Série supprimée: " + serieCourte.getTitre());

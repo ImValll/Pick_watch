@@ -23,8 +23,9 @@ public class Movie implements Serializable {
 	private Platform[] plateforme;
 	private boolean dejaVu;
 	private User addBy;
+	private String imagePath;
 
-	public Movie(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int duree, Date dateSortie, Platform[] plateforme, boolean dejaVu, User addBy) {
+	public Movie(String titre, String realistateur, Actor[] acteur, String description, Genre[] genre, int duree, Date dateSortie, Platform[] plateforme, boolean dejaVu, User addBy, String imagePath) {
 		this.titre = titre;
 		this.realistateur = realistateur;
 		this.acteur = acteur;
@@ -35,6 +36,7 @@ public class Movie implements Serializable {
 		this.plateforme = plateforme;
 		this.dejaVu = dejaVu;
 		this.addBy = addBy;
+		this.imagePath = imagePath;
 	}
 
 	public String getTitre() {
@@ -111,5 +113,13 @@ public class Movie implements Serializable {
 
 	public void setAddBy(User addBy) {
 		this.addBy = addBy;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 }
