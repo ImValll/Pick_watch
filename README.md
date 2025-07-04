@@ -1,3 +1,3 @@
 To do :
-- Add posters
+- Add genre and platform in database
 - Improve aesthetics
