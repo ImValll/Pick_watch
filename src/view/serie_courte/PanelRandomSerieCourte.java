@@ -33,7 +33,6 @@ public class PanelRandomSerieCourte extends JPanel {
 
 	private SerieCourte serieCourte;
 	private JPanel serieCourtePanel;
-	private JLabel serieCourteLabel;
 
 	public PanelRandomSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame) {
 		this.gestionnaireSerieCourte = gestionnaireSerieCourte;
@@ -70,7 +69,7 @@ public class PanelRandomSerieCourte extends JPanel {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		serieCourtePanel = new JPanel();
-		serieCourteLabel = new JLabel();
+		JLabel serieCourteLabel = new JLabel();
 		serieCourtePanel.add(serieCourteLabel);
 
 		serieCourtePanel.setBackground(new Color(50, 50, 50));

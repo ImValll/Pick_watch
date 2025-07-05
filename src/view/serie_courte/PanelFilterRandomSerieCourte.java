@@ -11,6 +11,7 @@ import model.serie_courte.GestionnaireSerieCourte;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -308,7 +309,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 		String yearText = yearField.getText().trim();
 		if (!yearText.isEmpty()) {
 			int year = Integer.parseInt(yearText);
-			dateSortie = new Date(year - 1900, 0, 1); // Using deprecated Date constructor for simplicity
+			dateSortie = new Date(year - 1900, Calendar.JANUARY, 1); // Using deprecated Date constructor for simplicity
 		}
 
 		// Get year 2
@@ -316,7 +317,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 		String yearText2 = year2Field.getText().trim();
 		if (!yearText2.isEmpty()) {
 			int year2 = Integer.parseInt(yearText2);
-			dateSortie2 = new Date(year2 - 1900, 0, 1); // Using deprecated Date constructor for simplicity
+			dateSortie2 = new Date(year2 - 1900, Calendar.JANUARY, 1); // Using deprecated Date constructor for simplicity
 		}
 
 		// Get platforms

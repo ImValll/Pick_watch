@@ -820,24 +820,27 @@ public class PanelSerie extends JPanel {
 	}
 
 	public void detailsSerie(Serie serie) {
-		String acteurs = "";
-		if(serie.getActeur() != null && serie.getActeur().length != 0) {
-			for(Actor actor : serie.getActeur()) {
-				acteurs += actor.getName() + ", ";
+		StringBuilder acteurs = new StringBuilder();
+		if(serie.getActeur() != null) {
+			serie.getActeur();
+			for (Actor actor : serie.getActeur()) {
+				acteurs.append(actor.getName()).append(", ");
 			}
 		}
 
-		String genres = "";
-		if(serie.getGenre() != null && serie.getGenre().length != 0) {
+		StringBuilder genres = new StringBuilder();
+		if(serie.getGenre() != null) {
+			serie.getGenre();
 			for (Genre genre : serie.getGenre()) {
-				genres += genre.getName() + ", ";
+				genres.append(genre.getName()).append(", ");
 			}
 		}
 
-		String plateforme = "";
-		if(serie.getPlateforme() != null && serie.getPlateforme().length != 0) {
+		StringBuilder plateforme = new StringBuilder();
+		if(serie.getPlateforme() != null) {
+			serie.getPlateforme();
 			for (Platform platform : serie.getPlateforme()) {
-				plateforme += platform.getName() + ", ";
+				plateforme.append(platform.getName()).append(", ");
 			}
 		}
 
@@ -863,7 +866,7 @@ public class PanelSerie extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Acteurs :</span></html>"),
-				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Description :</span></html>"),
@@ -871,7 +874,7 @@ public class PanelSerie extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Genres :</span></html>"),
-				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Nombre de saisons :</span></html>"),
@@ -895,7 +898,7 @@ public class PanelSerie extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Plateforme :</span></html>"),
-				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Déjà vu :</span></html>"),

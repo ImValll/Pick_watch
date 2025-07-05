@@ -122,10 +122,9 @@ public class GestionnaireActor {
 					}
 					actors.add(newActor);
 					Actor[] actorArray = actors.toArray(new Actor[0]);
-					Movie newMovie = movie;
-					newMovie.setActeur(actorArray);
+					movie.setActeur(actorArray);
 					movies.remove(movie);
-					movies.add(newMovie);
+					movies.add(movie);
 				}
 				DataManager.saveMovie(movies);
 			}
@@ -139,10 +138,9 @@ public class GestionnaireActor {
 					}
 					actors.add(newActor);
 					Actor[] actorArray = actors.toArray(new Actor[0]);
-					Saga newSaga = saga;
-					newSaga.setActeur(actorArray);
+					saga.setActeur(actorArray);
 					sagas.remove(saga);
-					sagas.add(newSaga);
+					sagas.add(saga);
 				}
 				DataManager.saveSaga(sagas);
 			}
@@ -156,10 +154,9 @@ public class GestionnaireActor {
 					}
 					actors.add(newActor);
 					Actor[] actorArray = actors.toArray(new Actor[0]);
-					Serie newSerie = serie;
-					newSerie.setActeur(actorArray);
+					serie.setActeur(actorArray);
 					series.remove(serie);
-					series.add(newSerie);
+					series.add(serie);
 				}
 				DataManager.saveSerie(series);
 			}
@@ -173,10 +170,9 @@ public class GestionnaireActor {
 					}
 					actors.add(newActor);
 					Actor[] actorArray = actors.toArray(new Actor[0]);
-					SerieCourte newSerieCourte = serieCourte;
-					newSerieCourte.setActeur(actorArray);
+					serieCourte.setActeur(actorArray);
 					seriesCourtes.remove(serieCourte);
-					seriesCourtes.add(newSerieCourte);
+					seriesCourtes.add(serieCourte);
 				}
 				DataManager.saveSerieCourte(seriesCourtes);
 			}
@@ -201,7 +197,7 @@ public class GestionnaireActor {
 	}
 
 	public void deleteActor(Actor actor) {
-		Boolean peutSupprimer = true;
+		boolean peutSupprimer = true;
 		String utilise = "";
 
 		for (Movie movie : movies) {
@@ -210,6 +206,7 @@ public class GestionnaireActor {
 					if (actorMovie.getName().equals(actor.getName())) {
 						peutSupprimer = false;
 						utilise = "un ou plusieurs films";
+						break;
 					}
 				}
 			}
@@ -220,6 +217,7 @@ public class GestionnaireActor {
 					if (actorSaga.getName().equals(actor.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs sagas";
+						break;
 					}
 				}
 			}
@@ -230,6 +228,7 @@ public class GestionnaireActor {
 					if (actorSerie.getName().equals(actor.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries";
+						break;
 					}
 				}
 			}
@@ -240,6 +239,7 @@ public class GestionnaireActor {
 					if (actorSerieCourte.getName().equals(actor.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries courtes";
+						break;
 					}
 				}
 			}

@@ -33,7 +33,6 @@ public class PanelRandomSerie extends JPanel {
 
 	private Serie serie;
 	private JPanel seriePanel;
-	private JLabel serieLabel;
 
 	public PanelRandomSerie(GestionnaireSerie gestionnaireSerie, SerieFrame serieFrame) {
 		this.gestionnaireSerie = gestionnaireSerie;
@@ -70,7 +69,7 @@ public class PanelRandomSerie extends JPanel {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		seriePanel = new JPanel();
-		serieLabel = new JLabel();
+		JLabel serieLabel = new JLabel();
 		seriePanel.add(serieLabel);
 
 		seriePanel.setBackground(new Color(50, 50, 50));

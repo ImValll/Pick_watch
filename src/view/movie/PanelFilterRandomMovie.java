@@ -11,6 +11,7 @@ import model.movie.GestionnaireMovie;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -274,7 +275,7 @@ public class PanelFilterRandomMovie extends JPanel {
 		String yearText = yearField.getText().trim();
 		if (!yearText.isEmpty()) {
 			int year = Integer.parseInt(yearText);
-			dateSortie = new Date(year - 1900, 0, 1); // Using deprecated Date constructor for simplicity
+			dateSortie = new Date(year - 1900, Calendar.JANUARY, 1); // Using deprecated Date constructor for simplicity
 		}
 
 		// Get platforms

@@ -792,24 +792,27 @@ public class PanelSaga extends JPanel{
 	}
 
 	public void detailsSaga(Saga saga) {
-		String acteurs = "";
-		if(saga.getActeur() != null && saga.getActeur().length != 0) {
-			for(Actor actor : saga.getActeur()) {
-				acteurs += actor.getName() + ", ";
+		StringBuilder acteurs = new StringBuilder();
+		if(saga.getActeur() != null) {
+			saga.getActeur();
+			for (Actor actor : saga.getActeur()) {
+				acteurs.append(actor.getName()).append(", ");
 			}
 		}
 
-		String genres = "";
-		if(saga.getGenre() != null && saga.getGenre().length != 0) {
+		StringBuilder genres = new StringBuilder();
+		if(saga.getGenre() != null) {
+			saga.getGenre();
 			for (Genre genre : saga.getGenre()) {
-				genres += genre.getName() + ", ";
+				genres.append(genre.getName()).append(", ");
 			}
 		}
 
-		String plateforme = "";
-		if(saga.getPlateforme() != null && saga.getPlateforme().length != 0) {
+		StringBuilder plateforme = new StringBuilder();
+		if(saga.getPlateforme() != null) {
+			saga.getPlateforme();
 			for (Platform platform : saga.getPlateforme()) {
-				plateforme += platform.getName() + ", ";
+				plateforme.append(platform.getName()).append(", ");
 			}
 		}
 
@@ -839,7 +842,7 @@ public class PanelSaga extends JPanel{
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Acteurs :</span></html>"),
-				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Description :</span></html>"),
@@ -847,7 +850,7 @@ public class PanelSaga extends JPanel{
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Genres :</span></html>"),
-				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Nombre de films :</span></html>"),
@@ -863,7 +866,7 @@ public class PanelSaga extends JPanel{
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Plateforme :</span></html>"),
-				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Déjà vu :</span></html>"),

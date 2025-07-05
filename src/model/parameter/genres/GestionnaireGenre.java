@@ -122,10 +122,9 @@ public class GestionnaireGenre {
 					}
 					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
-					Movie newMovie = movie;
-					newMovie.setGenre(genreArray);
+					movie.setGenre(genreArray);
 					movies.remove(movie);
-					movies.add(newMovie);
+					movies.add(movie);
 				}
 				DataManager.saveMovie(movies);
 			}
@@ -139,10 +138,9 @@ public class GestionnaireGenre {
 					}
 					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
-					Saga newSaga = saga;
-					newSaga.setGenre(genreArray);
+					saga.setGenre(genreArray);
 					sagas.remove(saga);
-					sagas.add(newSaga);
+					sagas.add(saga);
 				}
 				DataManager.saveSaga(sagas);
 			}
@@ -156,10 +154,9 @@ public class GestionnaireGenre {
 					}
 					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
-					Serie newSerie = serie;
-					newSerie.setGenre(genreArray);
+					serie.setGenre(genreArray);
 					series.remove(serie);
-					series.add(newSerie);
+					series.add(serie);
 				}
 				DataManager.saveSerie(series);
 			}
@@ -173,10 +170,9 @@ public class GestionnaireGenre {
 					}
 					genres.add(newGenre);
 					Genre[] genreArray = genres.toArray(new Genre[0]);
-					SerieCourte newSerieCourte = serieCourte;
-					newSerieCourte.setGenre(genreArray);
+					serieCourte.setGenre(genreArray);
 					seriesCourtes.remove(serieCourte);
-					seriesCourtes.add(newSerieCourte);
+					seriesCourtes.add(serieCourte);
 				}
 				DataManager.saveSerieCourte(seriesCourtes);
 			}
@@ -201,7 +197,7 @@ public class GestionnaireGenre {
 	}
 
 	public void deleteGenre(Genre genre) {
-		Boolean peutSupprimer = true;
+		boolean peutSupprimer = true;
 		String utilise = "";
 
 		for (Movie movie : movies) {
@@ -210,6 +206,7 @@ public class GestionnaireGenre {
 					if (genreMovie.getName().equals(genre.getName())) {
 						peutSupprimer = false;
 						utilise = "un ou plusieurs films";
+						break;
 					}
 				}
 			}
@@ -220,6 +217,7 @@ public class GestionnaireGenre {
 					if (genreSaga.getName().equals(genre.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs sagas";
+						break;
 					}
 				}
 			}
@@ -230,6 +228,7 @@ public class GestionnaireGenre {
 					if (genreSerie.getName().equals(genre.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries";
+						break;
 					}
 				}
 			}
@@ -240,6 +239,7 @@ public class GestionnaireGenre {
 					if (genreSerieCourte.getName().equals(genre.getName())) {
 						peutSupprimer = false;
 						utilise = "une ou plusieurs séries courtes";
+						break;
 					}
 				}
 			}

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -34,7 +33,6 @@ public class PanelSerieCourte extends JPanel {
 	private SerieCourteTableModel tableModel;
 	GestionnaireSerieCourte gestionnaireSerieCourte;
 	private JTextField searchTitleField;
-	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	public PanelSerieCourte(GestionnaireSerieCourte gestionnaireSerieCourte, SerieCourteFrame serieCourteFrame) {
 		this.gestionnaireSerieCourte = gestionnaireSerieCourte;
@@ -822,24 +820,27 @@ public class PanelSerieCourte extends JPanel {
 	}
 
 	public void detailsSerieCourte(SerieCourte serieCourte) {
-		String acteurs = "";
-		if(serieCourte.getActeur() != null && serieCourte.getActeur().length != 0) {
-			for(Actor actor : serieCourte.getActeur()) {
-				acteurs += actor.getName() + ", ";
+		StringBuilder acteurs = new StringBuilder();
+		if(serieCourte.getActeur() != null) {
+			serieCourte.getActeur();
+			for (Actor actor : serieCourte.getActeur()) {
+				acteurs.append(actor.getName()).append(", ");
 			}
 		}
 
-		String genres = "";
-		if(serieCourte.getGenre() != null && serieCourte.getGenre().length != 0) {
+		StringBuilder genres = new StringBuilder();
+		if(serieCourte.getGenre() != null) {
+			serieCourte.getGenre();
 			for (Genre genre : serieCourte.getGenre()) {
-				genres += genre.getName() + ", ";
+				genres.append(genre.getName()).append(", ");
 			}
 		}
 
-		String plateforme = "";
-		if(serieCourte.getPlateforme() != null && serieCourte.getPlateforme().length != 0) {
+		StringBuilder plateforme = new StringBuilder();
+		if(serieCourte.getPlateforme() != null) {
+			serieCourte.getPlateforme();
 			for (Platform platform : serieCourte.getPlateforme()) {
-				plateforme += platform.getName() + ", ";
+				plateforme.append(platform.getName()).append(", ");
 			}
 		}
 
@@ -865,7 +866,7 @@ public class PanelSerieCourte extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Acteurs :</span></html>"),
-				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Description :</span></html>"),
@@ -873,7 +874,7 @@ public class PanelSerieCourte extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Genres :</span></html>"),
-				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Nombre de saisons :</span></html>"),
@@ -897,7 +898,7 @@ public class PanelSerieCourte extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Plateforme :</span></html>"),
-				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Déjà vu :</span></html>"),

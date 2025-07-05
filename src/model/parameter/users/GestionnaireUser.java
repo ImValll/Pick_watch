@@ -96,37 +96,33 @@ public class GestionnaireUser {
 		if(utilise) {
 			if(!movieUtilise.isEmpty()) {
 				for(Movie movie : movieUtilise) {
-					Movie newMovie = movie;
-					newMovie.setAddBy(newUser);
+					movie.setAddBy(newUser);
 					movies.remove(movie);
-					movies.add(newMovie);
+					movies.add(movie);
 				}
 				DataManager.saveMovie(movies);
 			}
 			if(!sagaUtilise.isEmpty()) {
 				for(Saga saga : sagaUtilise) {
-					Saga newSaga = saga;
-					newSaga.setAddBy(newUser);
+					saga.setAddBy(newUser);
 					sagas.remove(saga);
-					sagas.add(newSaga);
+					sagas.add(saga);
 				}
 				DataManager.saveSaga(sagas);
 			}
 			if(!serieUtilise.isEmpty()) {
 				for(Serie serie : serieUtilise) {
-					Serie newSerie = serie;
-					newSerie.setAddBy(newUser);
+					serie.setAddBy(newUser);
 					series.remove(serie);
-					series.add(newSerie);
+					series.add(serie);
 				}
 				DataManager.saveSerie(series);
 			}
 			if(!serieCourteUtilise.isEmpty()) {
 				for(SerieCourte serieCourte : serieCourteUtilise) {
-					SerieCourte newSerieCourte = serieCourte;
-					newSerieCourte.setAddBy(newUser);
+					serieCourte.setAddBy(newUser);
 					seriesCourtes.remove(serieCourte);
-					seriesCourtes.add(newSerieCourte);
+					seriesCourtes.add(serieCourte);
 				}
 				DataManager.saveSerieCourte(seriesCourtes);
 			}
@@ -151,31 +147,35 @@ public class GestionnaireUser {
 	}
 
 	public void deleteUser(User user) {
-		Boolean peutSupprimer = true;
+		boolean peutSupprimer = true;
 		String utilise = "";
 
 		for (Movie movie : movies) {
-			if(user.getName().equals(movie.getAddBy().getName())) {
+			if (user.getName().equals(movie.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "un ou plusieurs films";
+				break;
 			}
 		}
 		for (Saga saga : sagas) {
-			if(user.getName().equals(saga.getAddBy().getName())) {
+			if (user.getName().equals(saga.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs sagas";
+				break;
 			}
 		}
 		for (Serie serie : series) {
-			if(user.getName().equals(serie.getAddBy().getName())) {
+			if (user.getName().equals(serie.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs séries";
+				break;
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
-			if(user.getName().equals(serieCourte.getAddBy().getName())) {
+			if (user.getName().equals(serieCourte.getAddBy().getName())) {
 				peutSupprimer = false;
 				utilise = "une ou plusieurs séries courtes";
+				break;
 			}
 		}
 

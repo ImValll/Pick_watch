@@ -754,24 +754,27 @@ public class PanelMovies extends JPanel {
 	}
 
 	public void detailsMovie(Movie movie) {
-		String acteurs = "";
-		if(movie.getActeur() != null && movie.getActeur().length != 0) {
-		for(Actor actor : movie.getActeur()) {
-			acteurs += actor.getName() + ", ";
-		}
-		}
-
-		String genres = "";
-		if(movie.getGenre() != null && movie.getGenre().length != 0) {
-			for (Genre genre : movie.getGenre()) {
-				genres += genre.getName() + ", ";
+		StringBuilder acteurs = new StringBuilder();
+		if(movie.getActeur() != null) {
+			movie.getActeur();
+			for (Actor actor : movie.getActeur()) {
+				acteurs.append(actor.getName()).append(", ");
 			}
 		}
 
-		String plateforme = "";
-		if(movie.getPlateforme() != null && movie.getPlateforme().length != 0) {
+		StringBuilder genres = new StringBuilder();
+		if(movie.getGenre() != null) {
+			movie.getGenre();
+			for (Genre genre : movie.getGenre()) {
+				genres.append(genre.getName()).append(", ");
+			}
+		}
+
+		StringBuilder plateforme = new StringBuilder();
+		if(movie.getPlateforme() != null) {
+			movie.getPlateforme();
 			for (Platform platform : movie.getPlateforme()) {
-				plateforme += platform.getName() + ", ";
+				plateforme.append(platform.getName()).append(", ");
 			}
 		}
 
@@ -801,7 +804,7 @@ public class PanelMovies extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Acteurs :</span></html>"),
-				new JLabel("<html>" + acteurs.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Description :</span></html>"),
@@ -809,7 +812,7 @@ public class PanelMovies extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Genres :</span></html>"),
-				new JLabel("<html>" + genres.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Durée :</span></html>"),
@@ -821,7 +824,7 @@ public class PanelMovies extends JPanel {
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Plateforme :</span></html>"),
-				new JLabel("<html>" + plateforme.replaceAll(", ", "<br>") + "</html>"),
+				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
 				new JLabel(titreStyle + "Déjà vu :</span></html>"),

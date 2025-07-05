@@ -31,7 +31,6 @@ public class PanelRandomMovie extends JPanel {
 
 	private Movie movie;
 	private JPanel moviePanel;
-	private JLabel movieLabel;
 
 	public PanelRandomMovie(GestionnaireMovie gestionnaireMovie, MovieFrame movieFrame) {
 		this.gestionnaireMovie = gestionnaireMovie;
@@ -66,7 +65,7 @@ public class PanelRandomMovie extends JPanel {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		moviePanel = new JPanel();
-		movieLabel = new JLabel();
+		JLabel movieLabel = new JLabel();
 		moviePanel.add(movieLabel);
 
 		moviePanel.setBackground(new Color(50, 50, 50));

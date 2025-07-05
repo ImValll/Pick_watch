@@ -32,7 +32,6 @@ public class PanelRandomSaga extends JPanel {
 
 	private Saga saga;
 	private JPanel sagaPanel;
-	private JLabel sagaLabel;
 
 	public PanelRandomSaga(GestionnaireSaga gestionnaireSaga, SagaFrame sagaFrame) {
 		this.gestionnaireSaga = gestionnaireSaga;
@@ -68,7 +67,7 @@ public class PanelRandomSaga extends JPanel {
 		JPanel panel = new JPanel(new BorderLayout());
 
 		sagaPanel = new JPanel();
-		sagaLabel = new JLabel();
+		JLabel sagaLabel = new JLabel();
 		sagaPanel.add(sagaLabel);
 
 		sagaPanel.setBackground(new Color(50, 50, 50));

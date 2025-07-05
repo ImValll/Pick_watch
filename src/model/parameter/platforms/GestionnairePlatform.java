@@ -120,10 +120,9 @@ public class GestionnairePlatform {
 					}
 					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
-					Movie newMovie = movie;
-					newMovie.setPlateforme(platformArray);
+					movie.setPlateforme(platformArray);
 					movies.remove(movie);
-					movies.add(newMovie);
+					movies.add(movie);
 				}
 				DataManager.saveMovie(movies);
 			}
@@ -137,10 +136,9 @@ public class GestionnairePlatform {
 					}
 					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
-					Saga newSaga = saga;
-					newSaga.setPlateforme(platformArray);
+					saga.setPlateforme(platformArray);
 					sagas.remove(saga);
-					sagas.add(newSaga);
+					sagas.add(saga);
 				}
 				DataManager.saveSaga(sagas);
 			}
@@ -154,10 +152,9 @@ public class GestionnairePlatform {
 					}
 					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
-					Serie newSerie = serie;
-					newSerie.setPlateforme(platformArray);
+					serie.setPlateforme(platformArray);
 					series.remove(serie);
-					series.add(newSerie);
+					series.add(serie);
 				}
 				DataManager.saveSerie(series);
 			}
@@ -171,10 +168,9 @@ public class GestionnairePlatform {
 					}
 					platforms.add(newPlatform);
 					Platform[] platformArray = platforms.toArray(new Platform[0]);
-					SerieCourte newSerieCourte = serieCourte;
-					newSerieCourte.setPlateforme(platformArray);
+					serieCourte.setPlateforme(platformArray);
 					seriesCourtes.remove(serieCourte);
-					seriesCourtes.add(newSerieCourte);
+					seriesCourtes.add(serieCourte);
 				}
 				DataManager.saveSerieCourte(seriesCourtes);
 			}
