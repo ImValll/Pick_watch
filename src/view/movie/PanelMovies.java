@@ -14,6 +14,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -167,7 +168,7 @@ public class PanelMovies extends JPanel {
 		JTextField descriptionField = new JTextField();
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
-		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel genrePanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.getName());
@@ -177,6 +178,7 @@ public class PanelMovies extends JPanel {
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		JTextField dureeField = new JTextField();
+		((AbstractDocument) dureeField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 
 		UtilDateModel model = new UtilDateModel();
 
@@ -186,10 +188,11 @@ public class PanelMovies extends JPanel {
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setPreferredSize(new Dimension(120, 25));
 
 
 		ArrayList<Platform> platforms = DataManager.loadPlatform();
-		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel platformPanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.getName());
@@ -262,7 +265,7 @@ public class PanelMovies extends JPanel {
 			descriptionField,
 			new JLabel("Genres"),
 			scrollPaneGenre,
-			new JLabel("Durée"),
+			new JLabel("Durée (en minutes)"),
 			dureeField,
 			new JLabel("Date de sortie"),
 			datePicker,
@@ -498,7 +501,7 @@ public class PanelMovies extends JPanel {
 		JTextField descriptionField = new JTextField(movie.getDescription());
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
-		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel genrePanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.getName());
@@ -512,6 +515,7 @@ public class PanelMovies extends JPanel {
 
 
 		JTextField dureeField = new JTextField();
+		((AbstractDocument) dureeField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 		dureeField.setText(String.valueOf(movie.getDuree())); // Préremplir avec la durée du film
 
 		UtilDateModel model = new UtilDateModel();
@@ -528,9 +532,10 @@ public class PanelMovies extends JPanel {
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setPreferredSize(new Dimension(120, 25));
 
 		ArrayList<Platform> platforms = DataManager.loadPlatform();
-		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel platformPanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.getName());
@@ -618,7 +623,7 @@ public class PanelMovies extends JPanel {
 				descriptionField,
 				new JLabel("Genres"),
 				scrollPaneGenre,
-				new JLabel("Durée"),
+				new JLabel("Durée (en minutes)"),
 				dureeField,
 				new JLabel("Date de sortie"),
 				datePicker,

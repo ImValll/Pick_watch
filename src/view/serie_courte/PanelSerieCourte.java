@@ -14,6 +14,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -166,7 +167,7 @@ public class PanelSerieCourte extends JPanel {
 		JTextField descriptionField = new JTextField();
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
-		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel genrePanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.getName());
@@ -176,8 +177,13 @@ public class PanelSerieCourte extends JPanel {
 		JScrollPane scrollPaneGenre = new JScrollPane(genrePanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		JTextField nbSaisonField = new JTextField();
+		((AbstractDocument) nbSaisonField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
+
 		JTextField nbEpisodeField = new JTextField();
+		((AbstractDocument) nbEpisodeField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
+
 		JTextField dureeMoyenneField = new JTextField();
+		((AbstractDocument) dureeMoyenneField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 
 		//Date première saison
 		UtilDateModel model = new UtilDateModel();
@@ -187,6 +193,7 @@ public class PanelSerieCourte extends JPanel {
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setPreferredSize(new Dimension(120, 25));
 
 		//Date dernière saison
 		UtilDateModel model2 = new UtilDateModel();
@@ -196,10 +203,11 @@ public class PanelSerieCourte extends JPanel {
 		p2.put("text.year", "Year");
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+		datePicker2.setPreferredSize(new Dimension(120, 25));
 
 
 		ArrayList<Platform> platforms = DataManager.loadPlatform();
-		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel platformPanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.getName());
@@ -274,7 +282,7 @@ public class PanelSerieCourte extends JPanel {
 				nbSaisonField,
 				new JLabel("Nombre d'épisodes par saison"),
 				nbEpisodeField,
-				new JLabel("Durée moyenne des épisodes"),
+				new JLabel("Durée moyenne des épisodes (en minutes)"),
 				dureeMoyenneField,
 				new JLabel("Date de sortie de la première saison"),
 				datePicker,
@@ -525,7 +533,7 @@ public class PanelSerieCourte extends JPanel {
 		JTextField descriptionField = new JTextField(serieCourte.getDescription());
 
 		ArrayList<Genre> genres = DataManager.loadGenre();
-		JPanel genrePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel genrePanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		java.util.List<JCheckBox> genreCheckBoxes = new ArrayList<>();
 		for (Genre genre : genres) {
 			JCheckBox checkBox = new JCheckBox(genre.getName());
@@ -539,12 +547,15 @@ public class PanelSerieCourte extends JPanel {
 
 
 		JTextField nbSaisonField = new JTextField();
+		((AbstractDocument) nbSaisonField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 		nbSaisonField.setText(String.valueOf(serieCourte.getNombreSaison())); // Préremplir avec le nombre de saisons
 
 		JTextField nbEpisodeField = new JTextField();
+		((AbstractDocument) nbEpisodeField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 		nbEpisodeField.setText(String.valueOf(serieCourte.getNombreEpisode())); // Préremplir avec le nombre d'épisodes par saison
 
 		JTextField dureeMoyenneField = new JTextField();
+		((AbstractDocument) dureeMoyenneField.getDocument()).setDocumentFilter(new NumericDocumentFilter());
 		dureeMoyenneField.setText(String.valueOf(serieCourte.getDureeMoyenne())); // Préremplir avec la durée moyenne des épisodes
 
 		UtilDateModel model = new UtilDateModel();
@@ -560,6 +571,7 @@ public class PanelSerieCourte extends JPanel {
 		p.put("text.year", "Year");
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setPreferredSize(new Dimension(120, 25));
 
 		UtilDateModel model2 = new UtilDateModel();
 		Date oldDateSortie2 = serieCourte.getDateSortieDerniereSaison(); // Supposons que serie.getDateSortieDerniereSaison() renvoie la date de sortie de la dernière saison
@@ -574,9 +586,10 @@ public class PanelSerieCourte extends JPanel {
 		p2.put("text.year", "Year");
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
 		JDatePickerImpl datePicker2 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+		datePicker2.setPreferredSize(new Dimension(120, 25));
 
 		ArrayList<Platform> platforms = DataManager.loadPlatform();
-		JPanel platformPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel platformPanel = new JPanel(new GridLayout(0, 4, 4, 4));
 		java.util.List<JCheckBox> platformCheckBoxes = new ArrayList<>();
 		for (Platform platform : platforms) {
 			JCheckBox checkBox = new JCheckBox(platform.getName());
@@ -666,7 +679,7 @@ public class PanelSerieCourte extends JPanel {
 				nbSaisonField,
 				new JLabel("Nombre d'épisodes par saison"),
 				nbEpisodeField,
-				new JLabel("Durée moyenne des épisodes"),
+				new JLabel("Durée moyenne des épisodes (en minutes)"),
 				dureeMoyenneField,
 				new JLabel("Date de sortie de la première saison"),
 				datePicker,

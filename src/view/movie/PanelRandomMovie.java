@@ -114,7 +114,7 @@ public class PanelRandomMovie extends JPanel {
 				movieSelected.getRealistateur() + ".<br>" + Arrays.toString(movieSelected.getActeur()) +
 				" a/ont joué dedans.<br>Le film appartient à/aux genre(s) " +
 				Arrays.toString(movieSelected.getGenre()) + ".<br>Il dure " + movieSelected.getDuree() +
-				" et est sorti en " + date + ".<br>Il est disponible sur " + Arrays.toString(movieSelected.getPlateforme()) +
+				" minutes et est sorti en " + date + ".<br>Il est disponible sur " + Arrays.toString(movieSelected.getPlateforme()) +
 				".<br>Il a été ajouté par " + movieSelected.getAddBy() + ".<br></html>";
 
 		// Création du label texte
