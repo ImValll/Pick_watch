@@ -12,13 +12,19 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
@@ -242,7 +248,44 @@ public class PanelMovies extends JPanel {
 				// ✅ Vérifier l'extension sélectionnée (sécurité supplémentaire)
 				String name = selectedFile.getName().toLowerCase();
 				if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) {
-					imagePathLabel.setText(selectedFile.getName());
+					try {
+						// Lire l'image d'origine
+						BufferedImage original = ImageIO.read(selectedFile);
+						if (original == null) throw new IOException("Image invalide");
+
+						// Créer une image RGB (sans alpha), fond blanc
+						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
+						Graphics2D g2d = converted.createGraphics();
+						g2d.setColor(Color.WHITE);
+						g2d.fillRect(0, 0, converted.getWidth(), converted.getHeight());
+						g2d.drawImage(original, 0, 0, null);
+						g2d.dispose();
+
+						// Créer le dossier d'affiches s'il n'existe pas
+						File postersDir = new File("affiches");
+						if (!postersDir.exists()) postersDir.mkdirs();
+
+						// Nom unique (UUID ou autre identifiant)
+						String uniqueName = UUID.randomUUID().toString() + ".jpg";
+						File output = new File(postersDir, uniqueName);
+
+						// Sauvegarde en JPEG
+						ImageIO.write(converted, "jpg", output);
+
+						// Mise à jour du chemin
+						selectedPosterFile[0] = output;
+						imagePathLabel.setText(output.getName());
+					} catch (IOException ex) {
+						JOptionPane.showMessageDialog(null,
+								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
+										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
+										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
+										"Format refusé : " + selectedFile.getName(),
+								"Image invalide", JOptionPane.ERROR_MESSAGE);
+						selectedPosterFile[0] = null;
+						imagePathLabel.setText("Aucune image sélectionnée");
+						ex.printStackTrace();
+					}
 				} else {
 					JOptionPane.showMessageDialog(null,
 							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
@@ -600,7 +643,44 @@ public class PanelMovies extends JPanel {
 				// ✅ Vérifier l'extension sélectionnée (sécurité supplémentaire)
 				String name = selectedFile.getName().toLowerCase();
 				if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png")) {
-					imagePathLabel.setText(selectedFile.getName());
+					try {
+						// Lire l'image d'origine
+						BufferedImage original = ImageIO.read(selectedFile);
+						if (original == null) throw new IOException("Image invalide");
+
+						// Créer une image RGB (sans alpha), fond blanc
+						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
+						Graphics2D g2d = converted.createGraphics();
+						g2d.setColor(Color.WHITE);
+						g2d.fillRect(0, 0, converted.getWidth(), converted.getHeight());
+						g2d.drawImage(original, 0, 0, null);
+						g2d.dispose();
+
+						// Créer le dossier d'affiches s'il n'existe pas
+						File postersDir = new File("affiches");
+						if (!postersDir.exists()) postersDir.mkdirs();
+
+						// Nom unique (UUID ou autre identifiant)
+						String uniqueName = UUID.randomUUID().toString() + ".jpg";
+						File output = new File(postersDir, uniqueName);
+
+						// Sauvegarde en JPEG
+						ImageIO.write(converted, "jpg", output);
+
+						// Mise à jour du chemin
+						selectedPosterFile[0] = output;
+						imagePathLabel.setText(output.getName());
+					} catch (IOException ex) {
+						JOptionPane.showMessageDialog(null,
+								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
+										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
+										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
+										"Format refusé : " + selectedFile.getName(),
+								"Image invalide", JOptionPane.ERROR_MESSAGE);
+						selectedPosterFile[0] = null;
+						imagePathLabel.setText("Aucune image sélectionnée");
+						ex.printStackTrace();
+					}
 				} else {
 					JOptionPane.showMessageDialog(null,
 							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
