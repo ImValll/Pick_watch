@@ -11,6 +11,7 @@ import model.movie.Movie;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -102,26 +103,66 @@ public class PanelRandomMovie extends JPanel {
 	}
 
 	private void updateMovieInfo(Movie movieSelected) {
-		String date;
-		if (movie.getDateSortie() != null) {
-			date = new SimpleDateFormat("yyyy").format(movieSelected.getDateSortie());
-		}
-		else {
-			date = "";
+		String date = (movieSelected.getDateSortie() != null)
+				? new SimpleDateFormat("yyyy").format(movieSelected.getDateSortie())
+				: null;
+
+		// Construire le contenu HTML dynamiquement
+		StringBuilder htmlBuilder = new StringBuilder();
+		htmlBuilder.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
+
+		if (movieSelected.getRealistateur() != null && !movieSelected.getRealistateur().trim().isEmpty()) {
+			htmlBuilder.append("<p><b>Réalisateur :</b> ").append(movieSelected.getRealistateur()).append("</p>");
 		}
 
-		String movieInfo = "<html>Le film choisi est : " + movieSelected.getTitre() + " réalisé par " +
-				movieSelected.getRealistateur() + ".<br>" + Arrays.toString(movieSelected.getActeur()) +
-				" a/ont joué dedans.<br>Le film appartient à/aux genre(s) " +
-				Arrays.toString(movieSelected.getGenre()) + ".<br>Il dure " + movieSelected.getDuree() +
-				" minutes et est sorti en " + date + ".<br>Il est disponible sur " + Arrays.toString(movieSelected.getPlateforme()) +
-				".<br>Il a été ajouté par " + movieSelected.getAddBy() + ".<br></html>";
+		String acteursHTML = buildObjectList(movieSelected.getActeur(), "Acteur(s)");
+		if (!acteursHTML.isEmpty()) htmlBuilder.append(acteursHTML);
 
-		// Création du label texte
-		JLabel textLabel = new JLabel(movieInfo);
+		String genresHTML = buildObjectList(movieSelected.getGenre(), "Genre(s)");
+		if (!genresHTML.isEmpty()) htmlBuilder.append(genresHTML);
+
+		if (movieSelected.getDuree() > 0) {
+			htmlBuilder.append("<p><b>Durée :</b> ").append(movieSelected.getDuree()).append(" minutes</p>");
+		}
+
+		if (date != null) {
+			htmlBuilder.append("<p><b>Date de sortie :</b> ").append(date).append("</p>");
+		}
+
+		String plateformesHTML = buildObjectList(movieSelected.getPlateforme(), "Disponible sur");
+		if (!plateformesHTML.isEmpty()) htmlBuilder.append(plateformesHTML);
+
+		// Toujours afficher "Ajouté par", même vide
+		User addedBy = movieSelected.getAddBy();
+		htmlBuilder.append("<p><i>Ajouté par ")
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+				.append("</i></p>");
+
+		htmlBuilder.append("</div></html>");
+		String movieInfoHtml = htmlBuilder.toString();
+
+		// --- Label du titre du film ---
+		JLabel titleLabel = new JLabel(movieSelected.getTitre() + "\n", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0)); // Marge autour du titre
+
+		// --- Texte HTML avec scroll ---
+		JLabel textLabel = new JLabel(movieInfoHtml);
 		textLabel.setForeground(Color.WHITE);
 
-		// Création du label image
+		// Important : autoriser le texte à s'étendre verticalement
+		textLabel.setVerticalAlignment(SwingConstants.TOP);
+
+		// Panneau scrollable pour le texte
+		JScrollPane scrollPane = new JScrollPane(textLabel);
+		scrollPane.setPreferredSize(new Dimension(400, 500)); // Hauteur maximale visible
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null); // Supprime la bordure si tu veux rester sobre
+		scrollPane.getViewport().setBackground(moviePanel.getBackground()); // Conserver le fond
+
+		// --- Image du film ---
 		JLabel imageLabel = new JLabel();
 		String imagePath = movieSelected.getImagePath();
 		if (imagePath != null && new File(imagePath).exists()) {
@@ -133,15 +174,18 @@ public class PanelRandomMovie extends JPanel {
 			imageLabel.setPreferredSize(new Dimension(240, 360));
 		}
 
-		// Création du panel d'affichage combiné
-		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
-		combinedPanel.setBackground(moviePanel.getBackground()); // pour garder le même fond
-		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
-		combinedPanel.add(textLabel, BorderLayout.NORTH);
+		JPanel contentPanel = new JPanel(new BorderLayout(10, 0));
+		contentPanel.setBackground(moviePanel.getBackground());
+		contentPanel.add(imageLabel, BorderLayout.WEST);
+		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-		// Remplacement dans le panel principal
+		JPanel finalPanel = new JPanel(new BorderLayout());
+		finalPanel.setBackground(moviePanel.getBackground());
+		finalPanel.add(titleLabel, BorderLayout.NORTH);
+		finalPanel.add(contentPanel, BorderLayout.CENTER);
+
 		moviePanel.removeAll();
-		moviePanel.add(combinedPanel);
+		moviePanel.add(finalPanel);
 		moviePanel.revalidate();
 		moviePanel.repaint();
 	}
@@ -174,5 +218,33 @@ public class PanelRandomMovie extends JPanel {
 		Image img = icon.getImage();
 		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new ImageIcon(newImg);
+	}
+
+	private <T> String buildObjectList(T[] objects, String label) {
+		if (objects == null || objects.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<p><b>").append(label).append(" :</b></p><ul style='margin-top:-8px;'>");
+
+		boolean atLeastOne = false;
+		for (T obj : objects) {
+			if (obj != null) {
+				String value = null;
+				try {
+					Method getNom = obj.getClass().getMethod("getNom");
+					value = String.valueOf(getNom.invoke(obj));
+				} catch (Exception e) {
+					value = obj.toString(); // fallback
+				}
+
+				if (value != null && !value.isBlank()) {
+					sb.append("<li>").append(value).append("</li>");
+					atLeastOne = true;
+				}
+			}
+		}
+		sb.append("</ul>");
+
+		return atLeastOne ? sb.toString() : "";
 	}
 }

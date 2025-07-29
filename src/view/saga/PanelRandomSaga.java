@@ -11,9 +11,12 @@ import model.saga.Saga;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PanelRandomSaga extends JPanel {
 
@@ -104,35 +107,63 @@ public class PanelRandomSaga extends JPanel {
 	}
 
 	private void updateSagaInfo(Saga sagaSelected) {
-		String date;
-		if (saga.getDateSortiePremier() != null) {
-			date = new SimpleDateFormat("yyyy").format(sagaSelected.getDateSortiePremier());
-		}
-		else {
-			date = "";
-		}
+		String date1 = sagaSelected.getDateSortiePremier() != null
+				? new SimpleDateFormat("yyyy").format(sagaSelected.getDateSortiePremier()) : null;
+		String date2 = sagaSelected.getDateSortieDernier() != null
+				? new SimpleDateFormat("yyyy").format(sagaSelected.getDateSortieDernier()) : null;
 
-		String date2;
-		if (saga.getDateSortieDernier() != null) {
-			date2 = new SimpleDateFormat("yyyy").format(sagaSelected.getDateSortieDernier());
-		}
-		else {
-			date2 = "";
-		}
+		StringBuilder sb = new StringBuilder("<html>");
+		sb.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
-		String sagaInfo = "<html>La saga choisie est : " + sagaSelected.getTitre() + " réalisée par " +
-				sagaSelected.getRealistateur() + ".<br>" + Arrays.toString(sagaSelected.getActeur()) +
-				" a/ont joué dedans.<br>La saga appartient à/aux genre(s) " +
-				Arrays.toString(sagaSelected.getGenre()) + ".<br>Elle possède " + sagaSelected.getNombreFilms() +
-				" films.<br>Le premier film est sorti en " + date + " et le dernier en " + date2 +
-				".<br>Ils sont disponible sur " + Arrays.toString(sagaSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + sagaSelected.getAddBy() + ".<br></html>";
+		if (sagaSelected.getRealistateur() != null && !sagaSelected.getRealistateur().trim().isEmpty())
+			sb.append("Réalisée par <b>").append(sagaSelected.getRealistateur()).append("</b>.<br>");
 
-		// Création du label texte
-		JLabel textLabel = new JLabel(sagaInfo);
+		String acteursHTML = buildObjectList(sagaSelected.getActeur(), "Acteur(s)");
+		if (!acteursHTML.isEmpty()) sb.append(acteursHTML);
+
+		String genresHTML = buildObjectList(sagaSelected.getGenre(), "Genre(s)");
+		if (!genresHTML.isEmpty()) sb.append(genresHTML);
+
+		if (sagaSelected.getNombreFilms() > 0)
+			sb.append("Nombre de films : ").append(sagaSelected.getNombreFilms()).append(".<br>");
+
+		if (date1 != null)
+			sb.append("Premier film sorti en ").append(date1).append(".<br>");
+
+		if (date2 != null)
+			sb.append("Dernier film sorti en ").append(date2).append(".<br>");
+
+		String plateformesHTML = buildObjectList(sagaSelected.getPlateforme(), "Disponible sur");
+		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
+
+		User addedBy = sagaSelected.getAddBy();
+		sb.append("<p><i>Ajouté par ")
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+				.append("</i></p>");
+
+		sb.append("</html>");
+		String sagaInfoHtml = sb.toString();
+
+		JLabel titleLabel = new JLabel(sagaSelected.getTitre() + "\n", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+		titleLabel.setForeground(Color.WHITE);
+
+		// --- Texte HTML avec scroll ---
+		JLabel textLabel = new JLabel(sagaInfoHtml);
 		textLabel.setForeground(Color.WHITE);
 
-		// Création du label image
+		// Important : autoriser le texte à s'étendre verticalement
+		textLabel.setVerticalAlignment(SwingConstants.TOP);
+
+		// Panneau scrollable pour le texte
+		JScrollPane scrollPane = new JScrollPane(textLabel);
+		scrollPane.setPreferredSize(new Dimension(400, 500)); // Hauteur maximale visible
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null); // Supprime la bordure si tu veux rester sobre
+		scrollPane.getViewport().setBackground(sagaPanel.getBackground()); // Conserver le fond
+
+		// --- Image du film ---
 		JLabel imageLabel = new JLabel();
 		String imagePath = sagaSelected.getImagePath();
 		if (imagePath != null && new File(imagePath).exists()) {
@@ -144,15 +175,18 @@ public class PanelRandomSaga extends JPanel {
 			imageLabel.setPreferredSize(new Dimension(240, 360));
 		}
 
-		// Création du panel d'affichage combiné
-		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
-		combinedPanel.setBackground(sagaPanel.getBackground()); // pour garder le même fond
-		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
-		combinedPanel.add(textLabel, BorderLayout.NORTH);
+		JPanel contentPanel = new JPanel(new BorderLayout(10, 0));
+		contentPanel.setBackground(sagaPanel.getBackground());
+		contentPanel.add(imageLabel, BorderLayout.WEST);
+		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-		// Remplacement dans le panel principal
+		JPanel finalPanel = new JPanel(new BorderLayout());
+		finalPanel.setBackground(sagaPanel.getBackground());
+		finalPanel.add(titleLabel, BorderLayout.NORTH);
+		finalPanel.add(contentPanel, BorderLayout.CENTER);
+
 		sagaPanel.removeAll();
-		sagaPanel.add(combinedPanel);
+		sagaPanel.add(finalPanel);
 		sagaPanel.revalidate();
 		sagaPanel.repaint();
 	}
@@ -185,5 +219,33 @@ public class PanelRandomSaga extends JPanel {
 		Image img = icon.getImage();
 		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new ImageIcon(newImg);
+	}
+
+	private <T> String buildObjectList(T[] objects, String label) {
+		if (objects == null || objects.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<p><b>").append(label).append(" :</b></p><ul style='margin-top:-8px;'>");
+
+		boolean atLeastOne = false;
+		for (T obj : objects) {
+			if (obj != null) {
+				String value = null;
+				try {
+					Method getNom = obj.getClass().getMethod("getNom");
+					value = String.valueOf(getNom.invoke(obj));
+				} catch (Exception e) {
+					value = obj.toString(); // fallback
+				}
+
+				if (value != null && !value.isBlank()) {
+					sb.append("<li>").append(value).append("</li>");
+					atLeastOne = true;
+				}
+			}
+		}
+		sb.append("</ul>");
+
+		return atLeastOne ? sb.toString() : "";
 	}
 }

@@ -11,8 +11,8 @@ import model.serie_courte.SerieCourte;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class PanelRandomSerieCourte extends JPanel {
@@ -105,38 +105,69 @@ public class PanelRandomSerieCourte extends JPanel {
 		return panel;
 	}
 
-	private void updateSerieCourteInfo(SerieCourte serieCourteSelected) {
-		String date;
-		if (serieCourte.getDateSortiePremiereSaison() != null) {
-			date = new SimpleDateFormat("yyyy").format(serieCourteSelected.getDateSortiePremiereSaison());
-		}
-		else {
-			date = "";
-		}
+	private void updateSerieCourteInfo(SerieCourte scSelected) {
+		String date1 = scSelected.getDateSortiePremiereSaison() != null
+				? new SimpleDateFormat("yyyy").format(scSelected.getDateSortiePremiereSaison()) : null;
+		String date2 = scSelected.getDateSortieDerniereSaison() != null
+				? new SimpleDateFormat("yyyy").format(scSelected.getDateSortieDerniereSaison()) : null;
 
-		String date2;
-		if (serieCourte.getDateSortieDerniereSaison() != null) {
-			date2 = new SimpleDateFormat("yyyy").format(serieCourteSelected.getDateSortieDerniereSaison());
-		}
-		else {
-			date2 = "";
-		}
+		StringBuilder sb = new StringBuilder("<html>");
+		sb.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
-		String serieCourteInfo = "<html>La série courte choisie est : " + serieCourteSelected.getTitre() + ".<br>" + Arrays.toString(serieCourteSelected.getActeur()) +
-				" a/ont joué dedans.<br>La serie appartient à/aux genre(s) " +
-				Arrays.toString(serieCourteSelected.getGenre()) + ".<br>Elle possède " + serieCourteSelected.getNombreSaison() +
-				" saisons avec " + serieCourteSelected.getNombreEpisode() + "épisodes.<br>Les épisodes durent en moyenne " +
-				serieCourteSelected.getDureeMoyenne() + " minutes.<br>La première saison est sorti en " + date + " et la dernière en " +
-				date2 + ".<br>Elle est disponible sur " + Arrays.toString(serieCourteSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + serieCourteSelected.getAddBy() + ".<br></html>";
+		String acteursHTML = buildObjectList(scSelected.getActeur(), "Acteur(s)");
+		if (!acteursHTML.isEmpty()) sb.append(acteursHTML);
 
-		// Création du label texte
-		JLabel textLabel = new JLabel(serieCourteInfo);
+		String genresHTML = buildObjectList(scSelected.getGenre(), "Genre(s)");
+		if (!genresHTML.isEmpty()) sb.append(genresHTML);
+
+		if (scSelected.getNombreSaison() > 0)
+			sb.append("Saisons : ").append(scSelected.getNombreSaison()).append(".<br>");
+
+		if (scSelected.getNombreEpisode() > 0)
+			sb.append("Épisodes par saison : ").append(scSelected.getNombreEpisode()).append(".<br>");
+
+		if (scSelected.getDureeMoyenne() > 0)
+			sb.append("Durée moyenne : ").append(scSelected.getDureeMoyenne()).append(" minutes.<br>");
+
+		if (date1 != null)
+			sb.append("Première saison : ").append(date1).append(".<br>");
+
+		if (date2 != null)
+			sb.append("Dernière saison : ").append(date2).append(".<br>");
+
+		String plateformesHTML = buildObjectList(scSelected.getPlateforme(), "Disponible sur");
+		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
+
+		User addedBy = scSelected.getAddBy();
+		sb.append("<p><i>Ajouté par ")
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+				.append("</i></p>");
+
+		sb.append("</html>");
+		String serieCourteInfoHtml = sb.toString();
+
+		JLabel titleLabel = new JLabel(scSelected.getTitre() + "\n", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+		titleLabel.setForeground(Color.WHITE);
+
+		// --- Texte HTML avec scroll ---
+		JLabel textLabel = new JLabel(serieCourteInfoHtml);
 		textLabel.setForeground(Color.WHITE);
 
-		// Création du label image
+		// Important : autoriser le texte à s'étendre verticalement
+		textLabel.setVerticalAlignment(SwingConstants.TOP);
+
+		// Panneau scrollable pour le texte
+		JScrollPane scrollPane = new JScrollPane(textLabel);
+		scrollPane.setPreferredSize(new Dimension(400, 500)); // Hauteur maximale visible
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null); // Supprime la bordure si tu veux rester sobre
+		scrollPane.getViewport().setBackground(serieCourtePanel.getBackground()); // Conserver le fond
+
+		// --- Image du film ---
 		JLabel imageLabel = new JLabel();
-		String imagePath = serieCourteSelected.getImagePath();
+		String imagePath = scSelected.getImagePath();
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
 		} else {
@@ -146,15 +177,18 @@ public class PanelRandomSerieCourte extends JPanel {
 			imageLabel.setPreferredSize(new Dimension(240, 360));
 		}
 
-		// Création du panel d'affichage combiné
-		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
-		combinedPanel.setBackground(serieCourtePanel.getBackground()); // pour garder le même fond
-		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
-		combinedPanel.add(textLabel, BorderLayout.NORTH);
+		JPanel contentPanel = new JPanel(new BorderLayout(10, 0));
+		contentPanel.setBackground(serieCourtePanel.getBackground());
+		contentPanel.add(imageLabel, BorderLayout.WEST);
+		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-		// Remplacement dans le panel principal
+		JPanel finalPanel = new JPanel(new BorderLayout());
+		finalPanel.setBackground(serieCourtePanel.getBackground());
+		finalPanel.add(titleLabel, BorderLayout.NORTH);
+		finalPanel.add(contentPanel, BorderLayout.CENTER);
+
 		serieCourtePanel.removeAll();
-		serieCourtePanel.add(combinedPanel);
+		serieCourtePanel.add(finalPanel);
 		serieCourtePanel.revalidate();
 		serieCourtePanel.repaint();
 	}
@@ -187,5 +221,33 @@ public class PanelRandomSerieCourte extends JPanel {
 		Image img = icon.getImage();
 		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new ImageIcon(newImg);
+	}
+
+	private <T> String buildObjectList(T[] objects, String label) {
+		if (objects == null || objects.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<p><b>").append(label).append(" :</b></p><ul style='margin-top:-8px;'>");
+
+		boolean atLeastOne = false;
+		for (T obj : objects) {
+			if (obj != null) {
+				String value = null;
+				try {
+					Method getNom = obj.getClass().getMethod("getNom");
+					value = String.valueOf(getNom.invoke(obj));
+				} catch (Exception e) {
+					value = obj.toString(); // fallback
+				}
+
+				if (value != null && !value.isBlank()) {
+					sb.append("<li>").append(value).append("</li>");
+					atLeastOne = true;
+				}
+			}
+		}
+		sb.append("</ul>");
+
+		return atLeastOne ? sb.toString() : "";
 	}
 }

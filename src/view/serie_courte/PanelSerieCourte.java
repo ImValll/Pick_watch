@@ -15,6 +15,7 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -97,9 +98,31 @@ public class PanelSerieCourte extends JPanel {
 		java.util.List<SerieCourte> listSerieCourte = gestionnaireSerieCourte.getSerieCourte();
 		tableModel = new SerieCourteTableModel(listSerieCourte);
 		tableArea = new JTable(tableModel);
-		tableArea.setBackground(Color.LIGHT_GRAY);
 
-		// Ajout de rendus personnalisés pour les colonnes "Visualiser", "Modifier" et "Supprimer"
+		tableArea.setFillsViewportHeight(true);
+		tableArea.setRowHeight(28);
+		tableArea.setIntercellSpacing(new Dimension(1, 1));
+		tableArea.setShowGrid(true);
+		tableArea.setGridColor(new Color(100, 100, 100));
+		tableArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		tableArea.setForeground(Color.WHITE);
+		tableArea.setBackground(new Color(60, 63, 65));
+		tableArea.setSelectionBackground(new Color(96, 99, 102));
+		tableArea.setSelectionForeground(Color.WHITE);
+		tableArea.getTableHeader().setReorderingAllowed(false);
+		tableArea.getTableHeader().setBackground(new Color(80, 80, 80));
+		tableArea.getTableHeader().setForeground(Color.WHITE);
+		tableArea.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for (int i = 0; i < tableArea.getColumnCount(); i++) {
+			String columnName = tableArea.getColumnName(i);
+			if (!columnName.equals("Visualiser") && !columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+			}
+		}
+
 		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
 
@@ -109,7 +132,11 @@ public class PanelSerieCourte extends JPanel {
 		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
 
-		return new JScrollPane(tableArea);
+		JScrollPane scrollPane = new JScrollPane(tableArea);
+		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+		return scrollPane;
 	}
 
 	private void searchSerieCourte(ActionEvent e) {

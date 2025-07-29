@@ -8,6 +8,7 @@ import model.parameter.actors.ActorTableModel;
 import view.parameter.ParameterFrame;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -84,16 +85,42 @@ public class PanelActor extends JPanel {
 		java.util.List<Actor> listActor = gestionnaireActor.getActor();
 		tableModel = new ActorTableModel(listActor);
 		tableArea = new JTable(tableModel);
-		tableArea.setBackground(Color.LIGHT_GRAY);
 
-		// Ajout de rendus personnalisés pour les colonnes "Modifier" et "Supprimer"
+		tableArea.setFillsViewportHeight(true);
+		tableArea.setRowHeight(28);
+		tableArea.setIntercellSpacing(new Dimension(1, 1));
+		tableArea.setShowGrid(true);
+		tableArea.setGridColor(new Color(100, 100, 100));
+		tableArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		tableArea.setForeground(Color.WHITE);
+		tableArea.setBackground(new Color(60, 63, 65));
+		tableArea.setSelectionBackground(new Color(96, 99, 102));
+		tableArea.setSelectionForeground(Color.WHITE);
+		tableArea.getTableHeader().setReorderingAllowed(false);
+		tableArea.getTableHeader().setBackground(new Color(80, 80, 80));
+		tableArea.getTableHeader().setForeground(Color.WHITE);
+		tableArea.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		for (int i = 0; i < tableArea.getColumnCount(); i++) {
+			String columnName = tableArea.getColumnName(i);
+			if (!columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+			}
+		}
+
 		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
 
 		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
 		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
 
-		return new JScrollPane(tableArea);
+		JScrollPane scrollPane = new JScrollPane(tableArea);
+		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+		return scrollPane;
 	}
 
 	private void searchActor(ActionEvent e) {

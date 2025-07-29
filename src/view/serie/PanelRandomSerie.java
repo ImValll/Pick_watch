@@ -11,8 +11,8 @@ import model.serie.Serie;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class PanelRandomSerie extends JPanel {
@@ -106,35 +106,66 @@ public class PanelRandomSerie extends JPanel {
 	}
 
 	private void updateSerieInfo(Serie serieSelected) {
-		String date;
-		if (serie.getDateSortiePremiereSaison() != null) {
-			date = new SimpleDateFormat("yyyy").format(serieSelected.getDateSortiePremiereSaison());
-		}
-		else {
-			date = "";
-		}
+		String date1 = serieSelected.getDateSortiePremiereSaison() != null
+				? new SimpleDateFormat("yyyy").format(serieSelected.getDateSortiePremiereSaison()) : null;
+		String date2 = serieSelected.getDateSortieDerniereSaison() != null
+				? new SimpleDateFormat("yyyy").format(serieSelected.getDateSortieDerniereSaison()) : null;
 
-		String date2;
-		if (serie.getDateSortieDerniereSaison() != null) {
-			date2 = new SimpleDateFormat("yyyy").format(serieSelected.getDateSortieDerniereSaison());
-		}
-		else {
-			date2 = "";
-		}
+		StringBuilder sb = new StringBuilder("<html>");
+		sb.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
-		String serieInfo = "<html>La série choisie est : " + serieSelected.getTitre() + ".<br>" + Arrays.toString(serieSelected.getActeur()) +
-				" a/ont joué dedans.<br>La serie appartient à/aux genre(s) " +
-				Arrays.toString(serieSelected.getGenre()) + ".<br>Elle possède " + serieSelected.getNombreSaison() +
-				" saisons avec " + serieSelected.getNombreEpisode() + "épisodes.<br>Les épisodes durent en moyenne " +
-				serieSelected.getDureeMoyenne() + " minutes.<br>La première saison est sorti en " + date + " et la dernière en " +
-				date2 + ".<br>Elle est disponible sur " + Arrays.toString(serieSelected.getPlateforme()) +
-				".<br>Elle a été ajoutée par " + serieSelected.getAddBy() + ".<br></html>";
+		String acteursHTML = buildObjectList(serieSelected.getActeur(), "Acteur(s)");
+		if (!acteursHTML.isEmpty()) sb.append(acteursHTML);
 
-		// Création du label texte
-		JLabel textLabel = new JLabel(serieInfo);
+		String genresHTML = buildObjectList(serieSelected.getGenre(), "Genre(s)");
+		if (!genresHTML.isEmpty()) sb.append(genresHTML);
+
+		if (serieSelected.getNombreSaison() > 0)
+			sb.append("Saisons : ").append(serieSelected.getNombreSaison()).append(".<br>");
+
+		if (serieSelected.getNombreEpisode() > 0)
+			sb.append("Épisodes par saison : ").append(serieSelected.getNombreEpisode()).append(".<br>");
+
+		if (serieSelected.getDureeMoyenne() > 0)
+			sb.append("Durée moyenne : ").append(serieSelected.getDureeMoyenne()).append(" minutes.<br>");
+
+		if (date1 != null)
+			sb.append("Première saison : ").append(date1).append(".<br>");
+
+		if (date2 != null)
+			sb.append("Dernière saison : ").append(date2).append(".<br>");
+
+		String plateformesHTML = buildObjectList(serieSelected.getPlateforme(), "Disponible sur");
+		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
+
+		User addedBy = serieSelected.getAddBy();
+		sb.append("<p><i>Ajouté par ")
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+				.append("</i></p>");
+
+		sb.append("</html>");
+		String serieInfoHtml = sb.toString();
+
+		JLabel titleLabel = new JLabel(serieSelected.getTitre() + "\n", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+		titleLabel.setForeground(Color.WHITE);
+
+		// --- Texte HTML avec scroll ---
+		JLabel textLabel = new JLabel(serieInfoHtml);
 		textLabel.setForeground(Color.WHITE);
 
-		// Création du label image
+		// Important : autoriser le texte à s'étendre verticalement
+		textLabel.setVerticalAlignment(SwingConstants.TOP);
+
+		// Panneau scrollable pour le texte
+		JScrollPane scrollPane = new JScrollPane(textLabel);
+		scrollPane.setPreferredSize(new Dimension(400, 500)); // Hauteur maximale visible
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null); // Supprime la bordure si tu veux rester sobre
+		scrollPane.getViewport().setBackground(seriePanel.getBackground()); // Conserver le fond
+
+		// --- Image du film ---
 		JLabel imageLabel = new JLabel();
 		String imagePath = serieSelected.getImagePath();
 		if (imagePath != null && new File(imagePath).exists()) {
@@ -146,15 +177,18 @@ public class PanelRandomSerie extends JPanel {
 			imageLabel.setPreferredSize(new Dimension(240, 360));
 		}
 
-		// Création du panel d'affichage combiné
-		JPanel combinedPanel = new JPanel(new BorderLayout(10, 0));
-		combinedPanel.setBackground(seriePanel.getBackground()); // pour garder le même fond
-		combinedPanel.add(imageLabel, BorderLayout.SOUTH);
-		combinedPanel.add(textLabel, BorderLayout.NORTH);
+		JPanel contentPanel = new JPanel(new BorderLayout(10, 0));
+		contentPanel.setBackground(seriePanel.getBackground());
+		contentPanel.add(imageLabel, BorderLayout.WEST);
+		contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-		// Remplacement dans le panel principal
+		JPanel finalPanel = new JPanel(new BorderLayout());
+		finalPanel.setBackground(seriePanel.getBackground());
+		finalPanel.add(titleLabel, BorderLayout.NORTH);
+		finalPanel.add(contentPanel, BorderLayout.CENTER);
+
 		seriePanel.removeAll();
-		seriePanel.add(combinedPanel);
+		seriePanel.add(finalPanel);
 		seriePanel.revalidate();
 		seriePanel.repaint();
 	}
@@ -187,5 +221,33 @@ public class PanelRandomSerie extends JPanel {
 		Image img = icon.getImage();
 		Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 		return new ImageIcon(newImg);
+	}
+
+	private <T> String buildObjectList(T[] objects, String label) {
+		if (objects == null || objects.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("<p><b>").append(label).append(" :</b></p><ul style='margin-top:-8px;'>");
+
+		boolean atLeastOne = false;
+		for (T obj : objects) {
+			if (obj != null) {
+				String value = null;
+				try {
+					Method getNom = obj.getClass().getMethod("getNom");
+					value = String.valueOf(getNom.invoke(obj));
+				} catch (Exception e) {
+					value = obj.toString(); // fallback
+				}
+
+				if (value != null && !value.isBlank()) {
+					sb.append("<li>").append(value).append("</li>");
+					atLeastOne = true;
+				}
+			}
+		}
+		sb.append("</ul>");
+
+		return atLeastOne ? sb.toString() : "";
 	}
 }
