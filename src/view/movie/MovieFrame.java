@@ -1,6 +1,7 @@
 package view.movie;
 
 import model.ButtonEditor;
+import model.Language;
 import model.movie.GestionnaireMovie;
 import view.Frame;
 
@@ -11,7 +12,7 @@ public class MovieFrame extends JFrame {
 
 	public MovieFrame() {
 
-		super("MOVIE SELECTOR");
+		super(Language.getBundle().getString("movie.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
@@ -20,10 +21,10 @@ public class MovieFrame extends JFrame {
 		contentPanel.setBackground(new Color(50, 50, 50));
 		contentPanel.setLayout(new GridBagLayout());
 
-		JButton btnTotalRandom = ButtonEditor.createButton("Choisir un film aléatoire", new Color(70, 130, 180));
-		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
-		JButton btnShowMovie = ButtonEditor.createButton("Consulter la liste des films", new Color(220, 20, 60));
-		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnTotalRandom = ButtonEditor.createButton(Language.getBundle().getString("movie.btnTotalRandom"), new Color(70, 130, 180));
+		JButton btnFilterRandom = ButtonEditor.createButton(Language.getBundle().getString("movie.btnFilterRandom"), new Color(70, 130, 180));
+		JButton btnShowMovie = ButtonEditor.createButton(Language.getBundle().getString("movie.btnShowMovie"), new Color(220, 20, 60));
+		JButton btnMenu = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

@@ -1,6 +1,7 @@
 package model.parameter.actors;
 
 import model.DataManager;
+import model.Language;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -52,7 +53,7 @@ public class GestionnaireActor {
 	public void addActor(Actor actor) {
 		actors.add(actor);
 		DataManager.saveActor(actors);
-		System.out.println("Acteur ajouté: " + actor.getName());
+		System.out.println(Language.getBundle().getString("actor.acteurAjoute2Point") + actor.getName());
 	}
 
 	public List<Actor> searchActor(String title) {
@@ -182,13 +183,13 @@ public class GestionnaireActor {
 			actor.setName(newActor.getName());
 			DataManager.saveActor(actors);
 			message[0] = "i";
-			message[1] = "Actor modifié";
-			message[2] = "Le actor " + actor.getName() + " a été modifié avec succès.";
+			message[1] = Language.getBundle().getString("actor.acteurModifie");
+			message[2] = Language.getBundle().getString("actor.annonceActeurPartie1") + actor.getName() + Language.getBundle().getString("param.annoncePartie2ModifieMasculin");
 		} else {
 			message[0] = "e";
-			message[1] = "Actor non trouvé";
-			message[2] = "Erreur, le actor n'a pas été trouvé.";
-			System.out.println("Actor non trouvé.");
+			message[1] = Language.getBundle().getString("actor.acteurNonTrouve");
+			message[2] = Language.getBundle().getString("actor.erreurActeurNonTrouve");
+			System.out.println(Language.getBundle().getString("actor.acteurNonTrouve"));
 		}
 	}
 
@@ -205,7 +206,7 @@ public class GestionnaireActor {
 				for (Actor actorMovie : movie.getActeur()) {
 					if (actorMovie.getName().equals(actor.getName())) {
 						peutSupprimer = false;
-						utilise = "un ou plusieurs films";
+						utilise = Language.getBundle().getString("movie.unPlusieursFilm");
 						break;
 					}
 				}
@@ -216,7 +217,7 @@ public class GestionnaireActor {
 				for (Actor actorSaga : saga.getActeur()) {
 					if (actorSaga.getName().equals(actor.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs sagas";
+						utilise = Language.getBundle().getString("saga.unPlusieursSaga");
 						break;
 					}
 				}
@@ -227,7 +228,7 @@ public class GestionnaireActor {
 				for (Actor actorSerie : serie.getActeur()) {
 					if (actorSerie.getName().equals(actor.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries";
+						utilise = Language.getBundle().getString("serie.unPlusieursSerie");
 						break;
 					}
 				}
@@ -238,7 +239,7 @@ public class GestionnaireActor {
 				for (Actor actorSerieCourte : serieCourte.getActeur()) {
 					if (actorSerieCourte.getName().equals(actor.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries courtes";
+						utilise = Language.getBundle().getString("serieCourte.unPlusieursSerieCourte");
 						break;
 					}
 				}
@@ -250,18 +251,18 @@ public class GestionnaireActor {
 				actors.remove(actor);
 				DataManager.saveActor(actors); // Mettre à jour la liste des actors
 				message[0] = "i";
-				message[1] = "Actor supprimé";
-				message[2] = "Le actor " + actor.getName() + " a été supprimé avec succès.";
+				message[1] = Language.getBundle().getString("actor.acteurSupprime");
+				message[2] = Language.getBundle().getString("actor.annonceActeurPartie1") + actor.getName() + Language.getBundle().getString("param.annoncePartie2SupprimeMasculin");
 			} else {
 				message[0] = "e";
-				message[1] = "Erreur actor utilisé";
-				message[2] = "Impossible de supprimer le actor " + actor.getName() + ", il est utilisé dans " + utilise + ".";
+				message[1] = Language.getBundle().getString("actor.erreurActeurUtilise");
+				message[2] = Language.getBundle().getString("actor.impossibleSupprimerPartie1") + actor.getName() + Language.getBundle().getString("actor.impossibleSupprimerPartie2") + utilise + ".";
 			}
 		} else {
 			message[0] = "e";
-			message[1] = "Actor non trouvé";
-			message[2] = "Erreur, le actor n'a pas été trouvé.";
-			System.out.println("Actor non trouvé.");
+			message[1] = Language.getBundle().getString("actor.acteurNonTrouve");
+			message[2] = Language.getBundle().getString("actor.erreurActeurNonTrouve");
+			System.out.println(Language.getBundle().getString("actor.acteurNonTrouve"));
 		}
 	}
 

@@ -1,6 +1,7 @@
 package view.serie;
 
 import model.ButtonEditor;
+import model.Language;
 import model.serie.GestionnaireSerie;
 import view.Frame;
 
@@ -10,7 +11,7 @@ import java.awt.*;
 public class SerieFrame extends JFrame {
 	public SerieFrame() {
 
-		super("SERIE SELECTOR");
+		super(Language.getBundle().getString("serie.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
@@ -19,10 +20,10 @@ public class SerieFrame extends JFrame {
 		contentPanel.setBackground(new Color(50, 50, 50));
 		contentPanel.setLayout(new GridBagLayout());
 
-		JButton btnTotalRandom = ButtonEditor.createButton("Choisir une série aléatoire", new Color(70, 130, 180));
-		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
-		JButton btnShowSerie = ButtonEditor.createButton("Consulter la liste des séries", new Color(220, 20, 60));
-		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnTotalRandom = ButtonEditor.createButton(Language.getBundle().getString("serie.btnTotalRandom"), new Color(70, 130, 180));
+		JButton btnFilterRandom = ButtonEditor.createButton(Language.getBundle().getString("serie.btnFilterRandom"), new Color(70, 130, 180));
+		JButton btnShowSerie = ButtonEditor.createButton(Language.getBundle().getString("serie.btnShowSerie"), new Color(220, 20, 60));
+		JButton btnMenu = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

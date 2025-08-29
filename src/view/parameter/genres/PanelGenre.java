@@ -2,6 +2,7 @@ package view.parameter.genres;
 
 import model.ButtonEditor;
 import model.ButtonRenderer;
+import model.Language;
 import model.parameter.genres.Genre;
 import model.parameter.genres.GenreTableModel;
 import model.parameter.genres.GestionnaireGenre;
@@ -47,12 +48,12 @@ public class PanelGenre extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = ButtonEditor.createButton("Rechercher un genre", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton(Language.getBundle().getString("genre.btnSearch"), new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchGenre);
 
-		JButton addGenreButton = ButtonEditor.createButton("Ajouter un genre", new Color(70, 130, 180));
+		JButton addGenreButton = ButtonEditor.createButton(Language.getBundle().getString("genre.ajouterGenre"), new Color(70, 130, 180));
 
-		JLabel titleLabel = new JLabel("Titre : ");
+		JLabel titleLabel = new JLabel(Language.getBundle().getString("param.nom"));
 		titleLabel.setForeground(Color.WHITE);
 		topPanel.add(titleLabel);
 
@@ -70,7 +71,7 @@ public class PanelGenre extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.retour"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -105,16 +106,16 @@ public class PanelGenre extends JPanel {
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		for (int i = 0; i < tableArea.getColumnCount(); i++) {
 			String columnName = tableArea.getColumnName(i);
-			if (!columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+			if (!columnName.equals(Language.getBundle().getString("app.modifier")) && !columnName.equals(Language.getBundle().getString("app.supprimer"))) {
 				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
 		}
 
-		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellEditor(new ButtonEditor(this));
 
 		JScrollPane scrollPane = new JScrollPane(tableArea);
 		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
@@ -127,7 +128,7 @@ public class PanelGenre extends JPanel {
 		String titre = searchTitleField.getText();
 		java.util.List<Genre> result = gestionnaireGenre.searchGenre(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucun genre trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurPasGenreTrouveTitre"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 		} else {
 			tableModel.setGenre(result); // Mettre à jour le modèle du tableau
 		}
@@ -137,16 +138,16 @@ public class PanelGenre extends JPanel {
 		JTextField titleField = new JTextField();
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter un nouveau genre", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("genre.ajouterNouveauGenre"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			}
 			else {
 
@@ -156,7 +157,7 @@ public class PanelGenre extends JPanel {
 				for (Genre genre : listGenre) {
 					if (genre.getName().equalsIgnoreCase(titre)) {
 						canBeAdd = false;
-						JOptionPane.showMessageDialog(this, "Erreur: Le genre " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDoublonPartie1Genre") + titre + Language.getBundle().getString("erreur.erreurDoublonPartie2Masculin"), Language.getBundle().getString("erreur.doublon"), JOptionPane.ERROR_MESSAGE);
 						break;
 					}
 				}
@@ -164,7 +165,7 @@ public class PanelGenre extends JPanel {
 				if (canBeAdd) {
 					Genre newGenre = new Genre(titre);
 					gestionnaireGenre.addGenre(newGenre); // Ajouter le genre à votre gestionnaire de genre
-					JOptionPane.showMessageDialog(this, "Genre ajouté avec succès: " + titre, "Genre Ajouté", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("genre.annonceGenreAjoute") + titre, Language.getBundle().getString("genre.genreAjoute"), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 
@@ -197,18 +198,18 @@ public class PanelGenre extends JPanel {
 
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Ancien titre"),
+				new JLabel(Language.getBundle().getString("param.ancienNom")),
 				oldTitleField,
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier un genre", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("genre.modifierGenre"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			} else {
 				Genre newGenre = new Genre(titre);
 				gestionnaireGenre.editGenre(oldTitleField.getText(), newGenre); // Ajouter le genre à votre gestionnaire de genre

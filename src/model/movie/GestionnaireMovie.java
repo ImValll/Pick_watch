@@ -26,7 +26,7 @@ public class GestionnaireMovie {
 	public void addMovie(Movie movie) {
 		movies.add(movie);
 		DataManager.saveMovie(movies);
-		System.out.println("Film ajouté: " + movie.getTitre());
+		System.out.println(Language.getBundle().getString("movie.filmAjoute2Point") + movie.getTitre());
 	}
 
 	public List<Movie> searchMovie(String title) {
@@ -49,9 +49,9 @@ public class GestionnaireMovie {
 			movie.setAddBy(newMovie.getAddBy());
 			movie.setImagePath(newMovie.getImagePath());
 			DataManager.saveMovie(movies);
-			System.out.println("Film modifié: " + movie.getTitre());
+			System.out.println(Language.getBundle().getString("movie.filmModifie2Point") + movie.getTitre());
 		} else {
-			System.out.println("Film non trouvé.");
+			System.out.println(Language.getBundle().getString("movie.filmNonTrouve"));
 		}
 	}
 
@@ -72,9 +72,9 @@ public class GestionnaireMovie {
 				if (imageFile.exists()) {
 					boolean deleted = imageFile.delete();
 					if (deleted) {
-						System.out.println("Affiche supprimée : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.afficheSupprime") + imagePath);
 					} else {
-						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.echecAfficheSupprime") + imagePath);
 					}
 				}
 			}
@@ -82,9 +82,9 @@ public class GestionnaireMovie {
 			// Supprimer le film de la liste
 			movies.remove(movie);
 			DataManager.saveMovie(movies); // Mettre à jour la liste des films
-			System.out.println("Film supprimé: " + movie.getTitre());
+			System.out.println(Language.getBundle().getString("movie.filmSupprime2Point") + movie.getTitre());
 		} else {
-			System.out.println("Film non trouvé.");
+			System.out.println(Language.getBundle().getString("movie.filmNonTrouve"));
 		}
 	}
 

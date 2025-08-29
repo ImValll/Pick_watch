@@ -1,6 +1,7 @@
 package model.saga;
 
 import model.DataManager;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -26,7 +27,7 @@ public class GestionnaireSaga {
 	public void addSaga(Saga saga) {
 		sagas.add(saga);
 		DataManager.saveSaga(sagas);
-		System.out.println("Saga ajoutée: " + saga.getTitre());
+		System.out.println(Language.getBundle().getString("saga.sagaAjoute2Point") + saga.getTitre());
 	}
 
 	public List<Saga> searchSaga(String title) {
@@ -50,9 +51,9 @@ public class GestionnaireSaga {
 			saga.setAddBy(newSaga.getAddBy());
 			saga.setImagePath(newSaga.getImagePath());
 			DataManager.saveSaga(sagas);
-			System.out.println("Saga modifiée: " + saga.getTitre());
+			System.out.println(Language.getBundle().getString("saga.sagaModifie2Point") + saga.getTitre());
 		} else {
-			System.out.println("Saga non trouvée.");
+			System.out.println(Language.getBundle().getString("saga.sagaNonTrouve"));
 		}
 	}
 
@@ -73,9 +74,9 @@ public class GestionnaireSaga {
 				if (imageFile.exists()) {
 					boolean deleted = imageFile.delete();
 					if (deleted) {
-						System.out.println("Affiche supprimée : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.afficheSupprime") + imagePath);
 					} else {
-						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.echecAfficheSupprime") + imagePath);
 					}
 				}
 			}
@@ -83,9 +84,9 @@ public class GestionnaireSaga {
 			// Supprimer la saga de la liste
 			sagas.remove(saga);
 			DataManager.saveSaga(sagas); // Mettre à jour la liste des sagas
-			System.out.println("Saga supprimée: " + saga.getTitre());
+			System.out.println(Language.getBundle().getString("saga.sagaSupprime2Point") + saga.getTitre());
 		} else {
-			System.out.println("Saga non trouvée.");
+			System.out.println(Language.getBundle().getString("saga.sagaNonTrouve"));
 		}
 	}
 

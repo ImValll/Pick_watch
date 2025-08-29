@@ -60,12 +60,12 @@ public class PanelSerieCourte extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = ButtonEditor.createButton("Rechercher une série courte", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton(Language.getBundle().getString("serieCourte.btnSearch"), new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchSerieCourte);
 
-		JButton addSerieCourteButton = ButtonEditor.createButton("Ajouter une série courte", new Color(70, 130, 180));
+		JButton addSerieCourteButton = ButtonEditor.createButton(Language.getBundle().getString("serieCourte.ajouterSerieCourte"), new Color(70, 130, 180));
 
-		JLabel titleLabel = new JLabel("Titre : ");
+		JLabel titleLabel = new JLabel(Language.getBundle().getString("filtre.titre"));
 		titleLabel.setForeground(Color.WHITE);
 		topPanel.add(titleLabel);
 
@@ -83,7 +83,7 @@ public class PanelSerieCourte extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.retour"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -118,19 +118,19 @@ public class PanelSerieCourte extends JPanel {
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		for (int i = 0; i < tableArea.getColumnCount(); i++) {
 			String columnName = tableArea.getColumnName(i);
-			if (!columnName.equals("Visualiser") && !columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+			if (!columnName.equals(Language.getBundle().getString("app.visualiser")) && !columnName.equals(Language.getBundle().getString("app.modifier")) && !columnName.equals(Language.getBundle().getString("app.supprimer"))) {
 				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
 		}
 
-		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.visualiser")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.visualiser")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellEditor(new ButtonEditor(this));
 
 		JScrollPane scrollPane = new JScrollPane(tableArea);
 		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
@@ -143,7 +143,7 @@ public class PanelSerieCourte extends JPanel {
 		String titre = searchTitleField.getText();
 		java.util.List<SerieCourte> result = gestionnaireSerieCourte.searchSerieCourte(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucune série trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurPasSerieTrouveTitre"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 		} else {
 			tableModel.setSerieCourte(result); // Mettre à jour le modèle du tableau
 		}
@@ -246,8 +246,8 @@ public class PanelSerieCourte extends JPanel {
 		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
-		JRadioButton dejaVuButton = new JRadioButton("OUI");
-		JRadioButton pasEncoreVuButton = new JRadioButton("NON", true);
+		JRadioButton dejaVuButton = new JRadioButton(Language.getBundle().getString("app.oui"));
+		JRadioButton pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("app.non"), true);
 		ButtonGroup vuGroup = new ButtonGroup();
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
@@ -264,16 +264,16 @@ public class PanelSerieCourte extends JPanel {
 		}
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 
-		JButton chooseImageButton = new JButton("Choisir une affiche");
-		JLabel imagePathLabel = new JLabel("Aucune image sélectionnée");
+		JButton chooseImageButton = new JButton(Language.getBundle().getString("affiche.choisirAffiche"));
+		JLabel imagePathLabel = new JLabel(Language.getBundle().getString("affiche.aucuneImage"));
 
 		chooseImageButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+			fileChooser.setDialogTitle(Language.getBundle().getString("affiche.choisirNouvelleAffiche"));
 
 			// ✅ Filtrer les fichiers pour n'afficher que les images
 			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
-					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+					Language.getBundle().getString("affiche.imageExtension"), "jpg", "jpeg", "png"
 			);
 			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
 			fileChooser.setFileFilter(imageFilter);
@@ -289,7 +289,7 @@ public class PanelSerieCourte extends JPanel {
 					try {
 						// Lire l'image d'origine
 						BufferedImage original = ImageIO.read(selectedFile);
-						if (original == null) throw new IOException("Image invalide");
+						if (original == null) throw new IOException(Language.getBundle().getString("erreur.imageInvalide"));
 
 						// Créer une image RGB (sans alpha), fond blanc
 						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -315,52 +315,49 @@ public class PanelSerieCourte extends JPanel {
 						imagePathLabel.setText(output.getName());
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(null,
-								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
-										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
-										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
-										"Format refusé : " + selectedFile.getName(),
-								"Image invalide", JOptionPane.ERROR_MESSAGE);
+								Language.getBundle().getString("erreur.erreurImageInvalide") + selectedFile.getName(),
+								Language.getBundle().getString("erreur.imageInvalide"), JOptionPane.ERROR_MESSAGE);
 						selectedPosterFile[0] = null;
-						imagePathLabel.setText("Aucune image sélectionnée");
+						imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 						ex.printStackTrace();
 					}
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
-							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+							Language.getBundle().getString("erreur.erreurFormatAffiche"),
+							Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 					selectedPosterFile[0] = null;
-					imagePathLabel.setText("Aucune image sélectionnée");
+					imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 				}
 			}
 		});
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("carac.titre")),
 				titleField,
-				new JLabel("Acteurs"),
+				new JLabel(Language.getBundle().getString("carac.acteurs")),
 				actorComboBox,
 				selectedActorsPanel,
-				new JLabel("Description"),
+				new JLabel(Language.getBundle().getString("carac.description")),
 				descriptionField,
-				new JLabel("Genres"),
+				new JLabel(Language.getBundle().getString("carac.genres")),
 				scrollPaneGenre,
-				new JLabel("Nombre de saisons"),
+				new JLabel(Language.getBundle().getString("carac.nombreSaison")),
 				nbSaisonField,
-				new JLabel("Nombre d'épisodes par saison"),
+				new JLabel(Language.getBundle().getString("carac.nombreEpisode")),
 				nbEpisodeField,
-				new JLabel("Durée moyenne des épisodes (en minutes)"),
+				new JLabel(Language.getBundle().getString("carac.dureeMoyenne")),
 				dureeMoyenneField,
-				new JLabel("Date de sortie de la première saison"),
+				new JLabel(Language.getBundle().getString("carac.dateSortieSaison1")),
 				datePicker,
-				new JLabel("Date de sortie de la dernière saison"),
+				new JLabel(Language.getBundle().getString("carac.dateSortieSaison2")),
 				datePicker2,
-				new JLabel("Plateforme"),
+				new JLabel(Language.getBundle().getString("carac.plateforme")),
 				scrollPanePlatform,
-				new JLabel("Déjà vu"),
+				new JLabel(Language.getBundle().getString("carac.dejaVu")),
 				vuPanel,
-				new JLabel("Ajouté par"),
+				new JLabel(Language.getBundle().getString("carac.ajoutePar")),
 				addByComboBox,
-				new JLabel("Affiche de la série"),
+				new JLabel(Language.getBundle().getString("carac.affiche")),
 				chooseImageButton,
 				imagePathLabel,
 		};
@@ -386,7 +383,7 @@ public class PanelSerieCourte extends JPanel {
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
-				"Ajouter une série courte",
+				Language.getBundle().getString("serieCourte.ajouterSerieCourte"),
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE
 		);
@@ -396,7 +393,7 @@ public class PanelSerieCourte extends JPanel {
 				String titre = titleField.getText();
 
 				if(titre.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurTitreVide"), Language.getBundle().getString("erreur.titreVide"), JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
@@ -472,7 +469,7 @@ public class PanelSerieCourte extends JPanel {
 							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 							imagePath = destinationFile.getPath();
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurCopieImage") + e.getMessage(), Language.getBundle().getString("erreur.image"), JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -483,10 +480,10 @@ public class PanelSerieCourte extends JPanel {
 						if (serieCourte.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
 							if (Objects.equals(serieCourte.getAddBy().getName(), "Tous") || serieCourte.getAddBy() == addBy) {
-								JOptionPane.showMessageDialog(this, "Erreur: La série " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDoublonPartie1Serie") + titre + Language.getBundle().getString("erreur.erreurDoublonPartie2Feminin"), Language.getBundle().getString("erreur.doublon"), JOptionPane.ERROR_MESSAGE);
 							} else {
 								gestionnaireSerieCourte.updateSerieCourteAddBy(serieCourte, new User("Tous"));
-								JOptionPane.showMessageDialog(this, "La série " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajoutée passe donc à Tous.", "Erreur série déjà ajoutée par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDejaAjoutePartie1Serie") + titre + Language.getBundle().getString("erreur.erreurDejaAjoutePartie2Feminin"), Language.getBundle().getString("erreur.dejaAjouteSerie"), JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
@@ -495,7 +492,7 @@ public class PanelSerieCourte extends JPanel {
 					if (canBeAdd) {
 						SerieCourte newSerieCourte = new SerieCourte(titre, actorsArray, desc, genresArray, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, platformsArray, dejaVu, addBy, imagePath);
 						gestionnaireSerieCourte.addSerieCourte(newSerieCourte); // Ajouter la serie courte à votre gestionnaire de series
-						JOptionPane.showMessageDialog(this, "Série ajoutée avec succès: " + titre, "Série Ajoutée", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(this, Language.getBundle().getString("serie.annonceSerieAjoute") + titre, Language.getBundle().getString("serie.serieAjoute"), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 
@@ -504,7 +501,7 @@ public class PanelSerieCourte extends JPanel {
 				tableModel.setSerieCourte(updatedSerieCourte); // Mettre à jour le modèle du tableau
 
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurFormatDate"), Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -668,8 +665,8 @@ public class PanelSerieCourte extends JPanel {
 		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
-		JRadioButton dejaVuButton = new JRadioButton("Déjà vu");
-		JRadioButton pasEncoreVuButton = new JRadioButton("Pas encore vu");
+		JRadioButton dejaVuButton = new JRadioButton(Language.getBundle().getString("filtre.dejaVu"));
+		JRadioButton pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("filtre.pasEncoreVu"));
 		ButtonGroup vuGroup = new ButtonGroup();
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
@@ -698,16 +695,16 @@ public class PanelSerieCourte extends JPanel {
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(serieCourte.getAddBy());
 
-		JButton chooseImageButton = new JButton("Changer l'affiche");
-		JLabel imagePathLabel = new JLabel((oldImagePath != null) ? new File(oldImagePath).getName() : "Aucune image sélectionnée");
+		JButton chooseImageButton = new JButton(Language.getBundle().getString("affiche.changerAffiche"));
+		JLabel imagePathLabel = new JLabel((oldImagePath != null) ? new File(oldImagePath).getName() : Language.getBundle().getString("affiche.aucuneImage"));
 
 		chooseImageButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+			fileChooser.setDialogTitle(Language.getBundle().getString("affiche.choisirNouvelleAffiche"));
 
 			// ✅ Filtrer les fichiers pour n'afficher que les images
 			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
-					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+					Language.getBundle().getString("affiche.imageExtension"), "jpg", "jpeg", "png"
 			);
 			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
 			fileChooser.setFileFilter(imageFilter);
@@ -723,7 +720,7 @@ public class PanelSerieCourte extends JPanel {
 					try {
 						// Lire l'image d'origine
 						BufferedImage original = ImageIO.read(selectedFile);
-						if (original == null) throw new IOException("Image invalide");
+						if (original == null) throw new IOException(Language.getBundle().getString("erreur.imageInvalide"));
 
 						// Créer une image RGB (sans alpha), fond blanc
 						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -749,52 +746,49 @@ public class PanelSerieCourte extends JPanel {
 						imagePathLabel.setText(output.getName());
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(null,
-								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
-										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
-										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
-										"Format refusé : " + selectedFile.getName(),
-								"Image invalide", JOptionPane.ERROR_MESSAGE);
+								Language.getBundle().getString("erreur.erreurImageInvalide") + selectedFile.getName(),
+								Language.getBundle().getString("erreur.imageInvalide"), JOptionPane.ERROR_MESSAGE);
 						selectedPosterFile[0] = null;
-						imagePathLabel.setText("Aucune image sélectionnée");
+						imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 						ex.printStackTrace();
 					}
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
-							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+							Language.getBundle().getString("erreur.erreurFormatAffiche"),
+							Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 					selectedPosterFile[0] = null;
-					imagePathLabel.setText("Aucune image sélectionnée");
+					imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 				}
 			}
 		});
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("carac.titre")),
 				titleField,
-				new JLabel("Acteurs"),
+				new JLabel(Language.getBundle().getString("carac.acteurs")),
 				actorComboBox,
 				selectedActorsPanel,
-				new JLabel("Description"),
+				new JLabel(Language.getBundle().getString("carac.description")),
 				descriptionField,
-				new JLabel("Genres"),
+				new JLabel(Language.getBundle().getString("carac.genres")),
 				scrollPaneGenre,
-				new JLabel("Nombre de saisons"),
+				new JLabel(Language.getBundle().getString("carac.nombreSaison")),
 				nbSaisonField,
-				new JLabel("Nombre d'épisodes par saison"),
+				new JLabel(Language.getBundle().getString("carac.nombreEpisode")),
 				nbEpisodeField,
-				new JLabel("Durée moyenne des épisodes (en minutes)"),
+				new JLabel(Language.getBundle().getString("carac.dureeMoyenne")),
 				dureeMoyenneField,
-				new JLabel("Date de sortie de la première saison"),
+				new JLabel(Language.getBundle().getString("carac.dateSortieSaison1")),
 				datePicker,
-				new JLabel("Date de sortie de la dernière saison"),
+				new JLabel(Language.getBundle().getString("carac.dateSortieSaison2")),
 				datePicker2,
-				new JLabel("Plateforme"),
+				new JLabel(Language.getBundle().getString("carac.plateforme")),
 				scrollPanePlatform,
-				new JLabel("Déjà vu"),
+				new JLabel(Language.getBundle().getString("carac.dejaVu")),
 				vuPanel,
-				new JLabel("Ajouté par"),
+				new JLabel(Language.getBundle().getString("carac.ajoutePar")),
 				addByComboBox,
-				new JLabel("Affiche"),
+				new JLabel(Language.getBundle().getString("carac.affiche")),
 				chooseImageButton,
 				imagePathLabel,
 		};
@@ -818,7 +812,7 @@ public class PanelSerieCourte extends JPanel {
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
-				"Modifier une série courte",
+				Language.getBundle().getString("serieCourte.modifierSerieCourte"),
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE
 		);
@@ -828,7 +822,7 @@ public class PanelSerieCourte extends JPanel {
 				String titre = titleField.getText();
 
 				if(titre.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurTitreVide"), Language.getBundle().getString("erreur.titreVide"), JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					List<Actor> selectedActorsCopy = new ArrayList<>(selectedActors);
@@ -915,7 +909,7 @@ public class PanelSerieCourte extends JPanel {
 							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 							imagePath = destinationFile.getPath();
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurCopieImage") + e.getMessage(), Language.getBundle().getString("erreur.image"), JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -927,9 +921,9 @@ public class PanelSerieCourte extends JPanel {
 				List<SerieCourte> updatedSerieCourte = gestionnaireSerieCourte.getSerieCourte(); // Récupérer la liste mise à jour des séries
 				tableModel.setSerieCourte(updatedSerieCourte); // Mettre à jour le modèle du tableau
 
-				JOptionPane.showMessageDialog(this, "Série modifiée avec succès: " + titre, "Série modifiée", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("serie.annonceSerieModifie") + titre, Language.getBundle().getString("serie.serieModifie"), JOptionPane.INFORMATION_MESSAGE);
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurFormatDate"), Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 
@@ -967,7 +961,7 @@ public class PanelSerieCourte extends JPanel {
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 150, 200));
 		} else {
-			imageLabel.setText("Aucune affiche disponible");
+			imageLabel.setText(Language.getBundle().getString("affiche.aucuneAfficheDisponible"));
 			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
@@ -977,55 +971,55 @@ public class PanelSerieCourte extends JPanel {
 		final JComponent[] inputs = new JComponent[] {
 				imageLabel,
 
-				new JLabel(titreStyle + "Titre :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.titre") + "</span></html>"),
 				new JLabel(serieCourte.getTitre()),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Acteurs :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.acteur") + "</span></html>"),
 				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Description :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.description") + "</span></html>"),
 				new JLabel("<html><div style='width:300px'>" + serieCourte.getDescription() + "</div></html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Genres :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.genre") + "</span></html>"),
 				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Nombre de saisons :</span></html>"),
-				new JLabel(serieCourte.getNombreSaison() + " min"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.nombreSaison") + "</span></html>"),
+				new JLabel(String.valueOf(serieCourte.getNombreSaison())),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Nombre d'épisodes par saison :</span></html>"),
-				new JLabel(serieCourte.getNombreEpisode() + " min"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.nombreEpisode") + "</span></html>"),
+				new JLabel(String.valueOf(serieCourte.getNombreEpisode())),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Durée moyenne des épisodes :</span></html>"),
-				new JLabel(serieCourte.getDureeMoyenne() + " min"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.dureeEpisode") + "</span></html>"),
+				new JLabel(serieCourte.getDureeMoyenne() + Language.getBundle().getString("filtre.min")),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Date de sortie de la première saison :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.dateSortieSaison1") + "</span></html>"),
 				new JLabel(String.valueOf(serieCourte.getDateSortiePremiereSaison())),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Date de sortie de la dernière saison :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.dateSortieSaison2") + "</span></html>"),
 				new JLabel(String.valueOf(serieCourte.getDateSortieDerniereSaison())),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Plateforme :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.plateforme") + "</span></html>"),
 				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Déjà vu :</span></html>"),
-				new JLabel(serieCourte.getDejaVu() ? "Oui" : "Non"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.dejaVu") + "</span></html>"),
+				new JLabel(serieCourte.getDejaVu() ? Language.getBundle().getString("app.oui") : Language.getBundle().getString("app.non")),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Ajouté par :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.ajoutePar") + "</span></html>"),
 				new JLabel(serieCourte.getAddBy().getName())
 		};
 
-		JOptionPane.showMessageDialog(this, inputs, "Détails de la série courte", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(this, inputs, Language.getBundle().getString("serieCourte.detailSerieCourte"), JOptionPane.PLAIN_MESSAGE);
 	}
 
 

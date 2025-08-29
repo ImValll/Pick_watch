@@ -1,6 +1,7 @@
 package view.movie;
 
 import model.ButtonEditor;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -13,7 +14,6 @@ import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 
 public class PanelRandomMovie extends JPanel {
@@ -75,20 +75,20 @@ public class PanelRandomMovie extends JPanel {
 		Movie movieSelected = gestionnaireMovie.pickRandomMovie(rea, actors, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 
 		if (movieSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données ou aucun film ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideRechercheFilm"), Language.getBundle().getString("app.retour"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.movie = movieSelected;
 			updateMovieInfo(movieSelected);
 		}
 
-		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton(Language.getBundle().getString("pick.genererNouveau"), new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = ButtonEditor.createButton("Supprimer le film de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton(Language.getBundle().getString("pick.supprimerListeFilm"), new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteMovie());
 
 		JPanel bottomPanel = new JPanel();
@@ -112,30 +112,30 @@ public class PanelRandomMovie extends JPanel {
 		htmlBuilder.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
 		if (movieSelected.getRealistateur() != null && !movieSelected.getRealistateur().trim().isEmpty()) {
-			htmlBuilder.append("<p><b>Réalisateur :</b> ").append(movieSelected.getRealistateur()).append("</p>");
+			htmlBuilder.append("<p><b>" + Language.getBundle().getString("pick.realisateur") + "</b> ").append(movieSelected.getRealistateur()).append("</p>");
 		}
 
-		String acteursHTML = buildObjectList(movieSelected.getActeur(), "Acteur(s)");
+		String acteursHTML = buildObjectList(movieSelected.getActeur(), Language.getBundle().getString("pick.acteur"));
 		if (!acteursHTML.isEmpty()) htmlBuilder.append(acteursHTML);
 
-		String genresHTML = buildObjectList(movieSelected.getGenre(), "Genre(s)");
+		String genresHTML = buildObjectList(movieSelected.getGenre(), Language.getBundle().getString("pick.genre"));
 		if (!genresHTML.isEmpty()) htmlBuilder.append(genresHTML);
 
 		if (movieSelected.getDuree() > 0) {
-			htmlBuilder.append("<p><b>Durée :</b> ").append(movieSelected.getDuree()).append(" minutes</p>");
+			htmlBuilder.append("<p><b>" + Language.getBundle().getString("pick.duree") + "</b> ").append(movieSelected.getDuree()).append(Language.getBundle().getString("pick.minute") + "</p>");
 		}
 
 		if (date != null) {
-			htmlBuilder.append("<p><b>Date de sortie :</b> ").append(date).append("</p>");
+			htmlBuilder.append("<p><b>" + Language.getBundle().getString("pick.dateSortie") + "</b> ").append(date).append("</p>");
 		}
 
-		String plateformesHTML = buildObjectList(movieSelected.getPlateforme(), "Disponible sur");
+		String plateformesHTML = buildObjectList(movieSelected.getPlateforme(), Language.getBundle().getString("pick.disponible"));
 		if (!plateformesHTML.isEmpty()) htmlBuilder.append(plateformesHTML);
 
 		// Toujours afficher "Ajouté par", même vide
 		User addedBy = movieSelected.getAddBy();
-		htmlBuilder.append("<p><i>Ajouté par ")
-				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+		htmlBuilder.append("<p><i>" + Language.getBundle().getString("pick.ajoutePar"))
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : Language.getBundle().getString("pick.inconnu"))
 				.append("</i></p>");
 
 		htmlBuilder.append("</div></html>");
@@ -168,7 +168,7 @@ public class PanelRandomMovie extends JPanel {
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
 		} else {
-			imageLabel.setText("Aucune affiche");
+			imageLabel.setText(Language.getBundle().getString("affiche.aucuneAfficheDisponible"));
 			imageLabel.setForeground(Color.GRAY);
 			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			imageLabel.setPreferredSize(new Dimension(240, 360));
@@ -198,7 +198,7 @@ public class PanelRandomMovie extends JPanel {
 	public void generateAgain() {
 		Movie newMovie = gestionnaireMovie.pickRandomMovie(rea, actors, genres, duree, dateSortie, plateformes, dejaVu, addBy);
 		if (newMovie == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucun film dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideFilm"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.movie = newMovie;

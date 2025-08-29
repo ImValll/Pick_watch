@@ -12,8 +12,10 @@ import model.serie_courte.SerieCourte;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DataManager {
+	private static final String LANGUAGE_FILE = "DATA/language.ser";
 	private static final String GENRES_FILE = "DATA/genres.ser";
 	private static final String PLATFORMS_FILE = "DATA/platforms.ser";
 	private static final String ACTORS_FILE = "DATA/actors.ser";
@@ -22,6 +24,26 @@ public class DataManager {
 	private static final String SAGA_FILE = "DATA/sagas.ser";
 	private static final String SERIE_FILE = "DATA/series.ser";
 	private static final String SERIE_COURTE_FILE = "DATA/shortSeries.ser";
+
+	public static void saveLanguage(Locale locale) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(LANGUAGE_FILE))) {
+			oos.writeObject(locale);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static Locale loadLanguage() {
+		Locale locales = null;
+
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(LANGUAGE_FILE))) {
+			locales = (Locale) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		return locales;
+	}
 
 	public static void saveGenre(ArrayList<Genre> genres) {
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GENRES_FILE))) {

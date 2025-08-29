@@ -1,6 +1,7 @@
 package view.serie_courte;
 
 import model.ButtonEditor;
+import model.Language;
 import model.serie_courte.GestionnaireSerieCourte;
 import view.Frame;
 
@@ -10,7 +11,7 @@ import java.awt.*;
 public class SerieCourteFrame extends JFrame {
 	public SerieCourteFrame() {
 
-		super("SERIE COURTE SELECTOR");
+		super(Language.getBundle().getString("serieCourte.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
@@ -19,10 +20,10 @@ public class SerieCourteFrame extends JFrame {
 		contentPanel.setBackground(new Color(50, 50, 50));
 		contentPanel.setLayout(new GridBagLayout());
 
-		JButton btnTotalRandom = ButtonEditor.createButton("Choisir une série courte aléatoire", new Color(70, 130, 180));
-		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
-		JButton btnShowSerieCourte = ButtonEditor.createButton("Consulter la liste des séries courtes", new Color(220, 20, 60));
-		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnTotalRandom = ButtonEditor.createButton(Language.getBundle().getString("serieCourte.btnTotalRandom"), new Color(70, 130, 180));
+		JButton btnFilterRandom = ButtonEditor.createButton(Language.getBundle().getString("serieCourte.btnFilterRandom"), new Color(70, 130, 180));
+		JButton btnShowSerieCourte = ButtonEditor.createButton(Language.getBundle().getString("serieCourte.btnShowSerieCourte"), new Color(220, 20, 60));
+		JButton btnMenu = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

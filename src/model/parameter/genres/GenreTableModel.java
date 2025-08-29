@@ -1,12 +1,14 @@
 package model.parameter.genres;
 
+import model.Language;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class GenreTableModel extends AbstractTableModel {
 	private List<Genre> genres;
-	private final String[] columnNames = {"Titre", "Modifier", "Supprimer"};
+	private final String[] columnNames = {Language.getBundle().getString("param.nom2"), Language.getBundle().getString("app.modifier"), Language.getBundle().getString("app.supprimer")};
 
 	public GenreTableModel(List<Genre> genres) {
 		this.genres = genres;
@@ -56,9 +58,9 @@ public class GenreTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 1:
-				return "Modifier";
+				return Language.getBundle().getString("app.modifier");
 			case 2:
-				return "Supprimer";
+				return Language.getBundle().getString("app.supprimer");
 			default:
 				return null;
 		}

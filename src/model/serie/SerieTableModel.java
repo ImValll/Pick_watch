@@ -1,12 +1,14 @@
 package model.serie;
 
+import model.Language;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class SerieTableModel extends AbstractTableModel {
 	private List<Serie> series;
-	private final String[] columnNames = {"Titre", "Description", "Visualiser", "Modifier", "Supprimer"};
+	private final String[] columnNames = {Language.getBundle().getString("carac.titre2"), Language.getBundle().getString("carac.description"), Language.getBundle().getString("app.visualiser"), Language.getBundle().getString("app.modifier"), Language.getBundle().getString("app.supprimer")};
 
 	public SerieTableModel(List<Serie> series) {
 		this.series = series;
@@ -62,11 +64,11 @@ public class SerieTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 2:
-				return "Visualiser";
+				return Language.getBundle().getString("app.visualiser");
 			case 3:
-				return "Modifier";
+				return Language.getBundle().getString("app.modifier");
 			case 4:
-				return "Supprimer";
+				return Language.getBundle().getString("app.supprimer");
 			default:
 				return null;
 		}

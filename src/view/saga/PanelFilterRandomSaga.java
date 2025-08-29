@@ -2,6 +2,7 @@ package view.saga;
 
 import model.ButtonEditor;
 import model.DataManager;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -53,7 +54,7 @@ public class PanelFilterRandomSaga extends JPanel {
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
 		// Director filter
-		JLabel labelRea = new JLabel("Réalisateur :");
+		JLabel labelRea = new JLabel(Language.getBundle().getString("filtre.realisateur"));
 		labelRea.setForeground(Color.WHITE);
 		centerPanel.add(labelRea);
 
@@ -64,7 +65,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Acteur filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelActeur = new JLabel("Acteur :");
+		JLabel labelActeur = new JLabel(Language.getBundle().getString("filtre.acteur"));
 		labelActeur.setForeground(Color.WHITE);
 		centerPanel.add(labelActeur);
 
@@ -113,7 +114,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Genre filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelGenre = new JLabel("Genres :");
+		JLabel labelGenre = new JLabel(Language.getBundle().getString("filtre.genre"));
 		labelGenre.setForeground(Color.WHITE);
 		centerPanel.add(labelGenre);
 
@@ -134,7 +135,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Number movie filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelNbMovie = new JLabel("Nombre de films :");
+		JLabel labelNbMovie = new JLabel(Language.getBundle().getString("filtre.nombreFilm"));
 		labelNbMovie.setForeground(Color.WHITE);
 		centerPanel.add(labelNbMovie);
 
@@ -145,7 +146,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Year filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelYear = new JLabel("Année de sortie du premier film :");
+		JLabel labelYear = new JLabel(Language.getBundle().getString("filtre.anneeSortieFilm1"));
 		labelYear.setForeground(Color.WHITE);
 		centerPanel.add(labelYear);
 
@@ -156,7 +157,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Year filter 2
 		centerPanel.add(new JLabel(" "));
-		JLabel labelYear2 = new JLabel("Année de sortie du dernier film :");
+		JLabel labelYear2 = new JLabel(Language.getBundle().getString("filtre.anneeSortieFilm2"));
 		labelYear2.setForeground(Color.WHITE);
 		centerPanel.add(labelYear2);
 
@@ -167,7 +168,7 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Platform filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelPlateforme = new JLabel("Plateformes :");
+		JLabel labelPlateforme = new JLabel(Language.getBundle().getString("filtre.plateforme"));
 		labelPlateforme.setForeground(Color.WHITE);
 		centerPanel.add(labelPlateforme);
 
@@ -189,10 +190,10 @@ public class PanelFilterRandomSaga extends JPanel {
 		//dejaVu filter
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
 		centerPanel.add(new JLabel(" "));
-		dejaVuButton = new JRadioButton("Déjà vu");
+		dejaVuButton = new JRadioButton(Language.getBundle().getString("filtre.dejaVu"));
 		dejaVuButton.setBackground(new Color(50, 50, 50));
 		dejaVuButton.setForeground(Color.WHITE);
-		pasEncoreVuButton = new JRadioButton("Pas encore vu");
+		pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("filtre.pasEncoreVu"));
 		pasEncoreVuButton.setBackground(new Color(50, 50, 50));
 		pasEncoreVuButton.setForeground(Color.WHITE);
 		ButtonGroup vuGroup = new ButtonGroup();
@@ -200,7 +201,7 @@ public class PanelFilterRandomSaga extends JPanel {
 		vuGroup.add(pasEncoreVuButton);
 
 		// Ajouter un bouton pour désélectionner les boutons radio
-		JButton clearVuButton = new JButton("Annuler la sélection");
+		JButton clearVuButton = new JButton(Language.getBundle().getString("filtre.annulerSelection"));
 		clearVuButton.addActionListener(e -> vuGroup.clearSelection());
 
 		// Ajouter les boutons radio à un panneau
@@ -215,18 +216,18 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// User filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelUtilisateur = new JLabel("Utilisateur :");
+		JLabel labelUtilisateur = new JLabel(Language.getBundle().getString("filtre.utilisateur"));
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
 		ArrayList<User> users = DataManager.loadUser();
 		DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>();
-		comboBoxModel.addElement("Ignorer");
+		comboBoxModel.addElement(Language.getBundle().getString("app.ignorer"));
 		for (User user : users) {
 			comboBoxModel.addElement(user);
 		}
 		userComboBox = new JComboBox<>(comboBoxModel);
-		userComboBox.setSelectedItem("Ignorer"); // Default value
+		userComboBox.setSelectedItem(Language.getBundle().getString("app.ignorer")); // Default value
 		userComboBox.setBackground(Color.LIGHT_GRAY);
 		userComboBox.setForeground(Color.BLACK);
 		userComboBox.setMaximumSize(new Dimension(500, 30));
@@ -234,9 +235,9 @@ public class PanelFilterRandomSaga extends JPanel {
 
 		// Bottom panel with buttons
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton backButton = ButtonEditor.createButton("Retour au menu", Color.BLUE);
+		JButton backButton = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), Color.BLUE);
 		backButton.addActionListener(e -> backMenu());
-		JButton submitButton = ButtonEditor.createButton("Envoyer", Color.GREEN);
+		JButton submitButton = ButtonEditor.createButton(Language.getBundle().getString("app.envoyer"), Color.GREEN);
 		submitButton.addActionListener(e -> askRandomSaga());
 		bottomPanel.add(backButton);
 		bottomPanel.add(submitButton);

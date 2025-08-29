@@ -1,12 +1,14 @@
 package model.parameter.users;
 
+import model.Language;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class UserTableModel extends AbstractTableModel {
 	private List<User> users;
-	private final String[] columnNames = {"Titre", "Modifier", "Supprimer"};
+	private final String[] columnNames = {Language.getBundle().getString("param.nom2"), Language.getBundle().getString("app.modifier"), Language.getBundle().getString("app.supprimer")};
 
 	public UserTableModel(List<User> users) {
 		this.users = users;
@@ -57,13 +59,13 @@ public class UserTableModel extends AbstractTableModel {
 				}
 			case 1:
 				if (!user.getName().equals("Tous")) {
-					return "Modifier";
+					return Language.getBundle().getString("app.modifier");
 				} else {
 					return "";
 				}
 			case 2:
 				if (!user.getName().equals("Tous")) {
-					return "Supprimer";
+					return Language.getBundle().getString("app.supprimer");
 				} else {
 					return "";
 				}

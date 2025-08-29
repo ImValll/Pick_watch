@@ -1,12 +1,14 @@
 package model.parameter.actors;
 
+import model.Language;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class ActorTableModel extends AbstractTableModel {
 	private List<Actor> actors;
-	private final String[] columnNames = {"Titre", "Modifier", "Supprimer"};
+	private final String[] columnNames = {Language.getBundle().getString("param.nom2"), Language.getBundle().getString("app.modifier"), Language.getBundle().getString("app.supprimer")};
 
 	public ActorTableModel(List<Actor> actors) {
 		this.actors = actors;
@@ -56,9 +58,9 @@ public class ActorTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 1:
-				return "Modifier";
+				return Language.getBundle().getString("app.modifier");
 			case 2:
-				return "Supprimer";
+				return Language.getBundle().getString("app.supprimer");
 			default:
 				return null;
 		}

@@ -1,6 +1,7 @@
 package view.serie;
 
 import model.ButtonEditor;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -78,20 +79,20 @@ public class PanelRandomSerie extends JPanel {
 		Serie serieSelected = gestionnaireSerie.pickRandomSerie(actors, genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 
 		if (serieSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune série dans la base de données ou aucune série ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideRechercheSerie"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.serie = serieSelected;
 			updateSerieInfo(serieSelected);
 		}
 
-		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton(Language.getBundle().getString("pick.genererNouveau"), new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = ButtonEditor.createButton("Supprimer la série de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton(Language.getBundle().getString("pick.supprimerListeSerie"), new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteSerie());
 
 		JPanel bottomPanel = new JPanel();
@@ -114,33 +115,33 @@ public class PanelRandomSerie extends JPanel {
 		StringBuilder sb = new StringBuilder("<html>");
 		sb.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
-		String acteursHTML = buildObjectList(serieSelected.getActeur(), "Acteur(s)");
+		String acteursHTML = buildObjectList(serieSelected.getActeur(), Language.getBundle().getString("pick.acteur"));
 		if (!acteursHTML.isEmpty()) sb.append(acteursHTML);
 
-		String genresHTML = buildObjectList(serieSelected.getGenre(), "Genre(s)");
+		String genresHTML = buildObjectList(serieSelected.getGenre(), Language.getBundle().getString("pick.genre"));
 		if (!genresHTML.isEmpty()) sb.append(genresHTML);
 
 		if (serieSelected.getNombreSaison() > 0)
-			sb.append("Saisons : ").append(serieSelected.getNombreSaison()).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.saison")).append(serieSelected.getNombreSaison()).append(".<br>");
 
 		if (serieSelected.getNombreEpisode() > 0)
-			sb.append("Épisodes par saison : ").append(serieSelected.getNombreEpisode()).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.episode")).append(serieSelected.getNombreEpisode()).append(".<br>");
 
 		if (serieSelected.getDureeMoyenne() > 0)
-			sb.append("Durée moyenne : ").append(serieSelected.getDureeMoyenne()).append(" minutes.<br>");
+			sb.append(Language.getBundle().getString("pick.dureeMoyenne")).append(serieSelected.getDureeMoyenne()).append(Language.getBundle().getString("pick.minute") + ".<br>");
 
 		if (date1 != null)
-			sb.append("Première saison : ").append(date1).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.premiereSaison")).append(date1).append(".<br>");
 
 		if (date2 != null)
-			sb.append("Dernière saison : ").append(date2).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.derniereSaison")).append(date2).append(".<br>");
 
-		String plateformesHTML = buildObjectList(serieSelected.getPlateforme(), "Disponible sur");
+		String plateformesHTML = buildObjectList(serieSelected.getPlateforme(), Language.getBundle().getString("pick.disponible"));
 		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
 
 		User addedBy = serieSelected.getAddBy();
-		sb.append("<p><i>Ajouté par ")
-				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+		sb.append("<p><i>" + Language.getBundle().getString("pick.ajoutePar"))
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : Language.getBundle().getString("pick.inconnu"))
 				.append("</i></p>");
 
 		sb.append("</html>");
@@ -171,7 +172,7 @@ public class PanelRandomSerie extends JPanel {
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
 		} else {
-			imageLabel.setText("Aucune affiche");
+			imageLabel.setText(Language.getBundle().getString("affiche.aucuneAfficheDisponible"));
 			imageLabel.setForeground(Color.GRAY);
 			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			imageLabel.setPreferredSize(new Dimension(240, 360));
@@ -201,7 +202,7 @@ public class PanelRandomSerie extends JPanel {
 	public void generateAgain() {
 		Serie newSerie = gestionnaireSerie.pickRandomSerie(actors, genres, nbSaison, nbEpisode, dureeMoyenne, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 		if (newSerie == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune série dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideSerie"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.serie = newSerie;

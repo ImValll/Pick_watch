@@ -1,6 +1,7 @@
 package model.serie_courte;
 
 import model.DataManager;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -26,7 +27,7 @@ public class GestionnaireSerieCourte {
 	public void addSerieCourte(SerieCourte serieCourte) {
 		seriesCourte.add(serieCourte);
 		DataManager.saveSerieCourte(seriesCourte);
-		System.out.println("Série ajoutée: " + serieCourte.getTitre());
+		System.out.println(Language.getBundle().getString("serieCourte.serieCourteAjoute2Point") + serieCourte.getTitre());
 	}
 
 	public List<SerieCourte> searchSerieCourte(String title) {
@@ -51,9 +52,9 @@ public class GestionnaireSerieCourte {
 			serieCourte.setAddBy(newSerieCourte.getAddBy());
 			serieCourte.setImagePath(newSerieCourte.getImagePath());
 			DataManager.saveSerieCourte(seriesCourte);
-			System.out.println("Série modifiée: " + serieCourte.getTitre());
+			System.out.println(Language.getBundle().getString("serieCourte.serieCourteModifie2Point") + serieCourte.getTitre());
 		} else {
-			System.out.println("Série non trouvée.");
+			System.out.println(Language.getBundle().getString("serieCourte.serieCourteNonTrouve"));
 		}
 	}
 
@@ -74,9 +75,9 @@ public class GestionnaireSerieCourte {
 				if (imageFile.exists()) {
 					boolean deleted = imageFile.delete();
 					if (deleted) {
-						System.out.println("Affiche supprimée : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.afficheSupprime") + imagePath);
 					} else {
-						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.echecAfficheSupprime") + imagePath);
 					}
 				}
 			}
@@ -84,9 +85,9 @@ public class GestionnaireSerieCourte {
 			// Supprimer la série de la liste
 			seriesCourte.remove(serieCourte);
 			DataManager.saveSerieCourte(seriesCourte); // Mettre à jour la liste des séries courtes
-			System.out.println("Série supprimée: " + serieCourte.getTitre());
+			System.out.println(Language.getBundle().getString("serieCourte.serieCourteSupprime2Point") + serieCourte.getTitre());
 		} else {
-			System.out.println("Série non trouvée.");
+			System.out.println(Language.getBundle().getString("serieCourte.serieCourteNonTrouve"));
 		}
 	}
 

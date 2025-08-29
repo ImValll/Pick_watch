@@ -1,6 +1,7 @@
 package view;
 
 import model.ButtonEditor;
+import model.Language;
 import view.movie.MovieFrame;
 import view.parameter.ParameterFrame;
 import view.saga.SagaFrame;
@@ -13,19 +14,19 @@ import java.awt.*;
 public class Frame extends JFrame {
 	public Frame() {
 
-		super("MENU");
+		super(Language.getBundle().getString("menu.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
 
-		JButton btnMovie = ButtonEditor.createButton("FILMS", new Color(70, 130, 180));
-		JButton btnSaga = ButtonEditor.createButton("SAGAS", new Color(70, 130, 180));
-		JButton btnSerie = ButtonEditor.createButton("SERIES", new Color(70, 130, 180));
-		JButton btnSerieCourte = ButtonEditor.createButton("SERIES COURTE", new Color(70, 130, 180));
-		JButton btnParameter = ButtonEditor.createButton("PARAMETRES", new Color(220, 20, 60));
-		JButton btnQuitter = ButtonEditor.createButton("QUITTER", new Color(220, 20, 60));
+		JButton btnMovie = ButtonEditor.createButton(Language.getBundle().getString("menu.btnMovie"), new Color(70, 130, 180));
+		JButton btnSaga = ButtonEditor.createButton(Language.getBundle().getString("menu.btnSaga"), new Color(70, 130, 180));
+		JButton btnSerie = ButtonEditor.createButton(Language.getBundle().getString("menu.btnSerie"), new Color(70, 130, 180));
+		JButton btnSerieCourte = ButtonEditor.createButton(Language.getBundle().getString("menu.btnSerieCourte"), new Color(70, 130, 180));
+		JButton btnParameter = ButtonEditor.createButton(Language.getBundle().getString("menu.btnParametre"), new Color(220, 20, 60));
+		JButton btnQuitter = ButtonEditor.createButton(Language.getBundle().getString("menu.btnQuitter"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

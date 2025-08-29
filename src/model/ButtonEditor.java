@@ -35,11 +35,11 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the movie from the table model using the row index
 			Movie movie = panel.getGestionnaire().findMovieByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Movie objects
-			if ("Visualiser".equals(label)) {
+			if (Language.getBundle().getString("app.visualiser").equals(label)) {
 				panel.detailsMovie(movie);
-			} else if ("Modifier".equals(label)) {
+			} else if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editMovie(movie);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteMovie(movie);
 			}
 		});
@@ -53,11 +53,11 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the saga from the table model using the row index
 			Saga saga = panel.getGestionnaire().findSagaByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Saga objects
-			if ("Visualiser".equals(label)) {
+			if (Language.getBundle().getString("app.visualiser").equals(label)) {
 				panel.detailsSaga(saga);
-			} else if ("Modifier".equals(label)) {
+			} else if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editSaga(saga);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteSaga(saga);
 			}
 		});
@@ -71,11 +71,11 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the serie from the table model using the row index
 			Serie serie = panel.getGestionnaire().findSerieByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
-			if ("Visualiser".equals(label)) {
+			if (Language.getBundle().getString("app.visualiser").equals(label)) {
 				panel.detailsSerie(serie);
-			} else if ("Modifier".equals(label)) {
+			} else if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editSerie(serie);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteSerie(serie);
 			}
 		});
@@ -89,11 +89,11 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the serie from the table model using the row index
 			SerieCourte serieCourte = panel.getGestionnaire().findSerieCourteByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
-			if ("Visualiser".equals(label)) {
+			if (Language.getBundle().getString("app.visualiser").equals(label)) {
 				panel.detailsSerieCourte(serieCourte);
-			} else if ("Modifier".equals(label)) {
+			} else if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editSerieCourte(serieCourte);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteSerieCourte(serieCourte);
 			}
 		});
@@ -107,9 +107,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the genre from the table model using the row index
 			Genre genre = panel.getGestionnaire().findGenreByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Serie objects
-			if ("Modifier".equals(label)) {
+			if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editGenre(genre);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteGenre(genre);
 			}
 		});
@@ -123,9 +123,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the platform from the table model using the row index
 			Platform platform = panel.getGestionnaire().findPlatformByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds Plateform objects
-			if ("Modifier".equals(label)) {
+			if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editPlatform(platform);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deletePlatform(platform);
 			}
 		});
@@ -139,9 +139,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the user from the table model using the row index
 			User user = panel.getGestionnaire().findUserByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds User objects
-			if ("Modifier".equals(label)) {
+			if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editUser(user);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteUser(user);
 			}
 		});
@@ -155,9 +155,9 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor 
 			fireEditingStopped();
 			// Get the actor from the table model using the row index
 				Actor actor = panel.getGestionnaire().findActorByTitle(panel.getTableArea().getValueAt(row, 0).toString()); // Assuming the first column holds User objects
-			if ("Modifier".equals(label)) {
+			if (Language.getBundle().getString("app.modifier").equals(label)) {
 				panel.editActor(actor);
-			} else if ("Supprimer".equals(label)) {
+			} else if (Language.getBundle().getString("app.supprimer").equals(label)) {
 				panel.deleteActor(actor);
 			}
 		});

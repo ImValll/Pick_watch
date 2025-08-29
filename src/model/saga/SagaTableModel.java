@@ -1,12 +1,14 @@
 package model.saga;
 
+import model.Language;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class SagaTableModel extends AbstractTableModel {
 	private List<Saga> sagas;
-	private final String[] columnNames = {"Titre", "Réalisateur", "Description", "Visualiser", "Modifier", "Supprimer"};
+	private final String[] columnNames = {Language.getBundle().getString("carac.titre2"), Language.getBundle().getString("carac.realisateur"), Language.getBundle().getString("carac.description"), Language.getBundle().getString("app.visualiser"), Language.getBundle().getString("app.modifier"), Language.getBundle().getString("app.supprimer")};
 
 	public SagaTableModel(List<Saga> sagas) {
 		this.sagas = sagas;
@@ -68,11 +70,11 @@ public class SagaTableModel extends AbstractTableModel {
 					return "";
 				}
 			case 3:
-				return "Visualiser";
+				return Language.getBundle().getString("app.visualiser");
 			case 4:
-				return "Modifier";
+				return Language.getBundle().getString("app.modifier");
 			case 5:
-				return "Supprimer";
+				return Language.getBundle().getString("app.supprimer");
 			default:
 				return null;
 		}

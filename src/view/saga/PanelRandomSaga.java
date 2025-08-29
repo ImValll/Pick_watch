@@ -1,6 +1,7 @@
 package view.saga;
 
 import model.ButtonEditor;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -79,20 +80,20 @@ public class PanelRandomSaga extends JPanel {
 		Saga sagaSelected = gestionnaireSaga.pickRandomSaga(rea, actors, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 
 		if (sagaSelected == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune saga dans la base de données ou aucune saga ne correspond à votre recherche.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideRechercheSaga"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.saga = sagaSelected;
 			updateSagaInfo(sagaSelected);
 		}
 
-		JButton btnBack = ButtonEditor.createButton("MENU", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
-		JButton btnGen = ButtonEditor.createButton("Générer à nouveau", new Color(70, 130, 180));
+		JButton btnGen = ButtonEditor.createButton(Language.getBundle().getString("pick.genererNouveau"), new Color(70, 130, 180));
 		btnGen.addActionListener(e -> generateAgain());
 
-		JButton btnDelete = ButtonEditor.createButton("Supprimer la saga de la liste", new Color(70, 130, 180));
+		JButton btnDelete = ButtonEditor.createButton(Language.getBundle().getString("pick.supprimerListeSaga"), new Color(70, 130, 180));
 		btnDelete.addActionListener(e -> deleteSaga());
 
 		JPanel bottomPanel = new JPanel();
@@ -116,29 +117,29 @@ public class PanelRandomSaga extends JPanel {
 		sb.append("<html><div style='font-family:Segoe UI; font-size:13px; color:white;'>");
 
 		if (sagaSelected.getRealistateur() != null && !sagaSelected.getRealistateur().trim().isEmpty())
-			sb.append("Réalisée par <b>").append(sagaSelected.getRealistateur()).append("</b>.<br>");
+			sb.append(Language.getBundle().getString("pick.realisateur") + "<b>").append(sagaSelected.getRealistateur()).append("</b>.<br>");
 
-		String acteursHTML = buildObjectList(sagaSelected.getActeur(), "Acteur(s)");
+		String acteursHTML = buildObjectList(sagaSelected.getActeur(), Language.getBundle().getString("pick.acteur"));
 		if (!acteursHTML.isEmpty()) sb.append(acteursHTML);
 
-		String genresHTML = buildObjectList(sagaSelected.getGenre(), "Genre(s)");
+		String genresHTML = buildObjectList(sagaSelected.getGenre(), Language.getBundle().getString("pick.genre"));
 		if (!genresHTML.isEmpty()) sb.append(genresHTML);
 
 		if (sagaSelected.getNombreFilms() > 0)
-			sb.append("Nombre de films : ").append(sagaSelected.getNombreFilms()).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.nombreFilm")).append(sagaSelected.getNombreFilms()).append(".<br>");
 
 		if (date1 != null)
-			sb.append("Premier film sorti en ").append(date1).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.dateSortieFilm1")).append(date1).append(".<br>");
 
 		if (date2 != null)
-			sb.append("Dernier film sorti en ").append(date2).append(".<br>");
+			sb.append(Language.getBundle().getString("pick.dateSortieFilm2")).append(date2).append(".<br>");
 
-		String plateformesHTML = buildObjectList(sagaSelected.getPlateforme(), "Disponible sur");
+		String plateformesHTML = buildObjectList(sagaSelected.getPlateforme(), Language.getBundle().getString("pick.disponible"));
 		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
 
 		User addedBy = sagaSelected.getAddBy();
-		sb.append("<p><i>Ajouté par ")
-				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : "inconnu")
+		sb.append("<p><i>" + Language.getBundle().getString("pick.ajoutePar"))
+				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : Language.getBundle().getString("pick.inconnu"))
 				.append("</i></p>");
 
 		sb.append("</html>");
@@ -169,7 +170,7 @@ public class PanelRandomSaga extends JPanel {
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 240, 360));
 		} else {
-			imageLabel.setText("Aucune affiche");
+			imageLabel.setText(Language.getBundle().getString("affiche.aucuneAfficheDisponible"));
 			imageLabel.setForeground(Color.GRAY);
 			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			imageLabel.setPreferredSize(new Dimension(240, 360));
@@ -199,7 +200,7 @@ public class PanelRandomSaga extends JPanel {
 	public void generateAgain() {
 		Saga newSaga = gestionnaireSaga.pickRandomSaga(rea, actors, genres, nbFilm, dateSortie, dateSortie2, plateformes, dejaVu, addBy);
 		if (newSaga == null) {
-			JOptionPane.showMessageDialog(this, "Erreur: Il n'y a aucune saga dans la base de données.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurBDVideSaga"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 			backMenu();
 		} else {
 			this.saga = newSaga;

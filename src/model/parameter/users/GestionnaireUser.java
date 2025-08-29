@@ -1,6 +1,7 @@
 package model.parameter.users;
 
 import model.DataManager;
+import model.Language;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -50,7 +51,7 @@ public class GestionnaireUser {
 	public void addUser(User user) {
 		users.add(user);
 		DataManager.saveUser(users);
-		System.out.println("Utilisateur ajouté : " + user.getName());
+		System.out.println(Language.getBundle().getString("user.userAjoute2Point") + user.getName());
 	}
 
 	public List<User> searchUser(String title) {
@@ -132,13 +133,13 @@ public class GestionnaireUser {
 			user.setName(newUser.getName());
 			DataManager.saveUser(users);
 			message[0] = "i";
-			message[1] = "Utilisateur modifié";
-			message[2] = "L'utilisateur " + user.getName() + " a été modifié avec succès.";
+			message[1] = Language.getBundle().getString("user.userModifie");
+			message[2] = Language.getBundle().getString("user.annonceUserPartie1") + user.getName() + Language.getBundle().getString("param.annoncePartie2ModifieMasculin");
 		} else {
 			message[0] = "e";
-			message[1] = "Utilisateur non trouvé";
-			message[2] = "Erreur, l'utilisateur n'a pas été trouvé.";
-			System.out.println("Utilisateur non trouvé.");
+			message[1] = Language.getBundle().getString("user.userNonTrouve");
+			message[2] = Language.getBundle().getString("user.erreurUserNonTrouve");
+			System.out.println(Language.getBundle().getString("user.userNonTrouve"));
 		}
 	}
 
@@ -153,28 +154,28 @@ public class GestionnaireUser {
 		for (Movie movie : movies) {
 			if (user.getName().equals(movie.getAddBy().getName())) {
 				peutSupprimer = false;
-				utilise = "un ou plusieurs films";
+				utilise = Language.getBundle().getString("movie.unPlusieursFilm");
 				break;
 			}
 		}
 		for (Saga saga : sagas) {
 			if (user.getName().equals(saga.getAddBy().getName())) {
 				peutSupprimer = false;
-				utilise = "une ou plusieurs sagas";
+				utilise = Language.getBundle().getString("saga.unPlusieursSaga");
 				break;
 			}
 		}
 		for (Serie serie : series) {
 			if (user.getName().equals(serie.getAddBy().getName())) {
 				peutSupprimer = false;
-				utilise = "une ou plusieurs séries";
+				utilise = Language.getBundle().getString("serie.unPlusieursSerie");
 				break;
 			}
 		}
 		for (SerieCourte serieCourte : seriesCourtes) {
 			if (user.getName().equals(serieCourte.getAddBy().getName())) {
 				peutSupprimer = false;
-				utilise = "une ou plusieurs séries courtes";
+				utilise = Language.getBundle().getString("serieCourte.unPlusieursSerieCourte");
 				break;
 			}
 		}
@@ -183,20 +184,20 @@ public class GestionnaireUser {
 			if(peutSupprimer) {
 				users.remove(user);
 				DataManager.saveUser(users); // Mettre à jour la liste des users
-				System.out.println("Utilisateur supprimé : " + user.getName());
+				System.out.println(Language.getBundle().getString("user.userSupprime") + user.getName());
 				message[0] = "i";
-				message[1] = "Utilisateur supprimé";
-				message[2] = "L'utilisateur " + user.getName() + " a été supprimé avec succès.";
+				message[1] = Language.getBundle().getString("user.userSupprime");
+				message[2] = Language.getBundle().getString("user.annonceUserPartie1") + user.getName() + Language.getBundle().getString("param.annoncePartie2SupprimeMasculin");
 			} else {
 				message[0] = "e";
-				message[1] = "Erreur utilisateur utilisé";
-				message[2] = "Impossible de supprimer l'utilisateur " + user.getName() + ", il est utilisé dans " + utilise + ".";
+				message[1] = Language.getBundle().getString("user.erreurUserUtilise");
+				message[2] = Language.getBundle().getString("user.impossibleSupprimerPartie1") + user.getName() + Language.getBundle().getString("user.impossibleSupprimerPartie2") + utilise + ".";
 			}
 		} else {
 			message[0] = "e";
-			message[1] = "Utilisateur non trouvé";
-			message[2] = "Erreur, l'utilisateur n'a pas été trouvé.";
-			System.out.println("Utilisateur non trouvé.");
+			message[1] = Language.getBundle().getString("user.userNonTrouve");
+			message[2] = Language.getBundle().getString("user.erreurUserNonTrouve");
+			System.out.println(Language.getBundle().getString("user.userNonTrouve"));
 		}
 	}
 

@@ -1,6 +1,7 @@
 package model.serie;
 
 import model.DataManager;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -26,7 +27,7 @@ public class GestionnaireSerie {
 	public void addSerie(Serie serie) {
 		series.add(serie);
 		DataManager.saveSerie(series);
-		System.out.println("Série ajoutée: " + serie.getTitre());
+		System.out.println(Language.getBundle().getString("serie.serieAjoute2Point") + serie.getTitre());
 	}
 
 	public List<Serie> searchSerie(String title) {
@@ -51,9 +52,9 @@ public class GestionnaireSerie {
 			serie.setAddBy(newSerie.getAddBy());
 			serie.setImagePath(newSerie.getImagePath());
 			DataManager.saveSerie(series);
-			System.out.println("Série modifiée: " + serie.getTitre());
+			System.out.println(Language.getBundle().getString("serie.serieModifie2Point") + serie.getTitre());
 		} else {
-			System.out.println("Série non trouvée.");
+			System.out.println(Language.getBundle().getString("serie.serieNonTrouve"));
 		}
 	}
 
@@ -74,9 +75,9 @@ public class GestionnaireSerie {
 				if (imageFile.exists()) {
 					boolean deleted = imageFile.delete();
 					if (deleted) {
-						System.out.println("Affiche supprimée : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.afficheSupprime") + imagePath);
 					} else {
-						System.out.println("Échec de suppression de l'affiche : " + imagePath);
+						System.out.println(Language.getBundle().getString("affiche.echecAfficheSupprime") + imagePath);
 					}
 				}
 			}
@@ -84,9 +85,9 @@ public class GestionnaireSerie {
 			// Supprimer la série de la liste
 			series.remove(serie);
 			DataManager.saveSerie(series); // Mettre à jour la liste des séries
-			System.out.println("Série supprimée: " + serie.getTitre());
+			System.out.println(Language.getBundle().getString("serie.serieSupprime2Point") + serie.getTitre());
 		} else {
-			System.out.println("Série non trouvée.");
+			System.out.println(Language.getBundle().getString("serie.serieNonTrouve"));
 		}
 	}
 

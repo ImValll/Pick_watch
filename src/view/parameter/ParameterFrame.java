@@ -1,6 +1,7 @@
 package view.parameter;
 
 import model.ButtonEditor;
+import model.Language;
 import model.parameter.actors.GestionnaireActor;
 import model.parameter.genres.GestionnaireGenre;
 import model.parameter.platforms.GestionnairePlatform;
@@ -18,18 +19,18 @@ public class ParameterFrame extends JFrame {
 
 	public ParameterFrame() {
 
-		super("PARAMETRES");
+		super(Language.getBundle().getString("param.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
 		getContentPane().setBackground(new Color(50, 50, 50)); // Fond sombre pour le contraste
 		setLayout(new GridBagLayout()); // Utilisation de GridBagLayout pour un meilleur contrôle
 
-		JButton btnManageUser = ButtonEditor.createButton("Gérer les utilisateurs", new Color(70, 130, 180));
-		JButton btnManageGenre = ButtonEditor.createButton("Gérer les genres", new Color(70, 130, 180));
-		JButton btnManagePlatform = ButtonEditor.createButton("Gérer les plateformes", new Color(70, 130, 180));
-		JButton btnManageActor = ButtonEditor.createButton("Gérer les acteurs", new Color(70, 130, 180));
-		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnManageUser = ButtonEditor.createButton(Language.getBundle().getString("param.btnUser"), new Color(70, 130, 180));
+		JButton btnManageGenre = ButtonEditor.createButton(Language.getBundle().getString("param.btnGenre"), new Color(70, 130, 180));
+		JButton btnManagePlatform = ButtonEditor.createButton(Language.getBundle().getString("param.btnPlateforme"), new Color(70, 130, 180));
+		JButton btnManageActor = ButtonEditor.createButton(Language.getBundle().getString("param.btnActeur"), new Color(70, 130, 180));
+		JButton btnMenu = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

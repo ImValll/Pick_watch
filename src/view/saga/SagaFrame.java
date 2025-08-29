@@ -1,6 +1,7 @@
 package view.saga;
 
 import model.ButtonEditor;
+import model.Language;
 import model.saga.GestionnaireSaga;
 import view.Frame;
 
@@ -11,7 +12,7 @@ public class SagaFrame extends JFrame {
 
 	public SagaFrame() {
 
-		super("SAGA SELECTOR");
+		super(Language.getBundle().getString("saga.title"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1200, 700); // Taille augmentée
 		setLocationRelativeTo(null);
@@ -20,10 +21,10 @@ public class SagaFrame extends JFrame {
 		contentPanel.setBackground(new Color(50, 50, 50));
 		contentPanel.setLayout(new GridBagLayout());
 
-		JButton btnTotalRandom = ButtonEditor.createButton("Choisir une saga aléatoire", new Color(70, 130, 180));
-		JButton btnFilterRandom = ButtonEditor.createButton("Appliquer des filtres au choix aléatoire", new Color(70, 130, 180));
-		JButton btnShowSaga = ButtonEditor.createButton("Consulter la liste des sagas", new Color(220, 20, 60));
-		JButton btnMenu = ButtonEditor.createButton("Retour au menu", new Color(220, 20, 60));
+		JButton btnTotalRandom = ButtonEditor.createButton(Language.getBundle().getString("saga.btnTotalRandom"), new Color(70, 130, 180));
+		JButton btnFilterRandom = ButtonEditor.createButton(Language.getBundle().getString("saga.btnFilterRandom"), new Color(70, 130, 180));
+		JButton btnShowSaga = ButtonEditor.createButton(Language.getBundle().getString("saga.btnShowSaga"), new Color(220, 20, 60));
+		JButton btnMenu = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), new Color(220, 20, 60));
 
 
 		GridBagConstraints gbc = new GridBagConstraints();

@@ -13,8 +13,6 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -23,9 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
@@ -64,12 +60,12 @@ public class PanelMovies extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = ButtonEditor.createButton("Rechercher un film", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton(Language.getBundle().getString("movie.btnSearch"), new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchMovies);
 
-		JButton addMovieButton = ButtonEditor.createButton("Ajouter un film", new Color(70, 130, 180));
+		JButton addMovieButton = ButtonEditor.createButton(Language.getBundle().getString("movie.ajouterMovie"), new Color(70, 130, 180));
 
-		JLabel titleLabel = new JLabel("Titre : ");
+		JLabel titleLabel = new JLabel(Language.getBundle().getString("filtre.titre"));
 		titleLabel.setForeground(Color.WHITE);
 		topPanel.add(titleLabel);
 
@@ -87,7 +83,7 @@ public class PanelMovies extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.retour"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -127,14 +123,14 @@ public class PanelMovies extends JPanel {
 		}
 
 		// Rendus personnalisés pour boutons
-		tableArea.getColumn("Visualiser").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Visualiser").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.visualiser")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.visualiser")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellEditor(new ButtonEditor(this));
 
 		JScrollPane scrollPane = new JScrollPane(tableArea);
 		scrollPane.getViewport().setBackground(new Color(60, 63, 65)); // même fond que la table
@@ -147,7 +143,7 @@ public class PanelMovies extends JPanel {
 		String titre = searchTitleField.getText();
 		List<Movie> result = gestionnaireMovie.searchMovie(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucun film trouvé pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurPasFilmTrouveTitre"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 		} else {
 			tableModel.setMovies(result); // Mettre à jour le modèle du tableau
 		}
@@ -235,8 +231,8 @@ public class PanelMovies extends JPanel {
 		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
-		JRadioButton dejaVuButton = new JRadioButton("OUI");
-		JRadioButton pasEncoreVuButton = new JRadioButton("NON", true);
+		JRadioButton dejaVuButton = new JRadioButton(Language.getBundle().getString("app.oui"));
+		JRadioButton pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("app.non"), true);
 		ButtonGroup vuGroup = new ButtonGroup();
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
@@ -253,16 +249,16 @@ public class PanelMovies extends JPanel {
 		}
 		JComboBox<Object> addByComboBox = new JComboBox<>(addByModel);
 
-		JButton chooseImageButton = new JButton("Choisir une affiche");
-		JLabel imagePathLabel = new JLabel("Aucune image sélectionnée");
+		JButton chooseImageButton = new JButton(Language.getBundle().getString("affiche.choisirAffiche"));
+		JLabel imagePathLabel = new JLabel(Language.getBundle().getString("affiche.aucuneImage"));
 
 		chooseImageButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+			fileChooser.setDialogTitle(Language.getBundle().getString("affiche.choisirNouvelleAffiche"));
 
 			// ✅ Filtrer les fichiers pour n'afficher que les images
 			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
-					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+					Language.getBundle().getString("affiche.imageExtension"), "jpg", "jpeg", "png"
 			);
 			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
 			fileChooser.setFileFilter(imageFilter);
@@ -278,7 +274,7 @@ public class PanelMovies extends JPanel {
 					try {
 						// Lire l'image d'origine
 						BufferedImage original = ImageIO.read(selectedFile);
-						if (original == null) throw new IOException("Image invalide");
+						if (original == null) throw new IOException(Language.getBundle().getString("erreur.imageInvalide"));
 
 						// Créer une image RGB (sans alpha), fond blanc
 						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -304,48 +300,45 @@ public class PanelMovies extends JPanel {
 						imagePathLabel.setText(output.getName());
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(null,
-								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
-										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
-										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
-										"Format refusé : " + selectedFile.getName(),
-								"Image invalide", JOptionPane.ERROR_MESSAGE);
+								Language.getBundle().getString("erreur.erreurImageInvalide") + selectedFile.getName(),
+								Language.getBundle().getString("erreur.imageInvalide"), JOptionPane.ERROR_MESSAGE);
 						selectedPosterFile[0] = null;
-						imagePathLabel.setText("Aucune image sélectionnée");
+						imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 						ex.printStackTrace();
 					}
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
-							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+							Language.getBundle().getString("erreur.erreurFormatAffiche"),
+							Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 					selectedPosterFile[0] = null;
-					imagePathLabel.setText("Aucune image sélectionnée");
+					imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 				}
 			}
 		});
 
 		final JComponent[] inputs = new JComponent[] {
-			new JLabel("Titre*"),
+			new JLabel(Language.getBundle().getString("carac.titre")),
 			titleField,
-			new JLabel("Réalisateur"),
+			new JLabel(Language.getBundle().getString("carac.realisateur")),
 			reaField,
-			new JLabel("Acteurs"),
+			new JLabel(Language.getBundle().getString("carac.acteurs")),
 			actorComboBox,
 			selectedActorsPanel,
-			new JLabel("Description"),
+			new JLabel(Language.getBundle().getString("carac.description")),
 			descriptionField,
-			new JLabel("Genres"),
+			new JLabel(Language.getBundle().getString("carac.genres")),
 			scrollPaneGenre,
-			new JLabel("Durée (en minutes)"),
+			new JLabel(Language.getBundle().getString("carac.duree")),
 			dureeField,
-			new JLabel("Date de sortie"),
+			new JLabel(Language.getBundle().getString("carac.dateSortie1")),
 			datePicker,
-			new JLabel("Plateforme"),
+			new JLabel(Language.getBundle().getString("carac.plateforme")),
 			scrollPanePlatform,
-			new JLabel("Déjà vu"),
+			new JLabel(Language.getBundle().getString("carac.dejaVu")),
 			vuPanel,
-			new JLabel("Ajouté par"),
+			new JLabel(Language.getBundle().getString("carac.ajoutePar")),
 			addByComboBox,
-			new JLabel("Affiche du film"),
+			new JLabel(Language.getBundle().getString("carac.affiche")),
 			chooseImageButton,
 			imagePathLabel,
 		};
@@ -371,7 +364,7 @@ public class PanelMovies extends JPanel {
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
-				"Ajouter un film",
+				Language.getBundle().getString("movie.ajouterMovie"),
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE
 		);
@@ -381,7 +374,7 @@ public class PanelMovies extends JPanel {
 				String titre = titleField.getText();
 
 				if(titre.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurTitreVide"), Language.getBundle().getString("erreur.titreVide"), JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					String rea = reaField.getText();
@@ -443,7 +436,7 @@ public class PanelMovies extends JPanel {
 							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 							imagePath = destinationFile.getPath();
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurCopieImage") + e.getMessage(), Language.getBundle().getString("erreur.image"), JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -454,10 +447,10 @@ public class PanelMovies extends JPanel {
 						if (movie.getTitre().equalsIgnoreCase(titre)) {
 							canBeAdd = false;
 							if (Objects.equals(movie.getAddBy().getName(), "Tous") || movie.getAddBy() == addBy) {
-								JOptionPane.showMessageDialog(this, "Erreur: Le film " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDoublonPartie1Film") + titre + Language.getBundle().getString("erreur.erreurDoublonPartie2Masculin"), Language.getBundle().getString("erreur.doublon"), JOptionPane.ERROR_MESSAGE);
 							} else {
 								gestionnaireMovie.updateMovieAddBy(movie, new User("Tous"));
-								JOptionPane.showMessageDialog(this, "Le film " + titre + " a déjà été ajouté par un autre utilisateur son attribut de personne qui a ajouté passe donc à Tous.", "Erreur film déjà ajouté par un utilisateur", JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDejaAjoutePartie1Film") + titre + Language.getBundle().getString("erreur.erreurDejaAjoutePartie2Masculin"), Language.getBundle().getString("erreur.dejaAjouteFilm"), JOptionPane.INFORMATION_MESSAGE);
 							}
 							break;
 						}
@@ -466,7 +459,7 @@ public class PanelMovies extends JPanel {
 					if (canBeAdd) {
 						Movie newMovie = new Movie(titre, rea, actorsArray, desc, genresArray, duree, dateSortie, platformsArray, dejaVu, addBy, imagePath);
 						gestionnaireMovie.addMovie(newMovie); // Ajouter le film à votre gestionnaire de films
-						JOptionPane.showMessageDialog(this, "Film ajouté avec succès: " + titre, "Film Ajouté", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(this, Language.getBundle().getString("movie.annonceFilmAjoute") + titre, Language.getBundle().getString("movie.filmAjoute"), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 
@@ -475,7 +468,7 @@ public class PanelMovies extends JPanel {
 				tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
 
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurFormatDate"), Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -618,8 +611,8 @@ public class PanelMovies extends JPanel {
 		JScrollPane scrollPanePlatform = new JScrollPane(platformPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
-		JRadioButton dejaVuButton = new JRadioButton("Déjà vu");
-		JRadioButton pasEncoreVuButton = new JRadioButton("Pas encore vu");
+		JRadioButton dejaVuButton = new JRadioButton(Language.getBundle().getString("filtre.dejaVu"));
+		JRadioButton pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("filtre.pasEncoreVu"));
 		ButtonGroup vuGroup = new ButtonGroup();
 		vuGroup.add(dejaVuButton);
 		vuGroup.add(pasEncoreVuButton);
@@ -648,16 +641,16 @@ public class PanelMovies extends JPanel {
 		JComboBox<User> addByComboBox = new JComboBox<>(addByModel);
 		addByComboBox.setSelectedItem(movie.getAddBy());
 
-		JButton chooseImageButton = new JButton("Changer l'affiche");
-		JLabel imagePathLabel = new JLabel((oldImagePath != null) ? new File(oldImagePath).getName() : "Aucune image sélectionnée");
+		JButton chooseImageButton = new JButton(Language.getBundle().getString("affiche.changerAffiche"));
+		JLabel imagePathLabel = new JLabel((oldImagePath != null) ? new File(oldImagePath).getName() : Language.getBundle().getString("affiche.aucuneImage"));
 
 		chooseImageButton.addActionListener(e -> {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setDialogTitle("Choisir une nouvelle affiche");
+			fileChooser.setDialogTitle(Language.getBundle().getString("affiche.choisirNouvelleAffiche"));
 
 			// ✅ Filtrer les fichiers pour n'afficher que les images
 			FileNameExtensionFilter imageFilter = new FileNameExtensionFilter(
-					"Images (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png"
+					Language.getBundle().getString("affiche.imageExtension"), "jpg", "jpeg", "png"
 			);
 			fileChooser.setAcceptAllFileFilterUsed(false); // désactive le filtre "Tous les fichiers"
 			fileChooser.setFileFilter(imageFilter);
@@ -673,7 +666,7 @@ public class PanelMovies extends JPanel {
 					try {
 						// Lire l'image d'origine
 						BufferedImage original = ImageIO.read(selectedFile);
-						if (original == null) throw new IOException("Image invalide");
+						if (original == null) throw new IOException(Language.getBundle().getString("erreur.imageInvalide"));
 
 						// Créer une image RGB (sans alpha), fond blanc
 						BufferedImage converted = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -699,48 +692,45 @@ public class PanelMovies extends JPanel {
 						imagePathLabel.setText(output.getName());
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(null,
-								"L’image sélectionnée est dans un format ou une structure non supportée par Java.\n\n" +
-										"💡 Astuce : ouvrez l’image dans un éditeur d’images (comme Paint, GIMP, Photoshop...) puis\n" +
-										"ré-enregistrez-la au format JPEG ou PNG standard, sans transparence.\n\n" +
-										"Format refusé : " + selectedFile.getName(),
-								"Image invalide", JOptionPane.ERROR_MESSAGE);
+								Language.getBundle().getString("erreur.erreurImageInvalide") + selectedFile.getName(),
+								Language.getBundle().getString("erreur.imageInvalide"), JOptionPane.ERROR_MESSAGE);
 						selectedPosterFile[0] = null;
-						imagePathLabel.setText("Aucune image sélectionnée");
+						imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 						ex.printStackTrace();
 					}
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Format d'image invalide. Seuls les fichiers JPG, JPEG et PNG sont acceptés.",
-							"Erreur de format", JOptionPane.ERROR_MESSAGE);
+							Language.getBundle().getString("erreur.erreurFormatAffiche"),
+							Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 					selectedPosterFile[0] = null;
-					imagePathLabel.setText("Aucune image sélectionnée");
+					imagePathLabel.setText(Language.getBundle().getString("affiche.aucuneImage"));
 				}
 			}
 		});
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("carac.titre")),
 				titleField,
-				new JLabel("Réalisateur"),
+				new JLabel(Language.getBundle().getString("carac.realisateur")),
 				reaField,
-				new JLabel("Acteurs"),
+				new JLabel(Language.getBundle().getString("carac.acteurs")),
 				actorComboBox,
 				selectedActorsPanel,
-				new JLabel("Description"),
+				new JLabel(Language.getBundle().getString("carac.description")),
 				descriptionField,
-				new JLabel("Genres"),
+				new JLabel(Language.getBundle().getString("carac.genres")),
 				scrollPaneGenre,
-				new JLabel("Durée (en minutes)"),
+				new JLabel(Language.getBundle().getString("carac.duree")),
 				dureeField,
-				new JLabel("Date de sortie"),
+				new JLabel(Language.getBundle().getString("carac.dateSortie1")),
 				datePicker,
-				new JLabel("Plateforme"),
+				new JLabel(Language.getBundle().getString("carac.plateforme")),
 				scrollPanePlatform,
-				new JLabel("Déjà vu"),
+				new JLabel(Language.getBundle().getString("carac.dejaVu")),
 				vuPanel,
-				new JLabel("Ajouté par"),
+				new JLabel(Language.getBundle().getString("carac.ajoutePar")),
 				addByComboBox,
-				new JLabel("Affiche"),
+				new JLabel(Language.getBundle().getString("carac.affiche")),
 				chooseImageButton,
 				imagePathLabel,
 		};
@@ -764,7 +754,7 @@ public class PanelMovies extends JPanel {
 		int result = JOptionPane.showConfirmDialog(
 				this,
 				scrollPane,
-				"Modifier un film",
+				Language.getBundle().getString("movie.modifierMovie"),
 				JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE
 		);
@@ -774,7 +764,7 @@ public class PanelMovies extends JPanel {
 				String titre = titleField.getText();
 
 				if(titre.isEmpty()) {
-					JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurTitreVide"), Language.getBundle().getString("erreur.titreVide"), JOptionPane.ERROR_MESSAGE);
 				}
 				else {
 					String rea = reaField.getText();
@@ -845,7 +835,7 @@ public class PanelMovies extends JPanel {
 							Files.copy(selectedPosterFile[0].toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 							imagePath = destinationFile.getPath();
 						} catch (IOException e) {
-							JOptionPane.showMessageDialog(this, "Erreur lors de la copie de l'image : " + e.getMessage(), "Erreur d'image", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurCopieImage") + e.getMessage(), Language.getBundle().getString("erreur.image"), JOptionPane.ERROR_MESSAGE);
 						}
 					}
 
@@ -857,9 +847,9 @@ public class PanelMovies extends JPanel {
 				List<Movie> updatedMovies = gestionnaireMovie.getMovies(); // Récupérer la liste mise à jour des films
 				tableModel.setMovies(updatedMovies); // Mettre à jour le modèle du tableau
 
-				JOptionPane.showMessageDialog(this, "Film modifié avec succès: " + titre, "Film modifié", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("movie.annonceFilmModifie") + titre, Language.getBundle().getString("movie.filmModifie"), JOptionPane.INFORMATION_MESSAGE);
 			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "Erreur: L'année de sortie doit être un nombre valide.", "Erreur de Format", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurFormatDate"), Language.getBundle().getString("erreur.erreurFormat"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
 
@@ -897,7 +887,7 @@ public class PanelMovies extends JPanel {
 		if (imagePath != null && new File(imagePath).exists()) {
 			imageLabel.setIcon(resizeImage(imagePath, 150, 200));
 		} else {
-			imageLabel.setText("Aucune affiche disponible");
+			imageLabel.setText(Language.getBundle().getString("affiche.aucuneAfficheDisponible"));
 			imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
@@ -907,47 +897,47 @@ public class PanelMovies extends JPanel {
 		final JComponent[] inputs = new JComponent[] {
 				imageLabel,
 
-				new JLabel(titreStyle + "Titre :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.titre") + "</span></html>"),
 				new JLabel(movie.getTitre()),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Réalisateur :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.realisateur") + "</span></html>"),
 				new JLabel(movie.getRealistateur()),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Acteurs :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.acteur") + "</span></html>"),
 				new JLabel("<html>" + acteurs.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Description :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.description") + "</span></html>"),
 				new JLabel("<html><div style='width:300px'>" + movie.getDescription() + "</div></html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Genres :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.genre") + "</span></html>"),
 				new JLabel("<html>" + genres.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Durée :</span></html>"),
-				new JLabel(movie.getDuree() + " min"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.duree") + "</span></html>"),
+				new JLabel(movie.getDuree() + Language.getBundle().getString("filtre.min")),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Date de sortie :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.anneeSortie") + "</span></html>"),
 				new JLabel(String.valueOf(movie.getDateSortie())),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Plateforme :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.plateforme") + "</span></html>"),
 				new JLabel("<html>" + plateforme.toString().replaceAll(", ", "<br>") + "</html>"),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Déjà vu :</span></html>"),
-				new JLabel(movie.getDejaVu() ? "Oui" : "Non"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.dejaVu") + "</span></html>"),
+				new JLabel(movie.getDejaVu() ? Language.getBundle().getString("app.oui") : Language.getBundle().getString("app.non")),
 				new JSeparator(SwingConstants.HORIZONTAL),
 
-				new JLabel(titreStyle + "Ajouté par :</span></html>"),
+				new JLabel(titreStyle + Language.getBundle().getString("filtre.ajoutePar") + "</span></html>"),
 				new JLabel(movie.getAddBy().getName())
 		};
 
-		JOptionPane.showMessageDialog(this, inputs, "Détails du film", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(this, inputs, Language.getBundle().getString("movie.detailMovie"), JOptionPane.PLAIN_MESSAGE);
 	}
 
 

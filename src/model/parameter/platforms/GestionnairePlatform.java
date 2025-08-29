@@ -1,6 +1,7 @@
 package model.parameter.platforms;
 
 import model.DataManager;
+import model.Language;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -50,7 +51,7 @@ public class GestionnairePlatform {
 	public void addPlatform(Platform platform) {
 		platforms.add(platform);
 		DataManager.savePlatform(platforms);
-		System.out.println("Plateforme ajoutée: " + platform.getName());
+		System.out.println(Language.getBundle().getString("plateforme.plateformeAjoute2Point") + platform.getName());
 	}
 	
 	public List<Platform> searchPlatform(String title) {
@@ -180,13 +181,13 @@ public class GestionnairePlatform {
 			platform.setName(newPlatform.getName());
 			DataManager.savePlatform(platforms);
 			message[0] = "i";
-			message[1] = "Plateforme modifiée";
-			message[2] = "La plateforme " + platform.getName() + " a été modifiée avec succès.";
+			message[1] = Language.getBundle().getString("plateforme.plateformeModifie");
+			message[2] = Language.getBundle().getString("plateforme.annoncePlateformePartie1") + platform.getName() + Language.getBundle().getString("param.annoncePartie2ModifieFeminin");
 		} else {
 			message[0] = "e";
-			message[1] = "Plateforme non trouvée";
-			message[2] = "Erreur, la plateforme n'a pas été trouvée.";
-			System.out.println("Plateforme non trouvée.");
+			message[1] = Language.getBundle().getString("plateforme.plateformeNonTrouve");
+			message[2] = Language.getBundle().getString("plateforme.erreurPlateformeNonTrouve");
+			System.out.println(Language.getBundle().getString("plateforme.plateformeNonTrouve"));
 		}
 	}
 	
@@ -203,7 +204,7 @@ public class GestionnairePlatform {
 				for (Platform platformMovie : movie.getPlateforme()) {
 					if (platformMovie.getName().equals(platform.getName())) {
 						peutSupprimer = false;
-						utilise = "un ou plusieurs films";
+						utilise = Language.getBundle().getString("movie.unPlusieursFilm");
 						break;
 					}
 				}
@@ -214,7 +215,7 @@ public class GestionnairePlatform {
 				for (Platform platformSaga : saga.getPlateforme()) {
 					if (platformSaga.getName().equals(platform.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs sagas";
+						utilise = Language.getBundle().getString("saga.unPlusieursSaga");
 						break;
 					}
 				}
@@ -225,7 +226,7 @@ public class GestionnairePlatform {
 				for (Platform platformSerie : serie.getPlateforme()) {
 					if (platformSerie.getName().equals(platform.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries";
+						utilise = Language.getBundle().getString("serie.unPlusieursSerie");
 						break;
 					}
 				}
@@ -236,7 +237,7 @@ public class GestionnairePlatform {
 				for (Platform platformSerieCourte : serieCourte.getPlateforme()) {
 					if (platformSerieCourte.getName().equals(platform.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries courtes";
+						utilise = Language.getBundle().getString("serieCourte.unPlusieursSerieCourte");
 						break;
 					}
 				}
@@ -248,18 +249,18 @@ public class GestionnairePlatform {
 				platforms.remove(platform);
 				DataManager.savePlatform(platforms); // Mettre à jour la liste des platforms
 				message[0] = "i";
-				message[1] = "Plateforme supprimée";
-				message[2] = "La plateforme " + platform.getName() + " a été supprimée avec succès.";
+				message[1] = Language.getBundle().getString("plateforme.plateformeSupprime");
+				message[2] = Language.getBundle().getString("plateforme.annoncePlateformePartie1") + platform.getName() + Language.getBundle().getString("param.annoncePartie2SupprimeFeminin");
 			} else {
 				message[0] = "e";
-				message[1] = "Erreur genre utilisé";
-				message[2] = "Impossible de supprimer le plateforme " + platform.getName() + ", elle est utilisée dans " + utilise + ".";
+				message[1] = Language.getBundle().getString("plateforme.erreurPlateformeUtilise");
+				message[2] = Language.getBundle().getString("plateforme.impossibleSupprimerPartie1") + platform.getName() + Language.getBundle().getString("plateforme.impossibleSupprimerPartie2") + utilise + ".";
 			}
 		} else {
 			message[0] = "e";
-			message[1] = "Plateforme non trouvée";
-			message[2] = "Erreur, la plateforme n'a pas été trouvée.";
-			System.out.println("Plateforme non trouvée.");
+			message[1] = Language.getBundle().getString("plateforme.plateformeNonTrouve");
+			message[2] = Language.getBundle().getString("plateforme.erreurPlateformeNonTrouve");
+			System.out.println(Language.getBundle().getString("plateforme.plateformeNonTrouve"));
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package model.parameter.genres;
 
 import model.DataManager;
+import model.Language;
 import model.movie.Movie;
 import model.saga.Saga;
 import model.serie.Serie;
@@ -52,7 +53,7 @@ public class GestionnaireGenre {
 	public void addGenre(Genre genre) {
 		genres.add(genre);
 		DataManager.saveGenre(genres);
-		System.out.println("Genre ajouté: " + genre.getName());
+		System.out.println(Language.getBundle().getString("genre.genreAjoute2Point") + genre.getName());
 	}
 
 	public List<Genre> searchGenre(String title) {
@@ -182,13 +183,13 @@ public class GestionnaireGenre {
 			genre.setName(newGenre.getName());
 			DataManager.saveGenre(genres);
 			message[0] = "i";
-			message[1] = "Genre modifié";
-			message[2] = "Le genre " + genre.getName() + " a été modifié avec succès.";
+			message[1] = Language.getBundle().getString("genre.genreModifie");
+			message[2] = Language.getBundle().getString("genre.annonceGenrePartie1") + genre.getName() + Language.getBundle().getString("param.annoncePartie2ModifieMasculin");
 		} else {
 			message[0] = "e";
-			message[1] = "Genre non trouvé";
-			message[2] = "Erreur, le genre n'a pas été trouvé.";
-			System.out.println("Genre non trouvé.");
+			message[1] = Language.getBundle().getString("genre.genreNonTrouve");
+			message[2] = Language.getBundle().getString("genre.erreurGenreNonTrouve");
+			System.out.println(Language.getBundle().getString("genre.genreNonTrouve"));
 		}
 	}
 
@@ -205,7 +206,7 @@ public class GestionnaireGenre {
 				for (Genre genreMovie : movie.getGenre()) {
 					if (genreMovie.getName().equals(genre.getName())) {
 						peutSupprimer = false;
-						utilise = "un ou plusieurs films";
+						utilise = Language.getBundle().getString("movie.unPlusieursFilm");
 						break;
 					}
 				}
@@ -216,7 +217,7 @@ public class GestionnaireGenre {
 				for (Genre genreSaga : saga.getGenre()) {
 					if (genreSaga.getName().equals(genre.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs sagas";
+						utilise = Language.getBundle().getString("saga.unPlusieursSaga");
 						break;
 					}
 				}
@@ -227,7 +228,7 @@ public class GestionnaireGenre {
 				for (Genre genreSerie : serie.getGenre()) {
 					if (genreSerie.getName().equals(genre.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries";
+						utilise = Language.getBundle().getString("serie.unPlusieursSerie");
 						break;
 					}
 				}
@@ -238,7 +239,7 @@ public class GestionnaireGenre {
 				for (Genre genreSerieCourte : serieCourte.getGenre()) {
 					if (genreSerieCourte.getName().equals(genre.getName())) {
 						peutSupprimer = false;
-						utilise = "une ou plusieurs séries courtes";
+						utilise = Language.getBundle().getString("serieCourte.unPlusieursSerieCourte");
 						break;
 					}
 				}
@@ -250,18 +251,18 @@ public class GestionnaireGenre {
 				genres.remove(genre);
 				DataManager.saveGenre(genres); // Mettre à jour la liste des genres
 				message[0] = "i";
-				message[1] = "Genre supprimé";
-				message[2] = "Le genre " + genre.getName() + " a été supprimé avec succès.";
+				message[1] = Language.getBundle().getString("genre.genreSupprime");
+				message[2] = Language.getBundle().getString("genre.annonceGenrePartie1") + genre.getName() + Language.getBundle().getString("param.annoncePartie2SupprimeMasculin");
 			} else {
 				message[0] = "e";
-				message[1] = "Erreur genre utilisé";
-				message[2] = "Impossible de supprimer le genre " + genre.getName() + ", il est utilisé dans " + utilise + ".";
+				message[1] = Language.getBundle().getString("genre.erreurGenreUtilise");
+				message[2] = Language.getBundle().getString("genre.impossibleSupprimerPartie1") + genre.getName() + Language.getBundle().getString("genre.impossibleSupprimerPartie2") + utilise + ".";
 			}
 		} else {
 			message[0] = "e";
-			message[1] = "Genre non trouvé";
-			message[2] = "Erreur, le genre n'a pas été trouvé.";
-			System.out.println("Genre non trouvé.");
+			message[1] = Language.getBundle().getString("genre.genreNonTrouve");
+			message[2] = Language.getBundle().getString("genre.erreurGenreNonTrouve");
+			System.out.println(Language.getBundle().getString("genre.genreNonTrouve"));
 		}
 	}
 

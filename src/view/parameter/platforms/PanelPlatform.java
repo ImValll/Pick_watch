@@ -2,6 +2,7 @@ package view.parameter.platforms;
 
 import model.ButtonEditor;
 import model.ButtonRenderer;
+import model.Language;
 import model.parameter.platforms.Platform;
 import model.parameter.platforms.GestionnairePlatform;
 import model.parameter.platforms.PlatformTableModel;
@@ -47,12 +48,12 @@ public class PanelPlatform extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = ButtonEditor.createButton("Rechercher une plateforme", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton(Language.getBundle().getString("plateforme.btnSearch"), new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchPlatform);
 
-		JButton addPlatformButton = ButtonEditor.createButton("Ajouter une plateforme", new Color(70, 130, 180));
+		JButton addPlatformButton = ButtonEditor.createButton(Language.getBundle().getString("plateforme.ajouterPlateforme"), new Color(70, 130, 180));
 
-		JLabel titleLabel = new JLabel("Titre : ");
+		JLabel titleLabel = new JLabel(Language.getBundle().getString("param.nom"));
 		titleLabel.setForeground(Color.WHITE);
 		topPanel.add(titleLabel);
 
@@ -70,7 +71,7 @@ public class PanelPlatform extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.retour"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -105,16 +106,16 @@ public class PanelPlatform extends JPanel {
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		for (int i = 0; i < tableArea.getColumnCount(); i++) {
 			String columnName = tableArea.getColumnName(i);
-			if (!columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+			if (!columnName.equals(Language.getBundle().getString("app.modifier")) && !columnName.equals(Language.getBundle().getString("app.supprimer"))) {
 				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
 		}
 
-		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellEditor(new ButtonEditor(this));
 
 		JScrollPane scrollPane = new JScrollPane(tableArea);
 		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
@@ -127,7 +128,7 @@ public class PanelPlatform extends JPanel {
 		String titre = searchTitleField.getText();
 		java.util.List<Platform> result = gestionnairePlatform.searchPlatform(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucune plateforme trouvée pour ce titre.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurPasPlateformeTrouveTitre"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 		} else {
 			tableModel.setPlatform(result); // Mettre à jour le modèle du tableau
 		}
@@ -137,16 +138,16 @@ public class PanelPlatform extends JPanel {
 		JTextField titleField = new JTextField();
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter une nouvelle plateforme", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("plateforme.ajouterNouvellePlateforme"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			}
 			else {
 
@@ -156,7 +157,7 @@ public class PanelPlatform extends JPanel {
 				for (Platform platform : listPlatform) {
 					if (platform.getName().equalsIgnoreCase(titre)) {
 						canBeAdd = false;
-						JOptionPane.showMessageDialog(this, "Erreur: La plateforme " + titre + " a déjà été ajoutée", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDoublonPartie1Plateforme") + titre + Language.getBundle().getString("erreur.erreurDoublonPartie2Feminin"), Language.getBundle().getString("erreur.doublon"), JOptionPane.ERROR_MESSAGE);
 						break;
 					}
 				}
@@ -164,7 +165,7 @@ public class PanelPlatform extends JPanel {
 				if (canBeAdd) {
 					Platform newPlatform = new Platform(titre);
 					gestionnairePlatform.addPlatform(newPlatform); // Ajouter la plateforme à votre gestionnaire de plateforme
-					JOptionPane.showMessageDialog(this, "Plateforme ajoutée avec succès: " + titre, "Plateforme Ajoutée", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("plateforme.annoncePlateformeAjoute") + titre, Language.getBundle().getString("plateforme.plateformeAjoute"), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 
@@ -197,18 +198,18 @@ public class PanelPlatform extends JPanel {
 
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Ancien titre"),
+				new JLabel(Language.getBundle().getString("param.ancienNom")),
 				oldTitleField,
-				new JLabel("Titre*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier une plateforme", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("plateforme.modifierPlateforme"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			} else {
 				Platform newPlatform = new Platform(titre);
 				gestionnairePlatform.editPlatform(oldTitleField.getText(), newPlatform); // Ajouter la plateforme à votre gestionnaire de plateforme

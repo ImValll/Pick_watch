@@ -2,6 +2,7 @@ package view.parameter.users;
 
 import model.ButtonEditor;
 import model.ButtonRenderer;
+import model.Language;
 import model.parameter.users.User;
 import model.parameter.users.GestionnaireUser;
 import model.parameter.users.UserTableModel;
@@ -47,12 +48,12 @@ public class PanelUser extends JPanel {
 		JPanel topPanel = new JPanel();
 		searchTitleField = new JTextField(20);
 
-		JButton searchButton = ButtonEditor.createButton("Rechercher un utilisateur", new Color(70, 130, 180));
+		JButton searchButton = ButtonEditor.createButton(Language.getBundle().getString("user.btnSearch"), new Color(70, 130, 180));
 		searchButton.addActionListener(this::searchUser);
 
-		JButton addUserButton = ButtonEditor.createButton("Ajouter un utilisateur", new Color(70, 130, 180));
+		JButton addUserButton = ButtonEditor.createButton(Language.getBundle().getString("user.ajouterUser"), new Color(70, 130, 180));
 
-		JLabel titleLabel = new JLabel("Nom : ");
+		JLabel titleLabel = new JLabel(Language.getBundle().getString("param.nom"));
 		titleLabel.setForeground(Color.WHITE);
 		topPanel.add(titleLabel);
 
@@ -70,7 +71,7 @@ public class PanelUser extends JPanel {
 		panel.add(topPanel, BorderLayout.NORTH);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
-		JButton btnBack = ButtonEditor.createButton("Retour", new Color(70, 130, 180));
+		JButton btnBack = ButtonEditor.createButton(Language.getBundle().getString("app.retour"), new Color(70, 130, 180));
 		btnBack.addActionListener(e -> backMenu());
 
 		JPanel bottomPanel = new JPanel();
@@ -105,16 +106,16 @@ public class PanelUser extends JPanel {
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		for (int i = 0; i < tableArea.getColumnCount(); i++) {
 			String columnName = tableArea.getColumnName(i);
-			if (!columnName.equals("Modifier") && !columnName.equals("Supprimer")) {
+			if (!columnName.equals(Language.getBundle().getString("app.modifier")) && !columnName.equals(Language.getBundle().getString("app.supprimer"))) {
 				tableArea.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
 		}
 
-		tableArea.getColumn("Modifier").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Modifier").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.modifier")).setCellEditor(new ButtonEditor(this));
 
-		tableArea.getColumn("Supprimer").setCellRenderer(new ButtonRenderer());
-		tableArea.getColumn("Supprimer").setCellEditor(new ButtonEditor(this));
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellRenderer(new ButtonRenderer());
+		tableArea.getColumn(Language.getBundle().getString("app.supprimer")).setCellEditor(new ButtonEditor(this));
 
 		JScrollPane scrollPane = new JScrollPane(tableArea);
 		scrollPane.getViewport().setBackground(new Color(60, 63, 65));
@@ -127,7 +128,7 @@ public class PanelUser extends JPanel {
 		String titre = searchTitleField.getText();
 		java.util.List<User> result = gestionnaireUser.searchUser(titre);
 		if (result.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Erreur: Aucun utilisateur trouvé pour ce nom.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurPasUserTrouveTitre"), Language.getBundle().getString("app.erreur"), JOptionPane.ERROR_MESSAGE);
 		} else {
 			tableModel.setUser(result); // Mettre à jour le modèle du tableau
 		}
@@ -137,16 +138,16 @@ public class PanelUser extends JPanel {
 		JTextField titleField = new JTextField();
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Nom*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Ajouter un nouvel utilisateur", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("user.ajouterNouveauUser"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le nom doit être entré.", "Erreur nom vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			}
 			else {
 
@@ -156,7 +157,7 @@ public class PanelUser extends JPanel {
 				for (User user : listUser) {
 					if (user.getName().equalsIgnoreCase(titre)) {
 						canBeAdd = false;
-						JOptionPane.showMessageDialog(this, "Erreur: L'utilisateur " + titre + " a déjà été ajouté", "Erreur doublons", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurDoublonPartie1User") + titre + Language.getBundle().getString("erreur.erreurDoublonPartie2Masculin"), Language.getBundle().getString("erreur.doublon"), JOptionPane.ERROR_MESSAGE);
 						break;
 					}
 				}
@@ -164,7 +165,7 @@ public class PanelUser extends JPanel {
 				if (canBeAdd) {
 					User newUser = new User(titre);
 					gestionnaireUser.addUser(newUser); // Ajouter l'utilisateur à votre gestionnaire d'utilisateur
-					JOptionPane.showMessageDialog(this, "Utilisateur ajouté avec succès: " + titre, "Utilisateur Ajouté", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, Language.getBundle().getString("user.annonceUserAjoute") + titre, Language.getBundle().getString("user.userAjoute"), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 
@@ -197,18 +198,18 @@ public class PanelUser extends JPanel {
 
 
 		final JComponent[] inputs = new JComponent[] {
-				new JLabel("Ancien nom"),
+				new JLabel(Language.getBundle().getString("param.ancienNom")),
 				oldTitleField,
-				new JLabel("Nom*"),
+				new JLabel(Language.getBundle().getString("param.nomEtoile")),
 				titleField,
 		};
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Modifier un utilisateur", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int result = JOptionPane.showConfirmDialog(this, inputs, Language.getBundle().getString("user.modifierUser"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
 			String titre = titleField.getText();
 
 			if(titre.isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Erreur: Le titre doit être entré.", "Erreur titre vide", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getBundle().getString("erreur.erreurNomVide"), Language.getBundle().getString("erreur.nomVide"), JOptionPane.ERROR_MESSAGE);
 			} else {
 				User newUser = new User(titre);
 				gestionnaireUser.editUser(oldTitleField.getText(), newUser); // Ajouter l'utilisateur à votre gestionnaire d'utilisateur

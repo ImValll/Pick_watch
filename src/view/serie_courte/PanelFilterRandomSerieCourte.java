@@ -2,6 +2,7 @@ package view.serie_courte;
 
 import model.ButtonEditor;
 import model.DataManager;
+import model.Language;
 import model.parameter.actors.Actor;
 import model.parameter.genres.Genre;
 import model.parameter.platforms.Platform;
@@ -55,7 +56,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Acteur filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelActeur = new JLabel("Acteur :");
+		JLabel labelActeur = new JLabel(Language.getBundle().getString("filtre.titre"));
 		labelActeur.setForeground(Color.WHITE);
 		centerPanel.add(labelActeur);
 
@@ -104,7 +105,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Genre filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelGenre = new JLabel("Genres :");
+		JLabel labelGenre = new JLabel(Language.getBundle().getString("filtre.genre"));
 		labelGenre.setForeground(Color.WHITE);
 		centerPanel.add(labelGenre);
 
@@ -125,7 +126,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Number season filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelNbSeason = new JLabel("Nombre de saisons :");
+		JLabel labelNbSeason = new JLabel(Language.getBundle().getString("filtre.nombreSaison"));
 		labelNbSeason.setForeground(Color.WHITE);
 		centerPanel.add(labelNbSeason);
 
@@ -136,7 +137,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Number episode filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelNbEpisode = new JLabel("Nombre d'épisodes par saison :");
+		JLabel labelNbEpisode = new JLabel(Language.getBundle().getString("filtre.nombreEpisode"));
 		labelNbEpisode.setForeground(Color.WHITE);
 		centerPanel.add(labelNbEpisode);
 
@@ -147,7 +148,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// mean length filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelMeanLength = new JLabel("Durée moyenne des épisodes :");
+		JLabel labelMeanLength = new JLabel(Language.getBundle().getString("filtre.dureeEpisode"));
 		labelMeanLength.setForeground(Color.WHITE);
 		centerPanel.add(labelMeanLength);
 
@@ -158,7 +159,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Year filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelYear = new JLabel("Année de sortie de la première saison :");
+		JLabel labelYear = new JLabel(Language.getBundle().getString("filtre.dateSortieSaison1"));
 		labelYear.setForeground(Color.WHITE);
 		centerPanel.add(labelYear);
 
@@ -169,7 +170,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Year filter 2
 		centerPanel.add(new JLabel(" "));
-		JLabel labelYear2 = new JLabel("Année de sortie de la dernière saison :");
+		JLabel labelYear2 = new JLabel(Language.getBundle().getString("filtre.dateSortieSaison2"));
 		labelYear2.setForeground(Color.WHITE);
 		centerPanel.add(labelYear2);
 
@@ -180,7 +181,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Platform filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelPlateforme = new JLabel("Plateformes :");
+		JLabel labelPlateforme = new JLabel(Language.getBundle().getString("filtre.plateforme"));
 		labelPlateforme.setForeground(Color.WHITE);
 		centerPanel.add(labelPlateforme);
 
@@ -202,10 +203,10 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 		//dejaVu filter
 		// Créer les boutons radio pour "Déjà vu" et "Pas encore vu"
 		centerPanel.add(new JLabel(" "));
-		dejaVuButton = new JRadioButton("Déjà vu");
+		dejaVuButton = new JRadioButton(Language.getBundle().getString("filtre.dejaVu"));
 		dejaVuButton.setBackground(new Color(50, 50, 50));
 		dejaVuButton.setForeground(Color.WHITE);
-		pasEncoreVuButton = new JRadioButton("Pas encore vu");
+		pasEncoreVuButton = new JRadioButton(Language.getBundle().getString("filtre.pasEncoreVu"));
 		pasEncoreVuButton.setBackground(new Color(50, 50, 50));
 		pasEncoreVuButton.setForeground(Color.WHITE);
 		ButtonGroup vuGroup = new ButtonGroup();
@@ -213,7 +214,7 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 		vuGroup.add(pasEncoreVuButton);
 
 		// Ajouter un bouton pour désélectionner les boutons radio
-		JButton clearVuButton = new JButton("Annuler la sélection");
+		JButton clearVuButton = new JButton(Language.getBundle().getString("filtre.annulerSelection"));
 		clearVuButton.addActionListener(e -> vuGroup.clearSelection());
 
 		// Ajouter les boutons radio à un panneau
@@ -228,18 +229,18 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// User filter
 		centerPanel.add(new JLabel(" "));
-		JLabel labelUtilisateur = new JLabel("Utilisateur :");
+		JLabel labelUtilisateur = new JLabel(Language.getBundle().getString("filtre.utilisateur"));
 		labelUtilisateur.setForeground(Color.WHITE);
 		centerPanel.add(labelUtilisateur);
 
 		ArrayList<User> users = DataManager.loadUser();
 		DefaultComboBoxModel<Object> comboBoxModel = new DefaultComboBoxModel<>();
-		comboBoxModel.addElement("Ignorer");
+		comboBoxModel.addElement(Language.getBundle().getString("app.ignorer"));
 		for (User user : users) {
 			comboBoxModel.addElement(user);
 		}
 		userComboBox = new JComboBox<>(comboBoxModel);
-		userComboBox.setSelectedItem("Ignorer"); // Default value
+		userComboBox.setSelectedItem(Language.getBundle().getString("app.ignorer")); // Default value
 		userComboBox.setBackground(Color.LIGHT_GRAY);
 		userComboBox.setForeground(Color.BLACK);
 		userComboBox.setMaximumSize(new Dimension(500, 30));
@@ -247,9 +248,9 @@ public class PanelFilterRandomSerieCourte extends JPanel {
 
 		// Bottom panel with buttons
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton backButton = ButtonEditor.createButton("Retour au menu", Color.BLUE);
+		JButton backButton = ButtonEditor.createButton(Language.getBundle().getString("app.btnMenu"), Color.BLUE);
 		backButton.addActionListener(e -> backMenu());
-		JButton submitButton = ButtonEditor.createButton("Envoyer", Color.GREEN);
+		JButton submitButton = ButtonEditor.createButton(Language.getBundle().getString("app.envoyer"), Color.GREEN);
 		submitButton.addActionListener(e -> askRandomSerieCourte());
 		bottomPanel.add(backButton);
 		bottomPanel.add(submitButton);
