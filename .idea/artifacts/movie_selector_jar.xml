@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="movie_selector:jar">
+  <artifact type="jar" build-on-make="true" name="movie_selector:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/movie_selector_jar</output-path>
     <root id="archive" name="movie_selector.jar">
       <element id="module-output" name="movie_selector" />
