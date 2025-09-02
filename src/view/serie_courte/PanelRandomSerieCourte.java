@@ -140,7 +140,7 @@ public class PanelRandomSerieCourte extends JPanel {
 		if (!plateformesHTML.isEmpty()) sb.append(plateformesHTML);
 
 		User addedBy = scSelected.getAddBy();
-		sb.append("<p><i>" + Language.getBundle().getString("pick.disponible"))
+		sb.append("<p><i>" + Language.getBundle().getString("pick.ajoutePar"))
 				.append((addedBy != null && !addedBy.getName().trim().isEmpty()) ? addedBy : Language.getBundle().getString("pick.inconnu"))
 				.append("</i></p>");
 

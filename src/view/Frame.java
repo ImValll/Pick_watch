@@ -27,6 +27,9 @@ public class Frame extends JFrame {
 		ImageIcon frIcon = new ImageIcon("src/language/imageLanguage/fr.png");
 		ImageIcon ukIcon = new ImageIcon("src/language/imageLanguage/uk.png");
 
+		// Chargement de la langue actuelle
+		Locale currentLocale = DataManager.loadLanguage();
+
 		JComboBox<Object> languageCombo = new JComboBox<>();
 
 		// Icônes agrandies
@@ -53,6 +56,19 @@ public class Frame extends JFrame {
 				return label;
 			}
 		});
+
+		// ---- Présélection en fonction de la langue chargée ----
+		if (currentLocale != null) {
+			String lang = currentLocale.getLanguage();
+			if (lang.equalsIgnoreCase("fr")) {
+				languageCombo.setSelectedItem(frBig);
+			} else if (lang.equalsIgnoreCase("en")) {
+				languageCombo.setSelectedItem(ukBig);
+			}
+		} else {
+			// Valeur par défaut si pas de langue sauvegardée
+			languageCombo.setSelectedItem(frBig);
+		}
 
 		JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Alignement à droite
 		topPanel.setBackground(new Color(50, 50, 50)); // même fond
